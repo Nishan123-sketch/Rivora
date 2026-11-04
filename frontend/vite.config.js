@@ -7,6 +7,7 @@ import react from '@vitejs/plugin-react'
 const BACKEND = 'http://127.0.0.1:5000'
 
 export default defineConfig({
+  base: '/Rivora/',
   plugins: [react()],
   server: {
     proxy: {
