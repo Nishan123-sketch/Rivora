@@ -1,0 +1,4 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {compareRainfall}=require('../rainfall-reference');
+const p=(hours,rainfall_mm)=>({hours,rainfall_mm,status:'COMPLETE'});
+test('KMA boundaries and independent windows',()=>{assert.equal(compareRainfall([p(3,60),p(12,60)]).status,'ADVISORY_CRITERION_MET');assert.equal(compareRainfall([p(3,90)]).status,'WARNING_CRITERION_MET');assert.equal(compareRainfall([p(12,180)]).status,'WARNING_CRITERION_MET');assert.equal(compareRainfall([p(3,0),p(12,0)]).status,'BELOW_REFERENCE_CRITERIA')});
+test('missing, invalid and duplicate windows cannot indicate below criteria',()=>{for(const periods of [[],[p(3,0)],[p(3,null),p(12,0)],[p(3,0),p(3,0),p(12,0)],[p(3,-1),p(12,0)]])assert.equal(compareRainfall(periods).status,'INCOMPLETE')});

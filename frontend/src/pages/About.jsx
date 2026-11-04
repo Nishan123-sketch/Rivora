@@ -1,0 +1,2 @@
+import {PageTitle,Section} from '../components/Shared';
+export default function About() {return <><PageTitle>About the project</PageTitle><Section title="Weather and Flood Risk Forecasting"><p>This free educational prototype displays weather and water observations from selected South Korean monitoring stations using KMA and K-water data.</p><p>It is not an official emergency warning service or a validated flood forecasting model.</p><p>Planned functionality includes indicative risk assessment, historical trends, registration, and optional email alerts.</p></Section></>}

@@ -1,0 +1,3 @@
+const base=process.env.API_BASE_URL||'http://localhost:5000';
+const paths=['/api/health','/api/stations','/api/weather/latest','/api/water/latest','/api/combined-analysis','/api/weather/forecast','/api/rivers/207/history?hours=24','/api/rivers/207/risk','/api/alerts'];
+(async()=>{let failed=0;for(const path of paths){try{const r=await fetch(base+path,{signal:AbortSignal.timeout(15000)});const d=await r.json();console.log(JSON.stringify({path,http:r.status,count:d.count??d.readings?.length??d.forecasts?.length,status:d.status??d.assessment_status??null,component_errors:d.component_errors??[]}));if(!r.ok)failed++}catch(e){failed++;console.log(JSON.stringify({path,error:e.message}))}}process.exitCode=failed?1:0})()

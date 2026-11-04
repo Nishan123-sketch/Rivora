@@ -1,0 +1,194 @@
+/* ==========================================================================
+   FloodWatch design layer — loaded LAST (see App.jsx) so it refines App.css.
+   Source: Fframe design PDF. Colour values are estimated from the frames;
+   change them here only (one place) and the whole app updates.
+   ========================================================================== */
+
+/* ---------- 1. Design tokens ---------- */
+:root{
+  --fw-font:Inter,"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+  /* surfaces */
+  --fw-bg:#f1f5f8; --fw-surface:#ffffff; --fw-surface-2:#f6f9fb; --fw-chip:#e8f2f4; --fw-note:#edf4fb;
+  /* text */
+  --fw-ink:#14283c; --fw-muted:#667c8e; --fw-muted-2:#5b7284;
+  /* lines */
+  --fw-outline:#16202e; --fw-line:#e1e8ee;
+  /* brand */
+  --fw-blue:#1a7de8; --fw-cyan:#06b6d4; --fw-teal:#0b7f8c; --fw-action:#0a84ff; --fw-primary:#22c0d8;
+  --fw-grad:linear-gradient(115deg,#1a7de8 0%,#06b6d4 100%);
+  --fw-grad-side:linear-gradient(180deg,#1a7de8 0%,#0fa1d8 58%,#06b6d4 100%);
+  /* risk */
+  --risk-low:#1fa86b; --risk-moderate:#e0a019; --risk-high:#e05a47; --risk-none:#9aa7b2;
+  /* shape */
+  --fw-radius:20px; --fw-radius-sm:14px; --fw-pill:999px;
+  --fw-shadow:0 8px 22px rgba(20,48,74,.14); --fw-shadow-soft:0 4px 10px rgba(20,48,74,.10);
+  --fw-sidebar:250px;
+  --fw-badge-stale-bg:#fff3d6; --fw-badge-stale:#8a5a00; --fw-badge-none-bg:#e9eef2; --fw-badge-none:#52667a;
+  /* map the old variable names onto the new tokens */
+  --ink:var(--fw-ink); --muted:var(--fw-muted); --bg:var(--fw-bg); --line:var(--fw-outline);
+  --red:var(--risk-high); --amber:var(--risk-moderate); --green:var(--risk-low);
+  --teal:var(--fw-teal); --blue:var(--fw-action);
+  color-scheme:light;
+}
+/* ---------- 2. Dark theme (system preference, or manual toggle) ---------- */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --fw-bg:#0d1620; --fw-surface:#142231; --fw-surface-2:#192b3c; --fw-chip:#1b3140; --fw-note:#142b3d;
+    --fw-ink:#e7f0f7; --fw-muted:#9db2c3; --fw-muted-2:#b3c4d2; --fw-outline:#5a7388; --fw-line:#243849;
+    --fw-shadow:0 8px 22px rgba(0,0,0,.45); --fw-shadow-soft:0 4px 10px rgba(0,0,0,.35);
+    --fw-teal:#38c6d4; --fw-badge-stale-bg:#4a3a12; --fw-badge-stale:#ffd37a; --fw-badge-none-bg:#2a3b4a; --fw-badge-none:#c3d2de;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --fw-bg:#0d1620; --fw-surface:#142231; --fw-surface-2:#192b3c; --fw-chip:#1b3140; --fw-note:#142b3d;
+  --fw-ink:#e7f0f7; --fw-muted:#9db2c3; --fw-muted-2:#b3c4d2; --fw-outline:#5a7388; --fw-line:#243849;
+  --fw-shadow:0 8px 22px rgba(0,0,0,.45); --fw-shadow-soft:0 4px 10px rgba(0,0,0,.35);
+  --fw-teal:#38c6d4; --fw-badge-stale-bg:#4a3a12; --fw-badge-stale:#ffd37a; --fw-badge-none-bg:#2a3b4a; --fw-badge-none:#c3d2de;
+  color-scheme:dark;
+}
+
+/* ---------- 3. Base ---------- */
+html{font-family:var(--fw-font)}
+body{background:var(--fw-bg);color:var(--fw-ink);font-family:var(--fw-font);-webkit-font-smoothing:antialiased}
+.muted,.caps,.eyebrow,.chart-axis,.fetch-note,.disclaimer{color:var(--fw-muted)}
+a{color:var(--fw-teal)}
+:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+button,input,select,textarea{font-family:inherit}
+
+/* ---------- 4. Sidebar ---------- */
+.sidebar{width:var(--fw-sidebar);min-width:var(--fw-sidebar);background:var(--fw-grad-side);padding:28px 18px 22px}
+.sidebar h2,.sidebar .project-brand{font-size:21px!important;line-height:1.22;font-weight:700;letter-spacing:-.3px}
+.sidebar small{font-size:10px;letter-spacing:1.2px;font-weight:600;opacity:.95}
+.sidebar hr{border-top:1px solid rgba(255,255,255,.7);margin:22px 4px 14px;width:auto}
+.sidebar nav button{height:42px;border-radius:13px;font-size:12.5px;font-weight:700;padding:0 18px}
+.sidebar nav button i{width:9px;height:9px;border:1.5px solid #fff;background:transparent}
+.sidebar nav button.on{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.85)}
+.sidebar nav button.on i{background:#fff}
+.sidebar nav button:hover{background:rgba(255,255,255,.18)}
+.side-note{color:#fff;opacity:.95;font-size:11px;line-height:1.7;text-shadow:0 1px 2px rgba(0,60,90,.35)}   /* readable on the cyan end */
+.sidebar>button:not(.menu-close){margin-top:10px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.6);color:#fff;border-radius:12px;height:38px}
+.menu-toggle,.menu-close,.sidebar-scrim{display:none}
+
+/* ---------- 5. Top bar ---------- */
+.topbar{background:var(--fw-surface);min-height:76px;padding:16px 32px;border-bottom:1px solid var(--fw-line);gap:16px}
+.topbar .eyebrow{font-size:11px;letter-spacing:.9px;text-transform:uppercase}
+.topbar h1{font-size:13px;font-weight:500;margin-top:7px;color:var(--fw-ink)}
+.topbar-actions{display:flex;align-items:center;gap:14px}
+.refresh-button{color:var(--fw-muted)}
+.refresh-button i{background:var(--fw-chip);color:var(--fw-teal);width:36px;height:36px}
+.theme-toggle{border:1px solid var(--fw-line);background:var(--fw-surface-2);color:var(--fw-ink);border-radius:var(--fw-pill);width:36px;height:36px;display:grid;place-items:center;font-size:15px}
+.theme-toggle:hover{background:var(--fw-chip)}
+
+/* ---------- 6. Cards ---------- */
+.card,.content-card,.stat-card{background:var(--fw-surface);color:var(--fw-ink);border:1px solid var(--fw-outline);border-radius:var(--fw-radius);box-shadow:none}
+.card.hero-card,.card.tall,.weather-shell{box-shadow:var(--fw-shadow)}
+.card h3,.content-card h3{font-size:14px;font-weight:600;color:var(--fw-ink)}
+.kpi{border-radius:var(--fw-radius-sm)}
+.hero-card{border:0}
+.score-box{background:var(--fw-grad);border-radius:var(--fw-radius-sm);box-shadow:0 6px 16px rgba(26,125,232,.28)}
+.page-body{padding:28px 32px 40px}
+.strip,.notice{background:var(--fw-note);color:var(--fw-ink);border-radius:12px;border-left:0}
+.note,.chip,.summary-rows>div{color:var(--fw-ink)}
+.note{background:var(--fw-chip)}
+.chip{background:var(--fw-chip)}
+.rule{border-top-color:var(--fw-line)}
+table{color:var(--fw-ink)}th,td{border-bottom-color:var(--fw-line)}
+.empty-chart,.hours-skeleton span,.week-empty{background:var(--fw-surface-2);border-color:var(--fw-line);color:var(--fw-muted)}
+.hour{background:var(--fw-surface-2);box-shadow:var(--fw-shadow-soft);color:var(--fw-ink)}
+.bar{background:var(--fw-line)}
+.chart-empty-message{background:color-mix(in srgb,var(--fw-surface) 88%,transparent);border-color:var(--fw-line);color:var(--fw-muted)}
+
+/* ---------- 7. Risk lights (colour + text label, never colour alone) ---------- */
+.risk-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px;flex:none}
+.risk-dot.low{background:var(--risk-low)}.risk-dot.moderate{background:var(--risk-moderate)}
+.risk-dot.high{background:var(--risk-high)}.risk-dot.none{background:var(--risk-none)}
+.fresh-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.4px;border-radius:var(--fw-pill);padding:3px 9px;background:var(--fw-chip);color:var(--fw-teal)}
+.fresh-badge.stale{background:var(--fw-badge-stale-bg);color:var(--fw-badge-stale)}.fresh-badge.none{background:var(--fw-badge-none-bg);color:var(--fw-badge-none)}
+
+/* ---------- 8. Stations list, alerts rows ---------- */
+.srow{background:var(--fw-surface-2);border:1px solid var(--fw-outline);border-radius:var(--fw-radius-sm);color:var(--fw-ink);transition:background .15s}
+.srow:hover{background:var(--fw-chip)}
+.station-table-head{color:var(--fw-muted);letter-spacing:.6px}
+.activity-row{background:var(--fw-surface-2);border:0;border-radius:var(--fw-radius-sm);box-shadow:var(--fw-shadow-soft);padding:18px 22px;color:var(--fw-ink)}
+.activity-row p{color:var(--fw-muted);font-size:13px;margin-top:4px}
+.outline-button,.quick-questions button{background:var(--fw-surface-2);border:1px solid var(--fw-line);color:var(--fw-ink);border-radius:var(--fw-radius-sm)}
+.outline-button:hover,.quick-questions button:hover{background:var(--fw-chip)}
+.table-button,.action-button{background:var(--fw-action);border-radius:var(--fw-pill)}
+
+/* ---------- 9. Assistant ---------- */
+.assistant-form input{background:var(--fw-chip);color:var(--fw-ink);border:0;border-radius:var(--fw-radius-sm);padding:16px}
+.assistant-form button{background:var(--fw-action);border-radius:var(--fw-radius-sm);min-width:170px;font-weight:600}
+.assistant-answer{background:var(--fw-surface-2);box-shadow:var(--fw-shadow-soft);border-radius:var(--fw-radius-sm);color:var(--fw-ink)}
+.assistant-answer strong{color:var(--fw-teal)}
+select,.station-select,.weather-station-select{background:var(--fw-chip);color:var(--fw-ink);border:1px solid var(--fw-line);border-radius:12px;padding:10px 12px}
+
+/* ---------- 10. Map card ---------- */
+.map-layout .map-frame{border:1px solid var(--fw-outline);border-radius:var(--fw-radius-sm);overflow:hidden}
+.map-side{background:var(--fw-surface);border:1px solid var(--fw-line);border-radius:var(--fw-radius-sm)}
+.map-station-list button{background:var(--fw-surface-2);color:var(--fw-ink)}
+.map-station-list button.selected{background:var(--fw-chip)}
+.maplibregl-popup-content{border-radius:12px;font-family:var(--fw-font)}
+
+/* ---------- 11. Login / Register (split screen, wave, glass card) ---------- */
+.auth-page{background:var(--fw-bg);font-family:var(--fw-font)}
+.auth-hero{position:relative;overflow:hidden;background:radial-gradient(circle at 70% 18%,#4fd6e6 0,rgba(79,214,230,0) 42%),linear-gradient(150deg,#2563eb 0%,#0ea5d4 55%,#06b6d4 100%)}
+.auth-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:#0284a0;
+  clip-path:path("M0 120 C 120 60, 260 40, 400 90 S 640 140, 760 40 L 760 600 L 0 600 Z");opacity:.9;pointer-events:none}
+@supports not (clip-path:path("M0 0")){.auth-hero::after{border-radius:60% 40% 0 0/40% 30% 0 0}}
+.auth-hero>*{position:relative;z-index:1}
+.auth-logo strong{font-size:24px}.auth-wave{display:none}
+.auth-hero-copy h1{font-size:clamp(30px,3.6vw,52px);letter-spacing:-1.4px}
+.auth-snapshot{background:rgba(255,255,255,.16);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.4);border-radius:18px}
+.auth-hero-foot{color:#fff;opacity:.9;text-shadow:0 1px 2px rgba(0,50,80,.4)}
+.auth-panel{background:var(--fw-bg)}
+.auth-form{background:var(--fw-surface);border-radius:28px;padding:44px 50px;box-shadow:0 10px 30px rgba(20,48,74,.08);max-width:480px}
+.auth-form h2{text-align:center;font-size:24px;color:var(--fw-cyan);font-weight:800}
+.auth-form>p{text-align:center;font-size:13px;margin-bottom:28px;color:var(--fw-muted)}
+.auth-form>label{color:var(--fw-muted-2)}
+.auth-form>label input,.pw-wrap input{background:var(--fw-bg);color:var(--fw-ink);border:1px solid var(--fw-line);border-radius:14px;height:50px;box-shadow:0 3px 6px rgba(20,48,74,.12)}
+.pw-wrap{position:relative;display:block;margin-top:9px}.pw-wrap input{display:block;width:100%;padding:0 48px 0 16px;margin:0}
+.pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--fw-teal);font-size:18px;width:34px;height:34px;border-radius:50%}
+.auth-options{margin-top:-6px}
+.auth-options .link-disabled{background:none;border:0;color:var(--fw-teal);font-weight:700;font-size:12px;opacity:.55;cursor:not-allowed}
+.auth-submit{background:var(--fw-primary);color:#fff;border:1px solid #0b1a24;border-radius:var(--fw-pill);height:54px;font-size:17px;font-weight:800;letter-spacing:.2px}
+.auth-submit:hover:not(:disabled){filter:brightness(1.05)}
+.auth-form>.auth-divider{text-align:center;font-size:12px;color:var(--fw-ink);margin:28px 0 14px}
+.auth-form input,.auth-form button{box-sizing:border-box}
+.auth-social{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.auth-social button{height:50px;border-radius:14px;border:1px solid #1d9bd1;background:var(--fw-surface);color:var(--fw-ink);font-weight:700;font-size:13px}
+.auth-social button:disabled{opacity:.55;cursor:not-allowed}
+.auth-switch button{color:var(--fw-teal)}
+.auth-copyright{color:var(--fw-muted)}
+
+/* ---------- 12. Loading skeletons ---------- */
+.skeleton-grid{display:grid;gap:18px}
+.skeleton{border-radius:var(--fw-radius);background:linear-gradient(90deg,var(--fw-surface-2) 25%,var(--fw-chip) 37%,var(--fw-surface-2) 63%);background-size:400% 100%;animation:fw-shimmer 1.4s ease infinite;border:1px solid var(--fw-line)}
+.skeleton.h1{height:150px}.skeleton.h2{height:110px}.skeleton.h3{height:280px}
+@keyframes fw-shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+
+/* ---------- 13. Responsive: sidebar becomes a drawer below 1000px ---------- */
+@media (max-width:1000px){
+  .app-layout{display:block}
+  .sidebar{position:fixed;inset:0 auto 0 0;z-index:60;height:100dvh;transform:translateX(-102%);transition:transform .25s ease;box-shadow:var(--fw-shadow);overflow-y:auto}
+  .sidebar.open{transform:none}
+  .sidebar nav{flex-direction:column;overflow:visible}
+  .sidebar hr,.side-note{display:block}
+  .menu-toggle{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--fw-line);background:var(--fw-surface-2);color:var(--fw-ink);border-radius:12px;font-size:20px;flex:none}
+  .menu-close{display:block;margin-left:auto;background:none;border:0;color:#fff;font-size:22px;width:36px;height:36px}
+  .sidebar-scrim{display:block;position:fixed;inset:0;background:rgba(8,20,32,.5);z-index:55;border:0}
+  .topbar{padding:12px 16px}
+  .topbar-left{display:flex;align-items:center;gap:12px}
+  .page-body{padding:20px 16px 32px}
+  .auth-page{grid-template-columns:1fr}.auth-hero{min-height:300px}.auth-form{padding:32px 24px}
+}
+@media (max-width:650px){
+  .score-box{width:100%;min-width:0;box-sizing:border-box}
+  .hero-card{align-items:stretch}
+  .kpi{min-height:0}
+  .grid4,.grid3,.grid-even,.grid-main{grid-template-columns:1fr}
+  .srow{grid-template-columns:1fr 1fr;row-gap:10px}
+  .assistant-form button{min-width:0}
+  .auth-social{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

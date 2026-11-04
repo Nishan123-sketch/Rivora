@@ -1,0 +1,63 @@
+{
+  "project": "Weather and Flood Risk Forecasting",
+  "status": "EXPERIMENTAL_MODEL_EVALUATED",
+  "created_at_utc": "2026-11-02T03:51:51.628924+00:00",
+  "station_id": 207,
+  "horizon_hours": 1,
+  "features": [
+    "current_level",
+    "previous_change_1h",
+    "change_3h",
+    "rainfall_1h",
+    "rainfall_3h",
+    "rainfall_6h",
+    "rainfall_previous_1h"
+  ],
+  "training_samples": 112,
+  "testing_samples": 29,
+  "training_start": "2026-10-25 07:00:00",
+  "training_end": "2026-10-31 10:00:00",
+  "testing_start": "2026-10-31 11:00:00",
+  "testing_end": "2026-11-02 10:00:00",
+  "evaluation_method": "CHRONOLOGICAL_80_20_WITH_TRAINING_CV",
+  "results": {
+    "Persistence": {
+      "MAE": 0.05241,
+      "RMSE": 0.06086,
+      "R2": 0.52666
+    },
+    "Ridge": {
+      "MAE": 0.05526,
+      "RMSE": 0.07272,
+      "R2": 0.32409
+    },
+    "RandomForest": {
+      "MAE": 0.06847,
+      "RMSE": 0.08132,
+      "R2": 0.15471
+    },
+    "HistGradientBoosting": {
+      "MAE": 0.06352,
+      "RMSE": 0.07322,
+      "R2": 0.3147
+    }
+  },
+  "best_ml_candidate": "Ridge",
+  "selected_approach": "Persistence",
+  "beats_baseline": false,
+  "latest_observed_time": "2026-11-02 11:00:00",
+  "latest_complete_feature_time": "2026-11-02 11:00:00",
+  "latest_ml_prediction": {
+    "predicted_change_m": -0.004,
+    "predicted_level_m": 5.076,
+    "horizon_hours": 1
+  },
+  "flood_classification_validated": false,
+  "notes": [
+    "Target is next-hour river-level change.",
+    "Missing rainfall is not replaced with zero.",
+    "2025 data is excluded pending datum verification.",
+    "A single held-out period is not enough to demonstrate flood-event accuracy.",
+    "Candidate ML predictions are not official flood warnings."
+  ]
+}

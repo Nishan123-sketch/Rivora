@@ -1,0 +1,12 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const {evaluateGaugeSafety,measurementType,kstMillis}=require('../gauge-risk-safety');
+const now=Date.UTC(2026,10,3,1,0,0)-9*3600000;
+const valid={station:{station_name:'울산시(태화교)'},analysis:{latest_observed_at:'2026-11-03 00:00:00',latest_water_level:4.86,risk_status:'ASSESSED',thresholds:{verification_status:'VERIFIED',source_url:'https://example.org',verified_at:'2026-11-01'}} ,nowMs:now};
+test('KST parsed without host timezone dependency',()=>assert.equal(kstMillis('2026-11-03 00:00:00'),Date.UTC(2026,10,2,15)));
+test('normal observation with verified reference can compare stages',()=>assert.equal(evaluateGaugeSafety(valid).stage_comparison_allowed,true));
+test('unverified stage cannot produce assessed risk',()=>assert.equal(evaluateGaugeSafety({...valid,analysis:{...valid.analysis,thresholds:{verification_status:'PENDING'}}}).stage_comparison_allowed,false));
+test('stale values block official stage comparison',()=>assert.equal(evaluateGaugeSafety({...valid,nowMs:now+5*3600000}).stage_comparison_allowed,false));
+test('reservoir measurement not treated as river stage',()=>assert.equal(evaluateGaugeSafety({...valid,station:{station_name:'안동댐'}}).stage_comparison_allowed,false));
+test('missing levels block comparison',()=>assert.equal(evaluateGaugeSafety({...valid,analysis:{...valid.analysis,latest_water_level:null}}).stage_comparison_allowed,false));
+test('dam name flags are provisional',()=>assert.equal(measurementType('청평댐'),'POTENTIAL_DAM_OR_RESERVOIR'));
