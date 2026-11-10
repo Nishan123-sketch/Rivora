@@ -1,0 +1,992 @@
+{
+  "generated_at": "2026-11-08T11:03:05.992Z",
+  "requests": [
+    {
+      "key": "GET /api/monitoring/stations",
+      "count": 1,
+      "mean_ms": 15300.687200000002,
+      "max_ms": 15300.687200000002,
+      "p50_ms": 15300.687200000002,
+      "p95_ms": 15300.687200000002
+    },
+    {
+      "key": "GET /api/ml/overview",
+      "count": 14,
+      "mean_ms": 3194.287485714275,
+      "max_ms": 8260.234,
+      "p50_ms": 13.666100000031292,
+      "p95_ms": 8260.234
+    },
+    {
+      "key": "GET /api/ml/stations/:id",
+      "count": 14,
+      "mean_ms": 2556.5746571428485,
+      "max_ms": 7508.341799999998,
+      "p50_ms": 4.734599999996135,
+      "p95_ms": 7508.341799999998
+    },
+    {
+      "key": "GET /api/rivers/:id/prediction",
+      "count": 22,
+      "mean_ms": 211.6170636363642,
+      "max_ms": 316.27700000000186,
+      "p50_ms": 190.77110000001267,
+      "p95_ms": 305.2167999999947
+    },
+    {
+      "key": "GET /api/water/latest",
+      "count": 22,
+      "mean_ms": 57.18803181818492,
+      "max_ms": 312.1273999999976,
+      "p50_ms": 39.82539999997243,
+      "p95_ms": 188.17429999999877
+    },
+    {
+      "key": "GET /api/weather/latest",
+      "count": 22,
+      "mean_ms": 27.02326818181626,
+      "max_ms": 109.24780000001192,
+      "p50_ms": 22.398799999966286,
+      "p95_ms": 104.98349999997299
+    },
+    {
+      "key": "GET /api/stations",
+      "count": 22,
+      "mean_ms": 18.417050000000515,
+      "max_ms": 56.08409999997821,
+      "p50_ms": 4.672100000025239,
+      "p95_ms": 53.652399999962654
+    },
+    {
+      "key": "GET /api/chat/status",
+      "count": 28,
+      "mean_ms": 4.963746428579076,
+      "max_ms": 16.665800000017043,
+      "p50_ms": 4.327099999994971,
+      "p95_ms": 7.789700000023004
+    }
+  ],
+  "queries": [
+    {
+      "key": "INSERT INTO water_daily(station_id,day,min_level,max_level,mean_level,samples) SELECT station_id,DATE(observed_at),MIN(water_level),MAX(water_level),AVG(water_level),COUNT(water_level) FROM water_readings WHERE observed_at>=UTC_TIMESTAMP()+INTERVAL # HOUR-INTERVAL # DAY GROUP BY station_id,DATE(observed_at) ON DUPLICATE KEY UPDATE min_level=VALUES(min_level),max_level=VALUES(max_level),mean_level=VALUES(mean_level),samples=VALUES(samples)",
+      "count": 1,
+      "mean_ms": 21566.260000000002,
+      "max_ms": 21566.260000000002,
+      "p50_ms": 21566.260000000002,
+      "p95_ms": 21566.260000000002,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO water_readings (station_id, observed_at, water_level, flow_rate, source_url) VALUES (?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?, ?, ?, NULL, ?),(?,",
+      "count": 120,
+      "mean_ms": 139.91546083332736,
+      "max_ms": 14350.197699999999,
+      "p50_ms": 16.069900000002235,
+      "p95_ms": 29.478199999954086,
+      "route": "background"
+    },
+    {
+      "key": "SELECT s.station_id,s.station_name,s.external_station_id,s.latitude,s.longitude,t.*,w.water_level,DATE_FORMAT(w.observed_at,?) observed_at FROM stations s JOIN flood_thresholds t ON t.station_id=s.station_id LEFT JOIN water_readings w ON w.reading_id=(SELECT reading_id FROM water_readings WHERE station_id=s.station_id ORDER BY observed_at DESC,reading_id DESC LIMIT #) WHERE s.data_source=?",
+      "count": 3,
+      "mean_ms": 8445.991866666665,
+      "max_ms": 9104.1865,
+      "p50_ms": 8636.146999999997,
+      "p95_ms": 9104.1865,
+      "route": "background"
+    },
+    {
+      "key": "SELECT s.station_id,s.station_name,s.external_station_id,s.data_source, w.observed_at,w.water_level,w.source_url AS observation_source_url,t.interest_level_m,t.caution_level_m,t.alert_level_m,t.severe_level_m, t.advisory_level_m,t.warning_level_m,t.verification_status,t.verified_at,t.source_url,t.reference_source, l.river_id FROM stations s JOIN flood_thresholds t ON t.station_id=s.station_id LEFT JOIN water_readings w ON w.station_id=s.station_id AND w.observed_at=(SELECT MAX(w2.observed_at) FROM water_readings w2 WHERE w2.station_id=s.station_id) LEFT JOIN river_gauge_links l ON l.station_id=s.station_id AND l.verification_status=? WHERE s.",
+      "count": 6,
+      "mean_ms": 6680.3249,
+      "max_ms": 7627.588500000002,
+      "p50_ms": 6628.712900000042,
+      "p95_ms": 7627.588500000002,
+      "route": "/api/ml/overview"
+    },
+    {
+      "key": "SELECT f.valid_at,f.rainfall_forecast FROM weather_forecasts f JOIN stations s ON s.station_id=f.station_id WHERE s.data_source=? AND s.external_station_id=? AND f.issued_at=(SELECT MAX(f2.issued_at) FROM weather_forecasts f2 WHERE f2.station_id=f.station_id) ORDER BY f.valid_at DESC LIMIT #",
+      "count": 1730,
+      "mean_ms": 70.62125612716706,
+      "max_ms": 5148.481599999999,
+      "p50_ms": 1.5455000000001746,
+      "p95_ms": 169.03139999999985,
+      "route": "background"
+    },
+    {
+      "key": "INSERT IGNORE INTO water_readings(station_id,observed_at,water_level,source_url) VALUES ?",
+      "count": 20,
+      "mean_ms": 261.8829550000008,
+      "max_ms": 4708.474099999999,
+      "p50_ms": 19.049200000001292,
+      "p95_ms": 4708.474099999999,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO aws_rainfall_readings ( aws_station_code, observed_at, hourly_rainfall, daily_rainfall ) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE hourly_rainfall = COALESCE( VALUES(hourly_rainfall), hourly_rainfall ), daily_rainfall = COALESCE( VALUES(daily_rainfall), daily_rainfall )",
+      "count": 24387,
+      "mean_ms": 5.827596793373531,
+      "max_ms": 4237.290200000003,
+      "p50_ms": 8.77390000000014,
+      "p95_ms": 12.927099999999882,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO risk_assessments(station_id,assessed_at,risk_level,risk_score,reason,method_version,input_observed_at,evidence_json) VALUES(?,UTC_TIMESTAMP()+INTERVAL # HOUR,?,?,?,?,?,?)",
+      "count": 1578,
+      "mean_ms": 12.766288973383471,
+      "max_ms": 4213.056800000002,
+      "p50_ms": 10.469199999999546,
+      "p95_ms": 14.927299999999377,
+      "route": "background"
+    },
+    {
+      "key": "SELECT s.station_id, s.station_name, s.external_station_id, (SELECT MAX(w.observed_at) FROM water_readings w WHERE w.station_id = s.station_id) AS latest_observed_at FROM stations s WHERE s.data_source = ? AND s.external_station_id IS NOT NULL AND EXISTS ( SELECT # FROM river_gauge_links l WHERE l.station_id = s.station_id AND l.verification_status = ? ) ORDER BY s.station_id",
+      "count": 3,
+      "mean_ms": 3491.2208000000223,
+      "max_ms": 3903.4527000000007,
+      "p50_ms": 3579.9802000001073,
+      "p95_ms": 3903.4527000000007,
+      "route": "background"
+    },
+    {
+      "key": "SELECT p.* FROM stations station JOIN prediction_history p ON p.prediction_id=(SELECT p2.prediction_id FROM prediction_history p2 WHERE p2.station_id=station.station_id ORDER BY p2.observed_at DESC,(p2.status=?) DESC,p2.prediction_id DESC LIMIT #)",
+      "count": 1,
+      "mean_ms": 1461.4845000000005,
+      "max_ms": 1461.4845000000005,
+      "p50_ms": 1461.4845000000005,
+      "p95_ms": 1461.4845000000005,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "SELECT r.aws_station_code AS external_station_id,r.gauge_name AS station_name,r.latitude,r.longitude,r.source_url AS coordinate_source_url,a.hourly_rainfall,a.observed_at FROM rainfall_stations r LEFT JOIN aws_rainfall_readings a ON a.aws_station_code=r.aws_station_code AND a.observed_at=(SELECT MAX(observed_at) FROM aws_rainfall_readings WHERE aws_station_code=r.aws_station_code)",
+      "count": 2,
+      "mean_ms": 873.8718000000022,
+      "max_ms": 1292.6804000000002,
+      "p50_ms": 1292.6804000000002,
+      "p95_ms": 1292.6804000000002,
+      "route": "background"
+    },
+    {
+      "key": "ALTER TABLE stations MODIFY latitude DECIMAL(#,#) NULL, MODIFY longitude DECIMAL(#,#) NULL",
+      "count": 1,
+      "mean_ms": 1281.0568000000003,
+      "max_ms": 1281.0568000000003,
+      "p50_ms": 1281.0568000000003,
+      "p95_ms": 1281.0568000000003,
+      "route": "background"
+    },
+    {
+      "key": "SELECT report FROM ml_model_versions WHERE prediction_type=? ORDER BY created_at DESC,model_version DESC LIMIT #",
+      "count": 12,
+      "mean_ms": 503.3602750000082,
+      "max_ms": 1147.7848000000013,
+      "p50_ms": 504.5997000000207,
+      "p95_ms": 1147.7848000000013,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "INSERT INTO rain_daily(aws_station_code,day,total_mm,samples) SELECT aws_station_code,DATE(observed_at),SUM(hourly_rainfall),COUNT(hourly_rainfall) FROM aws_rainfall_readings WHERE observed_at>=UTC_TIMESTAMP()+INTERVAL # HOUR-INTERVAL # DAY GROUP BY aws_station_code,DATE(observed_at) ON DUPLICATE KEY UPDATE total_mm=VALUES(total_mm),samples=VALUES(samples)",
+      "count": 1,
+      "mean_ms": 971.6664000000019,
+      "max_ms": 971.6664000000019,
+      "p50_ms": 971.6664000000019,
+      "p95_ms": 971.6664000000019,
+      "route": "background"
+    },
+    {
+      "key": "SELECT verification_status FROM station_rainfall_links WHERE station_id=?",
+      "count": 1724,
+      "mean_ms": 2.1322679814382814,
+      "max_ms": 830.3679999999995,
+      "p50_ms": 2.0800999999996748,
+      "p95_ms": 7.333000000000538,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS hr_flood_warning_history ( event_id CHAR(#) PRIMARY KEY, station_code VARCHAR(#) NOT NULL, issued_at DATETIME NOT NULL, severity VARCHAR(#) NOT NULL, action VARCHAR(#) NOT NULL, kind VARCHAR(#) NOT NULL, bulletin_no VARCHAR(#), station_name VARCHAR(#), river_name VARCHAR(#), warning_areas VARCHAR(#), observed_at DATETIME NULL, observed_level_m DECIMAL(#,#) NULL, source VARCHAR(#) NOT NULL DEFAULT ?, INDEX idx_hrfco_station_time (station_code, issued_at), INDEX idx_hrfco_issued (issued_at) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+      "count": 3,
+      "mean_ms": 131.90869999998222,
+      "max_ms": 379.15570000000025,
+      "p50_ms": 10.41590000000042,
+      "p95_ms": 379.15570000000025,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS assistant_conversations (conversation_id CHAR(#) PRIMARY KEY,user_id BIGINT UNSIGNED NOT NULL,title VARCHAR(#) NOT NULL,created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,deleted_at DATETIME NULL,INDEX owner_updated(user_id,deleted_at,updated_at))",
+      "count": 1,
+      "mean_ms": 346.0625,
+      "max_ms": 346.0625,
+      "p50_ms": 346.0625,
+      "p95_ms": 346.0625,
+      "route": "background"
+    },
+    {
+      "key": "SELECT s.station_id, s.station_name, s.latitude, s.longitude, w.observed_at, w.water_level, w.flow_rate FROM stations s JOIN (SELECT station_id, MAX(observed_at) AS observed_at FROM water_readings GROUP BY station_id) lw ON lw.station_id = s.station_id JOIN water_readings w ON w.station_id = lw.station_id AND w.observed_at = lw.observed_at WHERE s.data_source IN (?, ?) ORDER BY s.station_name",
+      "count": 12,
+      "mean_ms": 96.990433333334,
+      "max_ms": 308.2614000000176,
+      "p50_ms": 58.2510000000475,
+      "p95_ms": 308.2614000000176,
+      "route": "/api/water/latest"
+    },
+    {
+      "key": "SELECT COUNT(*) AS n FROM stations",
+      "count": 1,
+      "mean_ms": 302.7451000000001,
+      "max_ms": 302.7451000000001,
+      "p50_ms": 302.7451000000001,
+      "p95_ms": 302.7451000000001,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS river_gauge_links ( river_id VARCHAR(#) NOT NULL, station_id INT UNSIGNED NOT NULL, verification_status VARCHAR(#) NOT NULL DEFAULT ?, reference_url VARCHAR(#), verified_at DATETIME, source_river_name VARCHAR(#), last_verified_observation_at DATETIME, verification_method VARCHAR(#), PRIMARY KEY(river_id,station_id) )",
+      "count": 1,
+      "mean_ms": 298.8323999999998,
+      "max_ms": 298.8323999999998,
+      "p50_ms": 298.8323999999998,
+      "p95_ms": 298.8323999999998,
+      "route": "background"
+    },
+    {
+      "key": "SELECT MIN(observed_at) AS first_observed_at,COUNT(DISTINCT DATE_FORMAT(observed_at,?)) AS hours,COUNT(*) AS samples,SUM(water_level<?) AS less,SUM(water_level=?) AS equal FROM water_readings WHERE station_id=? AND observed_at>=DATE_SUB(?,INTERVAL # DAY) AND observed_at<? AND water_level IS NOT NULL",
+      "count": 146,
+      "mean_ms": 80.31377054794562,
+      "max_ms": 290.30790000001434,
+      "p50_ms": 86.10509999999977,
+      "p95_ms": 124.90929999999935,
+      "route": "background"
+    },
+    {
+      "key": "SELECT DATE_FORMAT( observed_at, ? ) AS observed_at, water_level FROM water_readings WHERE station_id = ? AND water_level IS NOT NULL ORDER BY observed_at DESC LIMIT #",
+      "count": 24,
+      "mean_ms": 86.52219166666389,
+      "max_ms": 139.5225999999966,
+      "p50_ms": 78.35820000001695,
+      "p95_ms": 124.37040000001434,
+      "route": "/api/rivers/:id/prediction"
+    },
+    {
+      "key": "SELECT station_id FROM stations WHERE data_source = ? ORDER BY station_id",
+      "count": 1,
+      "mean_ms": 118.65970000000016,
+      "max_ms": 118.65970000000016,
+      "p50_ms": 118.65970000000016,
+      "p95_ms": 118.65970000000016,
+      "route": "background"
+    },
+    {
+      "key": "SELECT s.station_id, s.station_name, s.latitude, s.longitude, w.observed_at, w.temperature, w.rainfall, w.humidity, w.wind_speed, aws.observed_at AS aws_observed_at, aws.hourly_rainfall AS aws_hourly_rainfall, aws.daily_rainfall AS aws_daily_rainfall, aws.aws_station_code AS aws_station_code FROM stations s JOIN (SELECT station_id, MAX(observed_at) AS observed_at FROM weather_readings GROUP BY station_id) lw ON lw.station_id = s.station_id JOIN weather_readings w ON w.station_id = lw.station_id AND w.observed_at = lw.observed_at LEFT JOIN (SELECT aws_station_code, MAX(observed_at) AS observed_at FROM aws_rainfall_readings GROUP BY aws_station",
+      "count": 12,
+      "mean_ms": 46.91113333332729,
+      "max_ms": 107.8015000000014,
+      "p50_ms": 30.580300000001444,
+      "p95_ms": 107.8015000000014,
+      "route": "/api/weather/latest"
+    },
+    {
+      "key": "INSERT IGNORE INTO ml_advanced_predictions(prediction_id,station_id,observed_at,issued_at,valid_at,horizon_hours,prediction_type,model_version,prediction_value,validation_status,quality_status,reason) VALUES (?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?),",
+      "count": 24,
+      "mean_ms": 46.56492083334221,
+      "max_ms": 105.25339999992866,
+      "p50_ms": 38.536500000045635,
+      "p95_ms": 86.35469999999623,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM stations WHERE data_source=?",
+      "count": 2,
+      "mean_ms": 59.0570500000033,
+      "max_ms": 104.39460000000008,
+      "p50_ms": 104.39460000000008,
+      "p95_ms": 104.39460000000008,
+      "route": "background"
+    },
+    {
+      "key": "SELECT observed_at,water_level,source_url FROM water_readings WHERE station_id=? ORDER BY observed_at DESC LIMIT #",
+      "count": 1730,
+      "mean_ms": 2.912888670520904,
+      "max_ms": 94.501200000057,
+      "p50_ms": 6.945799999999508,
+      "p95_ms": 12.295599999999467,
+      "route": "background"
+    },
+    {
+      "key": "SELECT w.* FROM water_readings w JOIN ( SELECT station_id, MAX(observed_at) AS observed_at FROM water_readings GROUP BY station_id ) latest ON latest.station_id = w.station_id AND latest.observed_at = w.observed_at",
+      "count": 1,
+      "mean_ms": 73.51569999999992,
+      "max_ms": 73.51569999999992,
+      "p50_ms": 73.51569999999992,
+      "p95_ms": 73.51569999999992,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "SELECT observed_at,water_level,flow_rate FROM water_readings WHERE station_id=? ORDER BY observed_at DESC LIMIT #",
+      "count": 6,
+      "mean_ms": 36.32731666666223,
+      "max_ms": 62.94659999999567,
+      "p50_ms": 37.40480000001844,
+      "p95_ms": 62.94659999999567,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "SELECT a.* FROM aws_rainfall_readings a JOIN ( SELECT aws_station_code, MAX(observed_at) AS observed_at FROM aws_rainfall_readings GROUP BY aws_station_code ) latest ON latest.aws_station_code = a.aws_station_code AND latest.observed_at = a.observed_at",
+      "count": 1,
+      "mean_ms": 55.67540000000008,
+      "max_ms": 55.67540000000008,
+      "p50_ms": 55.67540000000008,
+      "p95_ms": 55.67540000000008,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "SELECT DATE_FORMAT( observed_at, ? ) AS observed_at, hourly_rainfall FROM aws_rainfall_readings WHERE aws_station_code = ? AND observed_at BETWEEN DATE_SUB(?, INTERVAL # HOUR) AND ? ORDER BY observed_at",
+      "count": 22,
+      "mean_ms": 21.32493181817964,
+      "max_ms": 53.772400000016205,
+      "p50_ms": 11.07929999998305,
+      "p95_ms": 46.63850000000093,
+      "route": "/api/rivers/:id/prediction"
+    },
+    {
+      "key": "INSERT IGNORE INTO water_readings(station_id,observed_at,water_level,flow_rate,source_url) VALUES (?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?),",
+      "count": 15,
+      "mean_ms": 27.278733333333367,
+      "max_ms": 53.50709999999981,
+      "p50_ms": 24.990600000019185,
+      "p95_ms": 53.50709999999981,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM aws_rainfall_readings WHERE observed_at>=UTC_TIMESTAMP()+INTERVAL # HOUR-INTERVAL # HOUR ORDER BY observed_at",
+      "count": 1,
+      "mean_ms": 51.82970000000023,
+      "max_ms": 51.82970000000023,
+      "p50_ms": 51.82970000000023,
+      "p95_ms": 51.82970000000023,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "INSERT IGNORE INTO ml_source_coverage(coverage_id,station_code,start_at,end_at,status,initial_state,source_url,evidence,checked_at) VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP()) ON DUPLICATE KEY UPDATE end_at=GREATEST(end_at,VALUES(end_at)),checked_at=UTC_TIMESTAMP()",
+      "count": 78,
+      "mean_ms": 10.208210256413716,
+      "max_ms": 49.87040000001434,
+      "p50_ms": 9.79680000001099,
+      "p95_ms": 22.10029999993276,
+      "route": "background"
+    },
+    {
+      "key": "INSERT IGNORE INTO ml_model_versions(model_version,station_id,prediction_type,status,created_at,report) VALUES(?,?,?,?,UTC_TIMESTAMP(),?)",
+      "count": 1544,
+      "mean_ms": 3.776575323833541,
+      "max_ms": 48.96029999991879,
+      "p50_ms": 3.9434999999939464,
+      "p95_ms": 4.722000000008848,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO weather_readings (station_id, observed_at, rainfall, temperature, humidity, wind_speed) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE temperature = COALESCE(VALUES(temperature), temperature), rainfall = COALESCE(VALUES(rainfall), rainfall), humidity = COALESCE(VALUES(humidity), humidity), wind_speed = COALESCE(VALUES(wind_speed), wind_speed)",
+      "count": 97,
+      "mean_ms": 10.991948453608249,
+      "max_ms": 43.8121000000001,
+      "p50_ms": 10.167199999999866,
+      "p95_ms": 17.570700000000215,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO official_alert_snapshots(fetched_at,provider,payload) VALUES(UTC_TIMESTAMP(),?,?)",
+      "count": 2,
+      "mean_ms": 31.750650000005407,
+      "max_ms": 40.81640000001062,
+      "p50_ms": 40.81640000001062,
+      "p95_ms": 40.81640000001062,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO ml_source_coverage(coverage_id,station_code,start_at,end_at,status,initial_state,source_url,evidence,checked_at) VALUES(?,?,?,?,?,?,?,?,UTC_TIMESTAMP()) ON DUPLICATE KEY UPDATE end_at=VALUES(end_at),evidence=VALUES(evidence),checked_at=VALUES(checked_at)",
+      "count": 56,
+      "mean_ms": 11.324457142861124,
+      "max_ms": 40.74360000004526,
+      "p50_ms": 11.033200000063516,
+      "p95_ms": 20.99820000003092,
+      "route": "background"
+    },
+    {
+      "key": "ALTER TABLE risk_assessments MODIFY risk_score DECIMAL(#,#) NULL, MODIFY risk_level ENUM(?,?,?,?,?) NOT NULL, MODIFY input_observed_at DATETIME NULL",
+      "count": 1,
+      "mean_ms": 39.22950000000037,
+      "max_ms": 39.22950000000037,
+      "p50_ms": 39.22950000000037,
+      "p95_ms": 39.22950000000037,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_id, external_station_id FROM stations WHERE data_source = ?",
+      "count": 1,
+      "mean_ms": 37.87129999999979,
+      "max_ms": 37.87129999999979,
+      "p50_ms": 37.87129999999979,
+      "p95_ms": 37.87129999999979,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM stations WHERE station_id=?",
+      "count": 1730,
+      "mean_ms": 1.7787502890165616,
+      "max_ms": 37.82929999998305,
+      "p50_ms": 6.49159999999938,
+      "p95_ms": 9.82089999999971,
+      "route": "background"
+    },
+    {
+      "key": "SELECT DISTINCT rainfall_station_code FROM hr_rainfall_links",
+      "count": 3,
+      "mean_ms": 17.907799999993586,
+      "max_ms": 34.646600000000035,
+      "p50_ms": 13.885100000014063,
+      "p95_ms": 34.646600000000035,
+      "route": "background"
+    },
+    {
+      "key": "SELECT DATE_FORMAT( observed_at, ? ) AS observed_at, hourly_rainfall, rainfall FROM weather_readings WHERE station_id = ? AND observed_at BETWEEN DATE_SUB(?, INTERVAL # HOUR) AND ? ORDER BY observed_at ASC",
+      "count": 22,
+      "mean_ms": 24.162118181823725,
+      "max_ms": 33.54999999998836,
+      "p50_ms": 20.821600000024773,
+      "p95_ms": 33.43959999999788,
+      "route": "/api/rivers/:id/prediction"
+    },
+    {
+      "key": "SELECT station_id, station_name, latitude, longitude, data_source, external_station_id FROM stations ORDER BY data_source, station_name",
+      "count": 8,
+      "mean_ms": 20.324987499999224,
+      "max_ms": 30.528200000000652,
+      "p50_ms": 20.078600000000733,
+      "p95_ms": 30.528200000000652,
+      "route": "/api/stations"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS ml_advanced_predictions ( prediction_id CHAR(#) PRIMARY KEY, station_id INT UNSIGNED NOT NULL, observed_at DATETIME NULL, issued_at DATETIME NOT NULL, valid_at DATETIME NULL, horizon_hours SMALLINT NOT NULL, prediction_type VARCHAR(#) NOT NULL, model_version VARCHAR(#), prediction_value DOUBLE NULL, validation_status VARCHAR(#) NOT NULL, quality_status VARCHAR(#) NOT NULL, reason VARCHAR(#) NULL, INDEX idx_ml_prediction_station_time(station_id,issued_at) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+      "count": 3,
+      "mean_ms": 12.992300000001856,
+      "max_ms": 29.89290000000028,
+      "p50_ms": 4.545900000000074,
+      "p95_ms": 29.89290000000028,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_id,external_station_id FROM stations WHERE data_source=?",
+      "count": 5,
+      "mean_ms": 13.098799999998482,
+      "max_ms": 25.658300000000054,
+      "p50_ms": 16.724300000001676,
+      "p95_ms": 25.658300000000054,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO ml_feature_snapshots(station_id,observed_at,generated_at,features,quality) VALUES(?,?,UTC_TIMESTAMP(),?,?) ON DUPLICATE KEY UPDATE generated_at=VALUES(generated_at),features=VALUES(features),quality=VALUES(quality)",
+      "count": 6,
+      "mean_ms": 13.141666666668849,
+      "max_ms": 24.52309999999852,
+      "p50_ms": 10.398099999991246,
+      "p95_ms": 24.52309999999852,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS assistant_messages (message_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,conversation_id CHAR(#) NOT NULL,role VARCHAR(#) NOT NULL,content TEXT NOT NULL,created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,INDEX conversation_order(conversation_id,message_id))",
+      "count": 1,
+      "mean_ms": 24.182400000000143,
+      "max_ms": 24.182400000000143,
+      "p50_ms": 24.182400000000143,
+      "p95_ms": 24.182400000000143,
+      "route": "background"
+    },
+    {
+      "key": "INSERT INTO station_rainfall_links(station_id,aws_station_code,verification_status,reference_url,distance_km,gauge_name) VALUES(?,?,?,?,?,?) ON DUPLICATE KEY UPDATE aws_station_code=VALUES(aws_station_code),verification_status=?,reference_url=VALUES(reference_url),distance_km=VALUES(distance_km),gauge_name=VALUES(gauge_name)",
+      "count": 1724,
+      "mean_ms": 0.8767777842225059,
+      "max_ms": 23.78060000000005,
+      "p50_ms": 0.9861999999993714,
+      "p95_ms": 3.556999999999789,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_id FROM stations WHERE data_source=? ORDER BY station_id",
+      "count": 2,
+      "mean_ms": 13.25870000003033,
+      "max_ms": 23.39969999999994,
+      "p50_ms": 23.39969999999994,
+      "p95_ms": 23.39969999999994,
+      "route": "background"
+    },
+    {
+      "key": "INSERT IGNORE INTO hr_rainfall_history(station_code,observed_at,rainfall_mm,source_url) VALUES (?,?,?,?)",
+      "count": 1065,
+      "mean_ms": 2.049099624411911,
+      "max_ms": 23.02300000000014,
+      "p50_ms": 6.259599999999409,
+      "p95_ms": 9.697500000000218,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS ml_source_coverage ( coverage_id CHAR(#) PRIMARY KEY, station_code VARCHAR(#) NOT NULL, start_at DATETIME NOT NULL, end_at DATETIME NOT NULL, status VARCHAR(#) NOT NULL, initial_state VARCHAR(#) NULL, source_url VARCHAR(#) NOT NULL, evidence TEXT, checked_at DATETIME NOT NULL, INDEX idx_ml_coverage_station_time(station_code,start_at,end_at) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+      "count": 3,
+      "mean_ms": 10.16183333334387,
+      "max_ms": 22.148799999999937,
+      "p50_ms": 4.531300000031479,
+      "p95_ms": 22.148799999999937,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS prediction_history ( prediction_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, station_id INT UNSIGNED NOT NULL, observed_at DATETIME NOT NULL, valid_at DATETIME NOT NULL, generated_at DATETIME NOT NULL, model_version VARCHAR(#) NOT NULL, predicted_water_level DECIMAL(#,#), risk_score DECIMAL(#,#), risk_level VARCHAR(#), status VARCHAR(#) NOT NULL, reason TEXT, features_json JSON, UNIQUE KEY uq_prediction (station_id,observed_at,model_version), INDEX idx_prediction_time (station_id,valid_at) )",
+      "count": 1,
+      "mean_ms": 21.595700000000306,
+      "max_ms": 21.595700000000306,
+      "p50_ms": 21.595700000000306,
+      "p95_ms": 21.595700000000306,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM ml_source_coverage WHERE station_code=? ORDER BY start_at",
+      "count": 6,
+      "mean_ms": 5.891783333337419,
+      "max_ms": 21.214099999997416,
+      "p50_ms": 2.599900000030175,
+      "p95_ms": 21.214099999997416,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "SELECT observed_at,water_level FROM water_readings WHERE station_id=? AND observed_at>=DATE_SUB(?,INTERVAL # HOUR) AND observed_at<? ORDER BY observed_at",
+      "count": 1730,
+      "mean_ms": 1.9135981502882857,
+      "max_ms": 21.062600000062957,
+      "p50_ms": 6.650099999998929,
+      "p95_ms": 9.51640000000043,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_id, station_name, external_station_id FROM stations WHERE data_source = ? AND external_station_id = ? LIMIT #",
+      "count": 1,
+      "mean_ms": 20.970500000000357,
+      "max_ms": 20.970500000000357,
+      "p50_ms": 20.970500000000357,
+      "p95_ms": 20.970500000000357,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_id, station_name, external_station_id FROM stations WHERE station_id = ? AND data_source = ?",
+      "count": 22,
+      "mean_ms": 7.489363636372053,
+      "max_ms": 20.20440000000235,
+      "p50_ms": 3.0807999999960884,
+      "p95_ms": 19.377900000021327,
+      "route": "/api/rivers/:id/prediction"
+    },
+    {
+      "key": "SELECT COUNT(*) AS n FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name=? AND column_name=?",
+      "count": 5,
+      "mean_ms": 7.9464799999999745,
+      "max_ms": 20.13689999999997,
+      "p50_ms": 7.294399999999769,
+      "p95_ms": 20.13689999999997,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM hr_flood_warning_history WHERE station_code=? ORDER BY issued_at",
+      "count": 408,
+      "mean_ms": 0.7883747549032848,
+      "max_ms": 20.114999999997963,
+      "p50_ms": 0.5841000000073109,
+      "p95_ms": 2.056700000001001,
+      "route": "background"
+    },
+    {
+      "key": "SELECT observed_at,hourly_rainfall FROM aws_rainfall_readings WHERE aws_station_code=? ORDER BY observed_at DESC LIMIT #",
+      "count": 1730,
+      "mean_ms": 1.9014032369947649,
+      "max_ms": 19.599099999992177,
+      "p50_ms": 6.463800000001356,
+      "p95_ms": 9.441100000000006,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM flood_thresholds WHERE station_id=?",
+      "count": 1730,
+      "mean_ms": 1.0881896531792468,
+      "max_ms": 19.403800000000047,
+      "p50_ms": 1.239400000000387,
+      "p95_ms": 8.561999999999898,
+      "route": "background"
+    },
+    {
+      "key": "SELECT t.*,s.station_id,s.station_name,s.external_station_id,s.data_source FROM stations s JOIN flood_thresholds t ON t.station_id=s.station_id ORDER BY s.station_id",
+      "count": 2,
+      "mean_ms": 15.899600000025657,
+      "max_ms": 18.68170000000009,
+      "p50_ms": 18.68170000000009,
+      "p95_ms": 18.68170000000009,
+      "route": "background"
+    },
+    {
+      "key": "SELECT w.* FROM weather_readings w JOIN ( SELECT station_id, MAX(observed_at) AS observed_at FROM weather_readings GROUP BY station_id ) latest ON latest.station_id = w.station_id AND latest.observed_at = w.observed_at",
+      "count": 1,
+      "mean_ms": 17.858400000000984,
+      "max_ms": 17.858400000000984,
+      "p50_ms": 17.858400000000984,
+      "p95_ms": 17.858400000000984,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "SELECT * FROM stations ORDER BY station_name",
+      "count": 1,
+      "mean_ms": 17.59310000000005,
+      "max_ms": 17.59310000000005,
+      "p50_ms": 17.59310000000005,
+      "p95_ms": 17.59310000000005,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "INSERT IGNORE INTO ml_advanced_predictions(prediction_id,station_id,observed_at,issued_at,valid_at,horizon_hours,prediction_type,model_version,prediction_value,validation_status,quality_status,reason) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+      "count": 24,
+      "mean_ms": 4.4591250000045575,
+      "max_ms": 17.3971999999776,
+      "p50_ms": 1.9984999999869615,
+      "p95_ms": 15.492099999995844,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "SELECT * FROM station_rainfall_links WHERE station_id=? AND verification_status IN (?,?)",
+      "count": 1736,
+      "mean_ms": 1.0965067396318988,
+      "max_ms": 15.487200000000485,
+      "p50_ms": 1.410699999998542,
+      "p95_ms": 8.52430000000004,
+      "route": "background"
+    },
+    {
+      "key": "SELECT s.station_id,s.station_name,s.external_station_id,s.data_source,t.interest_level_m,t.caution_level_m,t.alert_level_m,t.severe_level_m,t.advisory_level_m,t.warning_level_m,t.verification_status,t.source_url,t.verified_at,t.reference_source FROM stations s LEFT JOIN flood_thresholds t ON s.station_id=t.station_id",
+      "count": 8,
+      "mean_ms": 11.219537499986473,
+      "max_ms": 13.78149999998277,
+      "p50_ms": 12.082399999955669,
+      "p95_ms": 13.78149999998277,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM flood_thresholds",
+      "count": 1,
+      "mean_ms": 13.06840000000011,
+      "max_ms": 13.06840000000011,
+      "p50_ms": 13.06840000000011,
+      "p95_ms": 13.06840000000011,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "INSERT IGNORE INTO ml_warning_archive_evidence(event_id,source_url,response_sha256,retrieved_at) VALUES(?,?,?,UTC_TIMESTAMP())",
+      "count": 460,
+      "mean_ms": 0.4141302173929944,
+      "max_ms": 12.895099999965169,
+      "p50_ms": 0.3269000000000233,
+      "p95_ms": 0.48889999999664724,
+      "route": "background"
+    },
+    {
+      "key": "SELECT observed_at,hourly_rainfall FROM aws_rainfall_readings WHERE aws_station_code=? AND observed_at>=DATE_SUB(?,INTERVAL # HOUR) AND observed_at<=? ORDER BY observed_at",
+      "count": 6,
+      "mean_ms": 6.126633333353918,
+      "max_ms": 12.600299999998242,
+      "p50_ms": 4.021999999997206,
+      "p95_ms": 12.600299999998242,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS ml_warning_archive_evidence(event_id CHAR(#) NOT NULL,source_url VARCHAR(#) NOT NULL,response_sha256 CHAR(#) NOT NULL,retrieved_at DATETIME NOT NULL,PRIMARY KEY(event_id,response_sha256)) DEFAULT CHARSET=utf8mb4",
+      "count": 2,
+      "mean_ms": 8.746049999958814,
+      "max_ms": 12.275199999916367,
+      "p50_ms": 12.275199999916367,
+      "p95_ms": 12.275199999916367,
+      "route": "background"
+    },
+    {
+      "key": "SELECT DATE_FORMAT( observed_at, ? ) AS observed_at, hourly_rainfall FROM aws_rainfall_readings WHERE aws_station_code = ? AND observed_at IN (?, ?, ?) ORDER BY observed_at ASC",
+      "count": 4,
+      "mean_ms": 4.028774999998859,
+      "max_ms": 11.194299999973737,
+      "p50_ms": 2.2184000000124797,
+      "p95_ms": 11.194299999973737,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS official_station_registry(station_code VARCHAR(#) PRIMARY KEY,authority VARCHAR(#) NOT NULL,designation VARCHAR(#) NOT NULL,source_url VARCHAR(#) NOT NULL,checked_at DATETIME NOT NULL) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+      "count": 1,
+      "mean_ms": 11.165399999999863,
+      "max_ms": 11.165399999999863,
+      "p50_ms": 11.165399999999863,
+      "p95_ms": 11.165399999999863,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_id,river_id FROM river_gauge_links WHERE verification_status=? ORDER BY river_id",
+      "count": 2,
+      "mean_ms": 10.418100000000777,
+      "max_ms": 10.447299999999814,
+      "p50_ms": 10.447299999999814,
+      "p95_ms": 10.447299999999814,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS official_alert_snapshots ( snapshot_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, fetched_at DATETIME NOT NULL, provider VARCHAR(#) NOT NULL, payload JSON NOT NULL )",
+      "count": 1,
+      "mean_ms": 10.229299999999967,
+      "max_ms": 10.229299999999967,
+      "p50_ms": 10.229299999999967,
+      "p95_ms": 10.229299999999967,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS unified_alert_state(station_id INT UNSIGNED PRIMARY KEY,last_observed_at DATETIME,consecutive_high INT NOT NULL DEFAULT #,below_since DATETIME,last_alert_at DATETIME,active_alert_id BIGINT UNSIGNED NULL)",
+      "count": 1,
+      "mean_ms": 9.991799999999785,
+      "max_ms": 9.991799999999785,
+      "p50_ms": 9.991799999999785,
+      "p95_ms": 9.991799999999785,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_code,issued_at,severity,action,event_id FROM hr_flood_warning_history WHERE issued_at>=CONCAT(YEAR(UTC_TIMESTAMP()+INTERVAL # HOUR)-#,?)",
+      "count": 2,
+      "mean_ms": 9.188949999959277,
+      "max_ms": 9.387999999918975,
+      "p50_ms": 9.387999999918975,
+      "p95_ms": 9.387999999918975,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS rain_daily(aws_station_code VARCHAR(#) NOT NULL,day DATE NOT NULL,total_mm DOUBLE,samples INT NOT NULL,PRIMARY KEY(aws_station_code,day))",
+      "count": 1,
+      "mean_ms": 9.204400000000078,
+      "max_ms": 9.204400000000078,
+      "p50_ms": 9.204400000000078,
+      "p95_ms": 9.204400000000078,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS water_daily(station_id INT UNSIGNED NOT NULL,day DATE NOT NULL,min_level DOUBLE,max_level DOUBLE,mean_level DOUBLE,samples INT NOT NULL,PRIMARY KEY(station_id,day))",
+      "count": 1,
+      "mean_ms": 9.104299999999967,
+      "max_ms": 9.104299999999967,
+      "p50_ms": 9.104299999999967,
+      "p95_ms": 9.104299999999967,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS oauth_identities(provider VARCHAR(#) NOT NULL,subject VARCHAR(#) NOT NULL,user_id BIGINT UNSIGNED NOT NULL,PRIMARY KEY(provider,subject),INDEX(user_id)) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin",
+      "count": 1,
+      "mean_ms": 9.056999999999789,
+      "max_ms": 9.056999999999789,
+      "p50_ms": 9.056999999999789,
+      "p95_ms": 9.056999999999789,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS rainfall_stations(aws_station_code VARCHAR(#) PRIMARY KEY,gauge_name VARCHAR(#) NOT NULL,latitude DECIMAL(#,#) NOT NULL,longitude DECIMAL(#,#) NOT NULL,source_url VARCHAR(#) NOT NULL) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+      "count": 1,
+      "mean_ms": 9.045000000000073,
+      "max_ms": 9.045000000000073,
+      "p50_ms": 9.045000000000073,
+      "p95_ms": 9.045000000000073,
+      "route": "background"
+    },
+    {
+      "key": "SELECT DISTINCT station_code FROM ml_source_coverage WHERE status=? AND start_at<=UTC_TIMESTAMP()+INTERVAL # HOUR AND end_at BETWEEN UTC_TIMESTAMP()+INTERVAL # HOUR-INTERVAL # MINUTE AND UTC_TIMESTAMP()+INTERVAL # HOUR AND checked_at>=UTC_TIMESTAMP()-INTERVAL # MINUTE",
+      "count": 6,
+      "mean_ms": 6.259366666681065,
+      "max_ms": 8.678200000002107,
+      "p50_ms": 7.4364000000059605,
+      "p95_ms": 8.678200000002107,
+      "route": "/api/ml/overview"
+    },
+    {
+      "key": "SELECT station_id, station_name, latitude, longitude FROM stations WHERE station_id = ? AND data_source = ? LIMIT #",
+      "count": 8,
+      "mean_ms": 2.8993000000000393,
+      "max_ms": 8.404899999999543,
+      "p50_ms": 1.7855999999992491,
+      "p95_ms": 8.404899999999543,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS ml_model_versions ( model_version VARCHAR(#) PRIMARY KEY, station_id INT UNSIGNED NULL, prediction_type VARCHAR(#) NOT NULL, status VARCHAR(#) NOT NULL, created_at DATETIME NOT NULL, report JSON NOT NULL, INDEX idx_ml_model_station(station_id,prediction_type,created_at) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+      "count": 3,
+      "mean_ms": 5.594966666663822,
+      "max_ms": 8.28500000000031,
+      "p50_ms": 4.523099999991246,
+      "p95_ms": 8.28500000000031,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM ml_source_coverage WHERE status=? AND start_at<=UTC_TIMESTAMP()+INTERVAL # HOUR AND end_at BETWEEN UTC_TIMESTAMP()+INTERVAL # HOUR-INTERVAL # MINUTE AND UTC_TIMESTAMP()+INTERVAL # HOUR AND checked_at>=UTC_TIMESTAMP()-INTERVAL # MINUTE",
+      "count": 6,
+      "mean_ms": 6.523866666665829,
+      "max_ms": 8.278099999995902,
+      "p50_ms": 6.693600000002334,
+      "p95_ms": 8.278099999995902,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS station_rainfall_links ( station_id INT UNSIGNED PRIMARY KEY, aws_station_code VARCHAR(#) NOT NULL, verification_status VARCHAR(#) NOT NULL DEFAULT ?, reference_url VARCHAR(#) NOT NULL )",
+      "count": 1,
+      "mean_ms": 7.369100000000344,
+      "max_ms": 7.369100000000344,
+      "p50_ms": 7.369100000000344,
+      "p95_ms": 7.369100000000344,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM hr_flood_warning_history",
+      "count": 2,
+      "mean_ms": 7.067750000052001,
+      "max_ms": 7.338000000001557,
+      "p50_ms": 7.338000000001557,
+      "p95_ms": 7.338000000001557,
+      "route": "background"
+    },
+    {
+      "key": "SELECT station_code,designation,source_url,authority FROM official_station_registry",
+      "count": 2,
+      "mean_ms": 6.545149999968999,
+      "max_ms": 6.899199999999837,
+      "p50_ms": 6.899199999999837,
+      "p95_ms": 6.899199999999837,
+      "route": "background"
+    },
+    {
+      "key": "SELECT * FROM station_rainfall_links WHERE verification_status IN (?,?)",
+      "count": 1,
+      "mean_ms": 6.253199999999197,
+      "max_ms": 6.253199999999197,
+      "p50_ms": 6.253199999999197,
+      "p95_ms": 6.253199999999197,
+      "route": "/api/monitoring/stations"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS ml_dataset_runs ( dataset_id VARCHAR(#) PRIMARY KEY, created_at DATETIME NOT NULL, target_definition VARCHAR(#) NOT NULL, metadata JSON NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+      "count": 3,
+      "mean_ms": 4.922633333343431,
+      "max_ms": 6.188799999999901,
+      "p50_ms": 4.662400000030175,
+      "p95_ms": 6.188799999999901,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS hr_rainfall_history(station_code VARCHAR(#) NOT NULL,observed_at DATETIME NOT NULL,rainfall_mm DECIMAL(#,#) NOT NULL,source_url VARCHAR(#) NOT NULL,PRIMARY KEY(station_code,observed_at)) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+      "count": 2,
+      "mean_ms": 5.449350000017148,
+      "max_ms": 6.00449999999546,
+      "p50_ms": 6.00449999999546,
+      "p95_ms": 6.00449999999546,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS river_locations ( river_id VARCHAR(#) PRIMARY KEY, latitude DECIMAL(#,#) NOT NULL, longitude DECIMAL(#,#) NOT NULL, source_url VARCHAR(#) NOT NULL )",
+      "count": 1,
+      "mean_ms": 5.643900000000031,
+      "max_ms": 5.643900000000031,
+      "p50_ms": 5.643900000000031,
+      "p95_ms": 5.643900000000031,
+      "route": "background"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS hr_rainfall_links(station_id INT NOT NULL PRIMARY KEY,rainfall_station_code VARCHAR(#) NOT NULL,gauge_name VARCHAR(#) NOT NULL,latitude DECIMAL(#,#) NOT NULL,longitude DECIMAL(#,#) NOT NULL,distance_km DECIMAL(#,#) NOT NULL,source_url VARCHAR(#) NOT NULL,verified_at DATETIME NOT NULL) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+      "count": 2,
+      "mean_ms": 4.901499999992666,
+      "max_ms": 5.202799999999115,
+      "p50_ms": 5.202799999999115,
+      "p95_ms": 5.202799999999115,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "CREATE TABLE IF NOT EXISTS ml_feature_snapshots ( station_id INT UNSIGNED NOT NULL, observed_at DATETIME NOT NULL, generated_at DATETIME NOT NULL, features JSON NOT NULL, quality JSON NOT NULL, PRIMARY KEY(station_id,observed_at) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+      "count": 3,
+      "mean_ms": 4.109133333315185,
+      "max_ms": 4.515999999945052,
+      "p50_ms": 4.297100000000228,
+      "p95_ms": 4.515999999945052,
+      "route": "background"
+    },
+    {
+      "key": "SELECT COUNT(*) records,COUNT(DISTINCT station_code) stations FROM hr_flood_warning_history",
+      "count": 6,
+      "mean_ms": 2.820400000005369,
+      "max_ms": 4.022699999972247,
+      "p50_ms": 3.2299000000348315,
+      "p95_ms": 4.022699999972247,
+      "route": "/api/ml/overview"
+    },
+    {
+      "key": "SELECT station_id,external_station_id,station_name FROM stations WHERE data_source=?",
+      "count": 2,
+      "mean_ms": 3.1957999999604,
+      "max_ms": 3.275599999999031,
+      "p50_ms": 3.275599999999031,
+      "p95_ms": 3.275599999999031,
+      "route": "background"
+    },
+    {
+      "key": "SELECT river_id FROM river_gauge_links WHERE station_id=? AND verification_status=? LIMIT #",
+      "count": 6,
+      "mean_ms": 2.4998333333254172,
+      "max_ms": 3.207699999999022,
+      "p50_ms": 2.5693000000028405,
+      "p95_ms": 3.207699999999022,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "SELECT observed_at,rainfall_mm AS hourly_rainfall FROM hr_rainfall_history WHERE station_code=? AND observed_at>=DATE_SUB(?,INTERVAL # HOUR) AND observed_at<=? ORDER BY observed_at",
+      "count": 8,
+      "mean_ms": 1.9641750000182583,
+      "max_ms": 3.036099999997532,
+      "p50_ms": 2.1259000000427477,
+      "p95_ms": 3.036099999997532,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "SELECT * FROM hr_rainfall_links WHERE station_id=?",
+      "count": 2,
+      "mean_ms": 2.515800000001036,
+      "max_ms": 2.796199999997043,
+      "p50_ms": 2.796199999997043,
+      "p95_ms": 2.796199999997043,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "SELECT * FROM hr_rainfall_links WHERE station_id=? AND distance_km<=#",
+      "count": 8,
+      "mean_ms": 1.3193499999961205,
+      "max_ms": 1.762300000002142,
+      "p50_ms": 1.413300000014715,
+      "p95_ms": 1.762300000002142,
+      "route": "/api/ml/stations/:id"
+    },
+    {
+      "key": "SELECT DATE_FORMAT( observed_at, ? ) AS observed_at, hourly_rainfall FROM weather_readings WHERE station_id = ? AND observed_at IN (?, ?, ?) ORDER BY observed_at ASC",
+      "count": 4,
+      "mean_ms": 1.1965750000163098,
+      "max_ms": 1.4413000000058673,
+      "p50_ms": 1.416399999987334,
+      "p95_ms": 1.4413000000058673,
+      "route": "background"
+    }
+  ],
+  "server_memory_bytes": {
+    "rss": 306569216,
+    "heapTotal": 295800832,
+    "heapUsed": 170935000,
+    "external": 9159661,
+    "arrayBuffers": 5439762
+  },
+  "host_memory_bytes": {
+    "total": 16473034752,
+    "free": 1577684992
+  },
+  "qualification": "Query timings include pool wait and database round trip. Bounded in-memory samples; no SQL parameters, rows, message contents or credentials are recorded."
+}

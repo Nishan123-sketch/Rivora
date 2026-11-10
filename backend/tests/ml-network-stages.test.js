@@ -1,0 +1,6 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const {snapshot}=require('../ml-network-stages');
+const now=Date.parse('2026-11-07T12:00:00+09:00');
+const row={station_id:207,station_name:'Taehwa Bridge',external_station_id:'2201670',data_source:'RIVER_GAUGE',observed_at:'2026-11-07 11:50:00',water_level:5,advisory_level_m:8.2,warning_level_m:9.2,verification_status:'VERIFIED',verified_at:'2026-11-01',source_url:'https://www.nakdongriver.go.kr/sumun/brief.do',reference_source:'SCHEME:TWO_STAGE;WAMIS:2201670;DATUM:CONFIRMED;',river_id:'taehwa'};
+test('bulk overview retains verified identity/datum and evaluates canonical current stage',async()=>{let calls=0;const rows=await snapshot({query:async sql=>{calls++;assert.match(sql,/reference_source/);return [[row]];}},now);assert.equal(calls,1);assert.equal(rows.length,1);assert.equal(rows[0].level,null);assert.equal(rows[0].threshold_verified,true);});
+test('bulk overview never promotes unverifiable or stale readings',async()=>{const rows=await snapshot({query:async()=>[[{...row,reference_source:'unreviewed'},{...row,station_id:208,observed_at:'2026-11-06 10:00:00'}]]},now);assert.equal(rows.length,1);assert.equal(rows[0].level,null);assert.equal(rows[0].data_status,'STALE');});

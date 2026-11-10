@@ -1,0 +1,4 @@
+// Read-only map payload check. No imports, model runs or data mutations.
+require('dotenv').config();
+const db=require('../db'),maps=require('../map-data');
+(async()=>{const start=performance.now(),catalog=await maps.mapCatalog(),catalogMs=Math.round(performance.now()-start),stations=catalog.flatMap(r=>r.stations),selectedStart=performance.now(),station=await maps.stationDetails(207);console.log(JSON.stringify({catalog:{rivers:catalog.length,stations:stations.length,bytes:Buffer.byteLength(JSON.stringify(catalog)),ms:catalogMs,contains_observations:stations.some(s=>'water_level'in s||'history'in s)},selected:{station_id:station?.station_id,coordinate_verified:station?.coordinate_verified,water_level:station?.water_level,observed_at:station?.observed_at,assessment:station?.assessment.level||'Not assessed',ms:Math.round(performance.now()-selectedStart)}}));})().catch(e=>{console.error(e.code||e.name);process.exitCode=1;}).finally(()=>db.end());

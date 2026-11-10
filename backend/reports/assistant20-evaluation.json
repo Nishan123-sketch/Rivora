@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-11-09T05:33:44.785Z",
+  "model_cases": true,
+  "results": [
+    {
+      "question": "How many rivers are monitored in Ulsan?",
+      "http_status": 200,
+      "total_ms": 116,
+      "passed": true,
+      "answer": "Rivora has verified gauge links for 3 cataloged Ulsan rivers: Taehwa River, Dongcheon, Hoeya River. This counts rivers, not gauges, and does not imply every gauge is currently live. Nationwide entries without verified Ulsan region attribution are outside this count.",
+      "mode": "DATABASE_GROUNDED",
+      "station_ids": []
+    },
+    {
+      "question": "Which ones?",
+      "http_status": 200,
+      "total_ms": 12,
+      "passed": true,
+      "answer": "The rivers in that result are Taehwa River, Dongcheon, Hoeya River. This is the previously retrieved catalog result, not a new live-coverage assessment.",
+      "mode": "DATABASE_GROUNDED",
+      "station_ids": []
+    },
+    {
+      "question": "Find Seonchon 2 Bridge.",
+      "http_status": 200,
+      "total_ms": 137,
+      "passed": true,
+      "answer": "We are discussing Seonchon Bridge 2 (Gapyeong County) [station code 1015636]. What would you like to check: water level, rainfall, history or forecasts?",
+      "mode": "DATABASE_GROUNDED",
+      "station_ids": [
+        2912
+      ]
+    },
+    {
+      "question": "What is its level?",
+      "http_status": 200,
+      "total_ms": 168,
+      "passed": true,
+      "answer": "### Seonchon Bridge 2 (Gapyeong County) [station code 1015636]\n\nWater level: **2.29 m** · Seonchon Bridge 2 (Gapyeong County) · 2026-11-09T14:10:00+09:00 · Official flood-control office.",
+      "mode": "DATABASE_GROUNDED",
+      "station_ids": [
+        2912
+      ]
+    },
+    {
+      "question": "What about its rainfall?",
+      "http_status": 200,
+      "total_ms": 137,
+      "passed": true,
+      "answer": "### Seonchon Bridge 2 (Gapyeong County) [station code 1015636]\n\nHourly rainfall: **0 mm** · Seonchon Bridge 2 (Gapyeong County) · 2026-11-09T13:00:00+09:00 · Nearby KMA AWS 485.\n\nWeather observations are from the named nearby station, not this river gauge.",
+      "mode": "DATABASE_GROUNDED",
+      "station_ids": [
+        2912
+      ]
+    },
+    {
+      "question": "Is there an official warning for that station?",
+      "http_status": 200,
+      "total_ms": 195,
+      "passed": true,
+      "answer": "Seonchon Bridge 2 (Gapyeong County) (station 1015636): official warning status is UNKNOWN. Fresh complete official coverage is unavailable; I cannot confirm either a warning or its absence.",
+      "mode": "DATABASE_GROUNDED",
+      "station_ids": [
+        2912
+      ]
+    },
+    {
+      "question": "pls taehwa update",
+      "http_status": 200,
+      "total_ms": 4039,
+      "passed": true,
+      "answer": "Which monitoring station do you mean?\n1. Taehwa Bridge [station code 2201670]",
+      "mode": "DATABASE_GROUNDED",
+      "semantic_tool": "latest_level",
+      "station_ids": []
+    },
+    {
+      "question": "Explain Rivora architecture.",
+      "http_status": 200,
+      "total_ms": 7938,
+      "passed": true,
+      "answer": "Rivora uses a React frontend, Express/Node.js backend, and MySQL database. It integrates weather data from KMA and river observations from WAMIS and HRFCO.",
+      "mode": "PROJECT_GUIDANCE",
+      "source": "CONFIGURED_LLM_WITH_VERIFIED_PROJECT_FACTS",
+      "station_ids": []
+    }
+  ]
+}

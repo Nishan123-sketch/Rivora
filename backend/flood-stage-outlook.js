@@ -1,0 +1,41 @@
+'use strict';
+const HOLD_CODES=new Set(['1022640','1018680','1021650']);
+const number=v=>v===null||v===undefined||v===''||!Number.isFinite(Number(v))?null:Number(v);
+const round=v=>number(v)===null?null:Math.round(Number(v)*100)/100;
+const {time}=require('./risk-engine');
+function evaluateFloodStageOutlook(station,forecasts=[],now=Date.now()){
+ const code=String(station?.external_station_id||station?.station_code||'');
+ const base={evaluated_at:new Date(now).toISOString(),station_id:station?.station_id??null,station_code:code,status:'NOT_ASSESSED',reason:null,reference_compatibility:HOLD_CODES.has(code)?'UNVERIFIED_DATUM_HOLD':'UNVERIFIED',thresholds:null,horizons:[],overall_outlook:'NOT_ASSESSED',official_warning:false,probability:null,disclaimer:'Experimental forecast-stage comparison, not an official issued warning or flood probability. It assumes the forecast remains in the current gauge reference; historical datum epochs and threshold-crossing skill are not independently established.'};
+ const stop=(reason,message)=>({...base,reason,message});
+ if(HOLD_CODES.has(code))return stop('REFERENCE_OR_MEASUREMENT_REVIEW_REQUIRED','Measurement compatibility is under review.');
+ if(station?.threshold_verified!==true||station?.measurement_compatibility?.verified!==true)return stop('REFERENCE_OR_THRESHOLDS_NOT_VERIFIED','Both published station thresholds and measurement compatibility must be verified.');
+ const evidence=station.measurement_compatibility.evidence;
+ if(evidence?.station_code&&String(evidence.station_code)!==code)return stop('STATION_REFERENCE_MISMATCH','The measurement evidence belongs to another station.');
+ const observed=time(station.observed_at||station.water_observed_at);
+ if(!Number.isFinite(observed)||observed>now||now-observed>3*3600000)return stop('STALE_OR_MISSING_OBSERVATION','A fresh current observation is required.');
+ const advisory=number(station.advisory_stage_m??station.advisory_level_m??station.caution_level_m);
+ const warning=number(station.warning_stage_m??station.warning_level_m??station.alert_level_m);
+ const severe=number(station.severe_stage_m);
+ if(advisory===null||warning===null||advisory>=warning||severe!==null&&severe<=warning)return stop('INVALID_OR_MISSING_THRESHOLDS','A valid ordered pair of published reference levels is required.');
+ const ranks={BELOW_THRESHOLDS:0,WITHIN_50CM_ADVISORY:1,UNCERTAINTY_BOUND_CROSSING_RISK:2,PREDICTED_ADVISORY_STAGE_CROSSING:3,PREDICTED_WARNING_STAGE_CROSSING:4,PREDICTED_SEVERE_STAGE_CROSSING:5};
+ const labels={BELOW_THRESHOLDS:'Below published reference levels',WITHIN_50CM_ADVISORY:'Within 0.50 m of advisory stage',UNCERTAINTY_BOUND_CROSSING_RISK:'Empirical upper bound reaches advisory stage',PREDICTED_ADVISORY_STAGE_CROSSING:'Forecast reaches advisory stage',PREDICTED_WARNING_STAGE_CROSSING:'Forecast reaches warning stage',PREDICTED_SEVERE_STAGE_CROSSING:'Forecast reaches severe stage'};
+ const seen=new Set();const horizons=forecasts.map(h=>{
+  const hours=number(h.horizon_hours),valid=time(h.valid_at),origin=time(h.observed_at),value=number(h.predicted_level_m),issued=h.issued_at?time(h.issued_at):origin;
+  const row={horizon_hours:hours,valid_at:h.valid_at||null,forecast_status:'UNAVAILABLE',predicted_level_m:null,proximity_to_advisory_m:null,proximity_to_warning_m:null,crossing_status:'NO_FORECAST',crossing_label:'No usable forecast',uncertainty:null,model_kind:h.model_kind||h.model_name||null};
+  const reason=! [1,3,6].includes(hours)?'INVALID_HORIZON':seen.has(hours)?'DUPLICATE_HORIZON':h.station_id!=null&&String(h.station_id)!==String(station.station_id)||h.station_code!=null&&String(h.station_code)!==code?'FORECAST_STATION_MISMATCH':h.forecast_status!=='AVAILABLE'||value===null?'FORECAST_UNAVAILABLE':!Number.isFinite(origin)||origin>now||now-origin>3*3600000||!Number.isFinite(issued)||issued>now?'STALE_OR_FUTURE_FORECAST_INPUT':!Number.isFinite(valid)||valid<=now||Math.abs(valid-origin-hours*3600000)>60000?'INVALID_OR_EXPIRED_FORECAST_TIME':h.data_quality_status&&h.data_quality_status!=='FRESH'&&!(row.model_kind==='PERSISTENCE'&&h.data_quality_status==='FRESH_BASELINE_WITH_INPUT_GAPS')?'FORECAST_INPUT_QUALITY':h.advanced_accepted!==true&&row.model_kind!=='PERSISTENCE'?'UNACCEPTED_LEVEL_MODEL':null;
+  if(reason)return {...row,reason};seen.add(hours);
+  let crossing=value>=warning?'PREDICTED_WARNING_STAGE_CROSSING':value>=advisory?'PREDICTED_ADVISORY_STAGE_CROSSING':'BELOW_THRESHOLDS';
+  if(severe!==null&&value>=severe)crossing='PREDICTED_SEVERE_STAGE_CROSSING';
+  const lower=number(h.interval?.lower_m),upper=number(h.interval?.upper_m);
+  const interval=h.interval?.status==='RETROSPECTIVE_COVERAGE_CHECKED'&&h.interval?.empirical_coverage_checked===true&&lower!==null&&upper!==null&&lower<=value&&value<=upper?{status:h.interval.status,lower_m:round(lower),upper_m:round(upper),radius_m:round(h.interval.radius_m),calibrated_probability:false}:null;
+  if(crossing==='BELOW_THRESHOLDS'&&interval&&upper>=advisory)crossing='UNCERTAINTY_BOUND_CROSSING_RISK';
+  else if(crossing==='BELOW_THRESHOLDS'&&advisory-value<=.5)crossing='WITHIN_50CM_ADVISORY';
+  return {...row,forecast_status:'AVAILABLE',predicted_level_m:value,proximity_to_advisory_m:round(advisory-value),proximity_to_warning_m:round(warning-value),crossing_status:crossing,crossing_label:labels[crossing],uncertainty:interval,reason:null,baseline_only:h.advanced_accepted!==true};
+ });
+ const available=horizons.filter(h=>h.forecast_status==='AVAILABLE');
+ if(!available.length)return {...stop('NO_USABLE_LEVEL_FORECASTS','No fresh accepted model or evaluated persistence forecast is available.'),horizons};
+ const highest=available.reduce((a,b)=>ranks[a.crossing_status]>=ranks[b.crossing_status]?a:b);
+ const overall={BELOW_THRESHOLDS:'NORMAL',WITHIN_50CM_ADVISORY:'NEAR_THRESHOLD',UNCERTAINTY_BOUND_CROSSING_RISK:'UNCERTAINTY_ELEVATED',PREDICTED_ADVISORY_STAGE_CROSSING:'ADVISORY_CROSSING_PREDICTED',PREDICTED_WARNING_STAGE_CROSSING:'WARNING_CROSSING_PREDICTED',PREDICTED_SEVERE_STAGE_CROSSING:'SEVERE_CROSSING_PREDICTED'};
+ return {...base,status:'ASSESSED',reason:null,reference_compatibility:evidence?.scope==='EXACT_OFFICIAL_OBSERVATION'?'VERIFIED_CURRENT_OBSERVATION_ONLY':'VERIFIED_STAGE_REFERENCE',conditional_reference:true,thresholds:{advisory_stage_m:advisory,warning_stage_m:warning,severe_stage_m:severe},horizons,available_horizons:available.map(h=>h.horizon_hours),unavailable_horizons:horizons.filter(h=>h.forecast_status!=='AVAILABLE').map(h=>h.horizon_hours),coverage:available.length===3?'ALL_HORIZONS':'PARTIAL_HORIZONS',overall_outlook:overall[highest.crossing_status]};
+}
+module.exports={evaluateFloodStageOutlook,HOLD_CODES};

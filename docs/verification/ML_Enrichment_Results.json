@@ -1,0 +1,115 @@
+{
+  "generated_at": "2026-11-07T16:49:41.159Z",
+  "baseline_forecast_stations": 138,
+  "forecast_stations_after": 237,
+  "added_water_readings": 97584,
+  "stations_received_history": 99,
+  "stations_attempted": 110,
+  "history_target_stations": 651,
+  "remaining_unattempted": 541,
+  "stopped_reason": "CONSECUTIVE_SOURCE_FAILURES",
+  "rainfall_added": 17925,
+  "additional_rainfall_outside_series": 702,
+  "warning_history": {
+    "before": 329,
+    "after": 342,
+    "added": 13,
+    "complete_coverage_intervals": 0
+  },
+  "test_errors": [
+    {
+      "horizon_hours": 1,
+      "gauges": 166,
+      "test_samples": 66585,
+      "mae_m": 0.006783843207929708,
+      "rmse_m": 0.026948956612855887,
+      "persistence_mae_m": 0.007938951715851916
+    },
+    {
+      "horizon_hours": 3,
+      "gauges": 237,
+      "test_samples": 117514,
+      "mae_m": 0.020200966693330106,
+      "rmse_m": 0.08311235497731313,
+      "persistence_mae_m": 0.022154344163248598
+    },
+    {
+      "horizon_hours": 6,
+      "gauges": 237,
+      "test_samples": 117383,
+      "mae_m": 0.028140574018384233,
+      "rmse_m": 0.0883884706409465,
+      "persistence_mae_m": 0.03316903129073201
+    }
+  ],
+  "endpoints": {
+    "/api/ml/overview": {
+      "http": 200,
+      "counts": {
+        "gauges": 789,
+        "level_forecasts": 237,
+        "experimental_grades": 0,
+        "validated_warning_models": 0,
+        "official_warning_coverage": 0
+      },
+      "enrichment": {
+        "processed": 110,
+        "total": 651,
+        "imported": 99,
+        "inserted_rows": 97584,
+        "updated_at": "2026-11-07T16:43:53.456Z",
+        "completed_at": "2026-11-07T16:43:53.456Z",
+        "stopped_reason": "CONSECUTIVE_SOURCE_FAILURES"
+      }
+    },
+    "/api/ml/stations/207": {
+      "http": 200,
+      "station": {
+        "station_id": 207,
+        "station_code": "2201670",
+        "name": "Taehwa Bridge",
+        "river": "Taehwa River"
+      },
+      "reading": 4.62,
+      "stage_status": {
+        "verified": false,
+        "reason": "MEASUREMENT_REFERENCE_NOT_VERIFIED",
+        "note": "Official flood threshold compatibility has not been verified for this station."
+      },
+      "forecasts": [
+        {
+          "horizon": 1,
+          "status": "AVAILABLE",
+          "value": 4.678,
+          "valid_at": "2026-11-08 02:00:00"
+        },
+        {
+          "horizon": 3,
+          "status": "AVAILABLE",
+          "value": 4.844,
+          "valid_at": "2026-11-08 04:00:00"
+        },
+        {
+          "horizon": 6,
+          "status": "AVAILABLE",
+          "value": 4.969,
+          "valid_at": "2026-11-08 07:00:00"
+        }
+      ],
+      "rain_features": {
+        "level": 4.62,
+        "change_1h": -0.009999999999999787,
+        "change_3h": -0.11000000000000032,
+        "change_6h": -0.3700000000000001,
+        "acceleration_1h": 0.020000000000000462,
+        "percentile_72h": 4.166666666666667,
+        "rain_1h": null,
+        "rain_3h": null,
+        "rain_6h": null,
+        "rain_12h": null,
+        "rain_24h": null,
+        "discharge": null
+      }
+    }
+  }
+}

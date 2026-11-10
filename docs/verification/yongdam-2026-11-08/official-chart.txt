@@ -1,0 +1,551 @@
+import {getWaterLevelMinMax} from "/js/minMaxCommon.js";
+
+var df2 = new DecimalFormat("#,##0.00");
+
+$(document).ready(function() {
+	// 시간 단위 버튼 활성화
+	$('[data-type="'+timeType+'"] a').addClass('on');
+	
+	// 시간 단위별 달력 세팅
+	if (timeType == "1M") {
+		setDatetimepicker1M("sdt", "sdt");
+        setDatetimepicker1M("edt", "edt");
+	} else {
+		setDatetimepicker10M("sdt", "sdt");
+		setDatetimepicker10M("edt", "edt");
+	}
+	
+	getMinyn(timeType);
+	
+	// 시간 단위 클릭 이벤트
+	$(".sort a").click(function() {
+		var dataTimeValue = $(this).parent(".sort").data("type");
+
+		// 시간 단위별 달력 세팅
+		if (dataTimeValue == "1M") {
+			setDatetimepicker1M("sdt", "sdt");
+	        setDatetimepicker1M("edt", "edt");
+	        
+	        // 현재 시간 10분 내림
+	        const now = new Date();
+	        now.setSeconds(0);
+	        now.setMilliseconds(0);
+
+	        const pad = (num) => num.toString().padStart(2, '0');
+
+	        // edt: 현재 시간 (10분 내림)
+	        const edtStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+	        $('#edt').val(edtStr);
+
+	        // sdt: edt의 1일 전
+	        const sdtTime = new Date(now);
+	        sdtTime.setHours(sdtTime.getHours() - 3);
+	        const sdtStr = `${sdtTime.getFullYear()}-${pad(sdtTime.getMonth() + 1)}-${pad(sdtTime.getDate())} ${pad(sdtTime.getHours())}:${pad(sdtTime.getMinutes())}`;
+	        $('#sdt').val(sdtStr);
+		} else {
+			setDatetimepicker10M("sdt", "sdt");
+			setDatetimepicker10M("edt", "edt");
+			
+			// 현재 시간 10분 내림
+	        const now = new Date();
+	        const flooredMinutes = Math.floor(now.getMinutes() / 10) * 10;
+	        now.setMinutes(flooredMinutes);
+	        now.setSeconds(0);
+	        now.setMilliseconds(0);
+
+	        const pad = (num) => num.toString().padStart(2, '0');
+
+	        // edt: 현재 시간 (10분 내림)
+	        const edtStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+	        $('#edt').val(edtStr);
+
+	        // sdt: edt의 1일 전
+	        const sdtTime = new Date(now);
+	        sdtTime.setDate(sdtTime.getDate() - 1);
+	        const sdtStr = `${sdtTime.getFullYear()}-${pad(sdtTime.getMonth() + 1)}-${pad(sdtTime.getDate())} ${pad(sdtTime.getHours())}:${pad(sdtTime.getMinutes())}`;
+	        $('#sdt').val(sdtStr);
+		}
+		
+		getMinyn(dataTimeValue);
+	});
+
+	// 관측소 변경 이벤트
+	$("#obsnmSel").change(function(){
+		getMinyn();
+	});
+	
+}).ajaxStart(function(){
+	$('#loading').show();
+}).ajaxStop(function(){
+	$('#loading').hide();
+});
+
+// 검색 버튼 클릭 이벤트
+$('.btn.search').click(function() {
+	var searchSdt = getDateTime2Blank($('#sdt').val());
+	var searchEdt = getDateTime2Blank($('#edt').val());
+	
+	var dateStart = new Date(getDateTime2SeparatorforDate(searchSdt));
+	var dateEnd = new Date(getDateTime2SeparatorforDate(searchEdt));
+	
+	var timeType = $(".sort a.on").parent().data("type");
+
+	// 선택된 시간 단위에 맞는 기간 제한(gap) 적용
+	var gap = gapMap[timeType] || gapMap["10M"];
+
+	// 기간 검색 제한
+	if (searchDateLimit(dateStart, dateEnd, gap)) {
+		if($('#obsnmSel option:selected').val() != 'NULL'){
+			getMinyn(timeType);
+		} else {
+			popupData();
+			popupChart();
+		}
+	}
+
+}).ajaxStart(function(){
+	$('#loading').show();
+}).ajaxStop(function(){
+	$('#loading').hide();
+});
+
+// 저장(엑셀) 버튼 클릭 이벤트
+$('.btn.save').click(function() {
+	downloadExcel();
+});
+
+// 새로고침 버튼 클릭 이벤트
+$(document).on('click', '.btnReload', () => {
+    reloadDataCommon({ // pub.js에 공통 코드 생성
+        popupName: 'wlpopup',
+        obscdSelector: '#obsnmSel',
+        timeTypeSelector: '.sort a.on'
+    });
+});
+
+// 1분 단위 여부
+function getMinyn(dateType) {
+	if(dateType === undefined || dateType.trim() === "" || dateType == null) 	dateType = "10M";
+	
+	$.ajax({
+		type: 'GET',
+		url: '/servlet/wl/getWlMinyn.do',
+		dataType: 'JSON',
+		data:{
+			sdt : getDateTime2Blank($('#sdt').val()),
+			edt : getDateTime2Blank($('#edt').val()),
+			wlobscd: $('#obsnmSel option:selected').val(),
+		},
+		success: function(result){
+			if(result.minyn === "Y") {
+				$('[data-time="1M"] a').css('display', 'none');
+			}else {
+				$('[data-time="1M"] a').css('display', 'block');
+			}
+			
+			popupData();
+			popupChart();
+		},
+		error: function(error){
+		}
+	});
+}
+
+// 테이블 데이터
+function popupData() {
+	if ($("#obsnmSel option").length == 0)
+		return;
+		
+	$.ajax({
+		type : "POST",
+		url : "/servlet/wlPopupTableData.do",
+		dataType : "json",
+		data : {
+			wlobscd : $("#obsnmSel option:selected").val(),
+			sdt : getDateTime2Blank($('#sdt').val()),
+			edt : getDateTime2Blank($('#edt').val()),
+			type : $(".sort a.on").parent().data("type")
+		},
+		success : function(result){
+			var html = "";
+
+			$.each(result.tableData, function(index, value){
+				var wl = isNaN(value.wl) ? "-" : df2.format(value.wl);
+				var fw = isNaN(value.fw) ? "-" : df2.format(value.fw);
+				var seawl = isNaN(value.seawl) ? "-" : df2.format(value.seawl);
+				
+				html += "<tr>";
+				html += "	<td>"+ value.ymdhm +"</td>";
+				html += "	<td>"+ wl +"</td>";
+				html += "	<td>"+ fw +"</td>";
+				html += "	<td>"+ seawl +"</td>";
+				html += "</tr>";
+			});
+			
+			$("#wltbody").empty();
+			$("#wltbody").append(html);
+			
+			$(".popTitle").html(result.info.obsnm + " 수위 자료");
+			$("#agcif").html("관할기관 : " + result.info.agcnm);
+			$("#addr").html(result.info.addr + " " + result.info.etcaddr); 
+		},
+		error: function(textStatus, errorThrown) {
+	        // 에러 처리 및 로그 출력
+	        console.error('Ajax Error:', textStatus, errorThrown);
+	    }
+	});
+}
+
+function popupChart() {
+	if ($("#obsnmSel option").length == 0)
+		return;
+
+	$.ajax({
+		type : "POST",
+		url : "/servlet/wlPopupChart.do",
+		dataType : "json",
+		data : {
+			wlobscd : $("#obsnmSel option:selected").val(),
+			sdt : getDateTime2Blank($('#sdt').val()),
+			edt : getDateTime2Blank($('#edt').val()),
+			type : $(".sort a.on").parent().data("type")
+		},
+		success : function(result){
+			var wlobscd = result.info.wlobscd;
+			var time = result.chart.timeList;
+			var pmymd = result.info.pmymd;
+			var pmwl = result.chart.pmwlList == null ? Array(time.length).fill(null) : result.chart.pmwlList;
+			var gdt = result.info.gdt;
+			var wl = result.chart.wlList == null ? Array(time.length).fill(null) : result.chart.wlList;
+			var att = result.chart.attList == null ? Array(time.length).fill(null) : result.chart.attList;
+			var wrn = result.chart.wrnList == null ? Array(time.length).fill(null) : result.chart.wrnList;
+			var alm = result.chart.almList == null ? Array(time.length).fill(null) : result.chart.almList;
+			var srs = result.chart.srsList == null ? Array(time.length).fill(null) : result.chart.srsList;
+			var area = result.chart.areaList;
+			
+			var areaXYvar = [];
+			var areaXvar = [];
+			var areaYvar = [];
+			var inArr = [];
+
+			if (area != null) {
+			    $.each(result.chart.areaList, function(index, value) {
+			        areaXvar.push(Math.floor(value[0]));
+		            areaYvar.push(Number(value[1]) - gdt);
+			    });
+			}
+
+			if (areaXvar.length > 0 && areaYvar.length > 0) {
+				for (var i = 0; i < areaXvar.length; i++) {
+					areaXYvar.push([areaXvar[i], areaYvar[i]]);
+				}
+			}
+			
+			var inMax = areaXvar[areaXvar.length-1] / 9;
+			for(var i=0; i<=9; i++){
+				inArr.push(Math.floor(inMax*i));
+			}
+
+			drawChart(wlobscd, time, pmymd, pmwl, gdt, wl, att, wrn, alm, srs, areaXYvar, areaYvar, inArr, areaXvar);
+		},
+		error: function(textStatus, errorThrown) {
+	        // 에러 처리 및 로그 출력
+	        console.error('Ajax Error:', textStatus, errorThrown);
+	    }
+	});
+}
+
+function drawChart(wlobscd, timeArr, pmymd, pmwlArr, gdt, wlArr, attArr, wrnArr, almArr, srsArr, areaXYvar, areaYvar, inArr, areaXvar) {
+	var pmymdFormat = "";
+	
+	if (pmymd != null && pmymd != "undefined") {
+		pmymdFormat = "<br/>("+pmymd.substring(0, 4) + "-" + pmymd.substring(4, 6) + "-" + pmymd.substring(6, 8) + " " + pmymd.substring(8, 10)+")";
+	}
+	
+	var pmwlTitle = "과거최대홍수위" + pmymdFormat;
+	var preAttwlTitle = "";
+	var attwlTitle = "";
+	var wrnwlTitle = "";
+	var almwlTitle = "";
+	var srswlTitle = "";
+	
+	// 잠수교
+	if(wlobscd ==="1018680") {
+		attwlTitle = "수변무대<br>침수수위" ;
+		wrnwlTitle ="보행자<br>통제수위";
+		almwlTitle ="차량<br>통제수위";
+		srswlTitle = "완전<br>잠수수위";
+		
+	// 연천군(필승교)
+	}else if(wlobscd ==="1021650") {
+		attwlTitle = "홍수기<br>하천행락객<br>대피기준수위";
+		wrnwlTitle = "비홍수기<br>하천행락객<br>대피기준수위";
+		almwlTitle = "접경지역<br>위기대응<br>관심단계수위";
+		srswlTitle = "접경지역<br>위기대응<br>주의단계수위";
+	}else{ // 괄호 안 내용 삭제 요청 (2025.06.05.)
+		attwlTitle = "관심단계수위";
+		wrnwlTitle = "주의단계수위";
+		almwlTitle = "경계단계수위";
+		srswlTitle = "심각단계수위";
+	}
+	
+	var minmax = getWaterLevelMinMax(wlArr, attArr[0], wrnArr[0], almArr[0], srsArr[0], areaYvar, gdt);
+	gdt = gdt == null ? "-" : gdt;
+
+	var seriesList = [
+	/*{
+		name: pmwlTitle,
+		color: '#555',
+		type: 'spline',
+		tooltip: {
+			valueSuffix: 'm'
+		},
+		data: pmwlArr
+	},*/ {
+		name: '현재',
+		color: '#0E56D9',
+		type: 'spline',
+		data: wlArr
+	}, {
+		name: attwlTitle,
+		color: '#0AC097',
+		type: 'spline',
+		data: attArr
+	}, {
+		name: wrnwlTitle,
+		color: '#F0A402',
+		type: 'spline',
+		data: wrnArr
+	}, {
+		name: almwlTitle,
+		color: '#F0710A',
+		type: 'spline',
+		data: almArr
+	}, {
+		name: srswlTitle,
+		color: '#FD0C00',
+		type: 'spline',
+		data: srsArr
+	}, {
+		name: '단면',
+		type: 'area',
+		marker: {
+			enabled: false
+		},
+		color: '#e2eaf6',
+		enableMouseTracking: false,
+		zIndex: 0,
+		xAxis: 1,
+		yAxis: 0,
+		data: areaXYvar,
+		showInLegend: false
+	}];
+
+	// 연천군(필승교) 하천행락객 대피사전알림수위 0.7m 고정 표출
+	if (wlobscd === "1021650") {
+		seriesList.splice(1, 0, {
+			name: "하천행락객<br>대피사전알림수위",
+			color: '#0AC097',
+			type: 'spline',
+			data: Array(timeArr.length).fill(0.7)
+		});
+
+		// 기준수위 5단계 색상 한 단계씩 이동 (초록→노랑→주황→빨강→보라)
+		seriesList[2].color = '#F0A402';	// 홍수기 하천행락객 대피기준수위
+		seriesList[3].color = '#F0710A';	// 비홍수기 하천행락객 대피기준수위
+		seriesList[4].color = '#FD0C00';	// 접경지역 위기대응 관심단계수위
+		seriesList[5].color = '#9B59B6';	// 접경지역 위기대응 주의단계수위
+	}
+
+	$("#chart").highcharts({
+		title: {
+			text: ''
+		},
+		legend: {
+			enabled: true,
+			align: 'right',
+		    verticalAlign: 'top'
+		},
+		exporting: {
+			enabled: false
+		},
+		credits:{
+			enabled: false
+		},
+		rangeSelector: {
+			enabled: false
+        },
+		xAxis : [{
+			title: {
+				text : '시간'
+			},
+			categories : timeArr,
+  			tickInterval : timeArr != null && timeArr != "undefined" ? parseInt(timeArr.length / 6) : null,
+  			gridLineWidth: 0,
+  			labels : {
+  				formatter: function() {
+				    /* 요청: 날짜 포맷 HH:mm 표출. this.value값(2024-01-22 00:00)과 replace(2024/01/22 00:00)하려는 날짜의 포맷이 달라 정규식 변경 */
+					return this.value.toString().replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2})/, '$4:$5');
+ 		        }
+  			},
+		}, {
+			gridLineWidth : 0,
+		    title: { text: '거리(m) (영점표고 : '+gdt+'EL.m)', align: 'middle', offset: 30 },
+		    min: 0,
+		    max: areaXvar[areaXvar.length-1],
+		    tickPositions: inArr,
+		    opposite: true,
+		    visible: true,
+ 		}],
+ 		yAxis : [{
+ 			gridLineWidth: 1,
+ 			labels: {
+ 	          	align: "center",
+ 	          	formatter: function () {
+ 	                return Highcharts.numberFormat(this.value, 2);
+ 	            }
+ 			},
+ 			title: {
+ 	            text: '수위(m)',
+ 	            offset: 50,
+ 	        },
+ 			tickPositions: minmax[0],
+ 	        startOnTick: true,	
+      	},{
+            title: {
+                text: '해발수위(EL.m)',
+    			offset: 50,
+            },
+            labels: {
+    			align: "center",
+    			formatter : function(){
+    				return Highcharts.numberFormat(this.value, 2);
+    			}
+            },
+            tickPositions: minmax[1],
+        	opposite: true,
+      	}],
+ 		tooltip: {
+            shared: true,
+            crosshairs: true,
+            enabled: true,
+			valueDecimals : 2,
+			valueSuffix : '(m)'
+ 		},
+		legend: {
+			align: 'center',
+			verticalAlign: 'top',
+		},
+       	plotOptions: {
+			spline: {
+				lineWidth: 2,
+               	states: {
+					hover: {
+						lineWidth: 3
+					}
+               },
+               marker: {
+                   enabled: false
+               }
+           },
+           area: {
+        	   fillOpacity: 1.5,
+                  fillColor: {
+					linearGradient: { x1: 0, y1: 2, x2: 2, y2: 0},
+					stops: [
+						[0, '#e2eaf6'],
+                       	[1, Highcharts.Color('#e2eaf6').setOpacity(0).get('rgba')]
+                   	]
+				  },
+               marker: {
+                   enabled: false,
+                   symbol: 'circle',
+                   radius: 2,
+                   states: {
+                       hover: {
+                           enabled: true
+                       }
+                   }
+               },
+               lineWidth: 1,
+               states: {
+                   hover: {
+                       lineWidth: 2,
+                       pointStart: 0
+                   }
+               },
+               threshold: null
+           }
+       },
+		series: seriesList
+	});
+}
+
+//엑셀 다운로드
+async function downloadExcel(){
+	const list = extractDataFromTable('wltbody', ['ymdhm', 'wl', 'fw', 'seawl']);
+	const obsnm = $("#obsnmSel option:selected").text();
+	const addr = $("#addr").html();
+	const ymdhm = $('#sdt').val() + "~" + $('#edt').val();
+	
+	//차트 이미지 Blob으로 추출하는 함수
+	const getImageBlob = async (chartId) => {
+		const blob = await domtoimage.toBlob(document.getElementById(chartId));
+		return new Promise((resolve) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(blob);
+			reader.onloadend = () => resolve(reader.result);
+		});
+	};
+	
+	const chartImage = await getImageBlob('chart');
+	
+	const data = {
+		list: list,
+		obsnm: obsnm,
+		addr: addr,
+		ymdhm: ymdhm,
+		img: chartImage,
+	};
+	
+	try {
+		const response = await axios({
+			method: 'POST',
+			url: '/servlet/wl/downloadPopupData.do',
+			responseType: 'blob',
+			data: data,
+		});
+
+		const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
+		const link = document.createElement('a');
+		link.href = url;
+		link.setAttribute('download', obsnm + ' 수위 자료.xlsx');
+		document.body.appendChild(link);
+		link.click();
+	} catch(error) {
+		console.log("Error in downloadExcel :", error);
+	} finally {
+	
+	}
+}
+
+//테이블로부터 데이터 추출
+//Params : tbodyId(String), dataFields(String Array)
+function extractDataFromTable(tbodyId, dataFields) {
+	const tbody = document.getElementById(tbodyId);
+	const rows = tbody.querySelectorAll('tr');
+
+	const data = [];
+	rows.forEach((row) => {
+		const cells = row.querySelectorAll('td');
+		const rowData = {};
+
+		cells.forEach((cell, index) => {
+			rowData[dataFields[index]] = cell.textContent.trim();
+		});
+
+		data.push(rowData);
+	});
+
+	return data;
+}

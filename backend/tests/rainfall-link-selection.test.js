@@ -1,0 +1,7 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {run}=require('../link-nearest-rainfall');
+const observed_at=new Date(Date.now()+9*3600000-3600000).toISOString().slice(0,19).replace('T',' ');
+async function scenario({manual=false,far=false}={}){const inserts=[];const db={execute:async(sql,args)=>{if(sql.includes("data_source='RIVER_GAUGE'"))return [[{station_id:1,latitude:36,longitude:128}]];if(sql.includes('FROM rainfall_stations'))return [[{external_station_id:'a',station_name:'Missing sensor',latitude:36,longitude:128,hourly_rainfall:null},{external_station_id:'b',station_name:'Reporting sensor',latitude:far?37:36.05,longitude:128,hourly_rainfall:0,observed_at,coordinate_source_url:'https://apihub.kma.go.kr/'}]];if(sql.startsWith('SELECT verification_status'))return [[{verification_status:manual?'VERIFIED':'AUTO_NEAREST'}]];if(sql.startsWith('INSERT')){inserts.push(args);return [{}];}throw Error('Unexpected query');}};await run(db);return inserts;}
+test('links to an actual nearby reporting rainfall gauge and accepts genuine zero',async()=>{const rows=await scenario();assert.equal(rows[0][1],'b');assert.equal(rows[0][4],'Reporting sensor');});
+test('preserves manually verified rainfall links',async()=>assert.equal((await scenario({manual:true})).length,0));
+test('does not substitute a reporting gauge more than 30 km away',async()=>assert.equal((await scenario({far:true}))[0][1],'a'));
+

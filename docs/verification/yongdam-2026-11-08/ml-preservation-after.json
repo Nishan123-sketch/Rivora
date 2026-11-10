@@ -1,0 +1,49 @@
+{
+  "checked_at": "2026-11-08T05:09:31.300Z",
+  "files_unchanged": true,
+  "sha256": {
+    "ml/warning_split_policy.json": "398e429e308ebdbfbbafe08e6cddec47e3e4c181b9f1adc8ea65ebbebb8b770b",
+    "ml/advanced_warning.py": "127700585045b034c8147e25276c7cf6bf96d61a36ca9abb538023e5fc28892d",
+    "ml/test_advanced_warning.py": "a20beede0ca8220d2b2fee3285b2e9d381c229164143ddc738082d33a0bf5348",
+    "reports/advanced-warning-validation.json": "be38972d6e4ca12660c132333d04562e7df3c7383c866f59abceeb6a7c9e0534"
+  },
+  "events": {
+    "records": 493,
+    "issuance_records": "307"
+  },
+  "coverage": {
+    "intervals": 40
+  },
+  "model_status": "INSUFFICIENT_VALIDATION_DATA",
+  "model_reason": "INSUFFICIENT_CALIBRATION_OR_THRESHOLD_EVENTS",
+  "probability_available": false,
+  "split_policy": {
+    "policy_version": "calendar-seasons-2026-v1",
+    "validation_start": "2025-01-01 00:00:00",
+    "test_start": "2026-01-01 00:00:00",
+    "reason": "Full calendar warning seasons; replaces hour-quantile validation dominated by winter. Boundaries frozen before fitting candidates and evaluating test predictions. The 2026 period has previously been inspected for event counts, so this is a retrospective holdout, not prospective validation."
+  },
+  "split_counts": {
+    "train": {
+      "samples": 111079,
+      "positive_warning_events": 43,
+      "groups": 119,
+      "start": "2022-06-23 16:00:00",
+      "end": "2024-12-28 23:00:00"
+    },
+    "validation": {
+      "samples": 180919,
+      "positive_warning_events": 27,
+      "groups": 119,
+      "start": "2025-01-01 00:00:00",
+      "end": "2025-12-28 23:00:00"
+    },
+    "test": {
+      "samples": 195696,
+      "positive_warning_events": 11,
+      "groups": 103,
+      "start": "2026-01-01 00:00:00",
+      "end": "2026-11-08 00:00:00"
+    }
+  }
+}

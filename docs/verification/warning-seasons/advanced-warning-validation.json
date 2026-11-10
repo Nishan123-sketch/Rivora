@@ -1,0 +1,292 @@
+{
+  "status": "INSUFFICIENT_VALIDATION_DATA",
+  "probability_available": false,
+  "features": [
+    "level",
+    "change_1h",
+    "change_3h",
+    "change_6h",
+    "acceleration_1h",
+    "percentile_72h",
+    "rain_1h",
+    "rain_3h",
+    "rain_6h",
+    "rain_12h",
+    "rain_24h"
+  ],
+  "target": "New official advisory/warning issuance in (t,t+3h], not physical inundation",
+  "horizon_hours": 3,
+  "split_method": "Frozen calendar seasons; global storm groups; chronological train/validation/test; 72h purge",
+  "probability": null,
+  "split_counts": {
+    "train": {
+      "samples": 111079,
+      "positive_warning_events": 43,
+      "groups": 119,
+      "start": "2022-06-23 16:00:00",
+      "end": "2024-12-28 23:00:00"
+    },
+    "validation": {
+      "samples": 180919,
+      "positive_warning_events": 27,
+      "groups": 119,
+      "start": "2025-01-01 00:00:00",
+      "end": "2025-12-28 23:00:00"
+    },
+    "test": {
+      "samples": 195696,
+      "positive_warning_events": 11,
+      "groups": 103,
+      "start": "2026-01-01 00:00:00",
+      "end": "2026-11-08 00:00:00"
+    }
+  },
+  "split_policy": {
+    "policy_version": "calendar-seasons-2026-v1",
+    "validation_start": "2025-01-01 00:00:00",
+    "test_start": "2026-01-01 00:00:00",
+    "reason": "Full calendar warning seasons; replaces hour-quantile validation dominated by winter. Boundaries frozen before fitting candidates and evaluating test predictions. The 2026 period has previously been inspected for event counts, so this is a retrospective holdout, not prospective validation."
+  },
+  "validation_blocks": {
+    "selection": {
+      "start": "2025-01-01 00:00:00",
+      "end": "2025-09-10 04:00:00",
+      "events": 24,
+      "storm_groups": 2
+    },
+    "calibration": {
+      "start": "2025-09-13 05:00:00",
+      "end": "2025-09-14 13:00:00",
+      "events": 1,
+      "storm_groups": 1
+    },
+    "thresholds": {
+      "start": "2025-09-17 14:00:00",
+      "end": "2025-12-28 23:00:00",
+      "events": 2,
+      "storm_groups": 1
+    }
+  },
+  "reason": "INSUFFICIENT_CALIBRATION_OR_THRESHOLD_EVENTS",
+  "dataset": {
+    "gauges_in_scope": 789,
+    "historical_records": 493,
+    "issuance_records": 307,
+    "complete_coverage_intervals": 40,
+    "confirmed_negative_samples": 490378,
+    "unknown_samples_excluded": 102002,
+    "usable_samples": 490609,
+    "positive_warning_events": 81,
+    "training_station_ids": [
+      1566,
+      1567,
+      1671,
+      1674,
+      1679,
+      1692,
+      1694,
+      1696,
+      1704,
+      1706,
+      1707,
+      2906,
+      2910,
+      2911,
+      2922,
+      2925,
+      2932,
+      2935,
+      2944,
+      2948,
+      2970,
+      2983,
+      2999,
+      3002,
+      3003,
+      3008,
+      3010,
+      3013,
+      3073,
+      3076,
+      3077,
+      3078,
+      3082
+    ]
+  },
+  "station_ids": [],
+  "rainfall_sources": {
+    "1671": {
+      "provider": "HRFCO",
+      "code": "10044130",
+      "distance_km": 8.634
+    },
+    "1692": {
+      "provider": "HRFCO",
+      "code": "10184110",
+      "distance_km": 5.17
+    },
+    "1694": {
+      "provider": "HRFCO",
+      "code": "10184100",
+      "distance_km": 0.0
+    },
+    "1696": {
+      "provider": "HRFCO",
+      "code": "10184080",
+      "distance_km": 1.833
+    },
+    "1679": {
+      "provider": "HRFCO",
+      "code": "10074060",
+      "distance_km": 10.191
+    },
+    "1567": {
+      "provider": "HRFCO",
+      "code": "10214010",
+      "distance_km": 0.0
+    },
+    "1706": {
+      "provider": "HRFCO",
+      "code": "11014010",
+      "distance_km": 4.744
+    },
+    "1674": {
+      "provider": "HRFCO",
+      "code": "10064060",
+      "distance_km": 0.0
+    },
+    "1566": {
+      "provider": "HRFCO",
+      "code": "10184010",
+      "distance_km": 1.215
+    },
+    "1704": {
+      "provider": "HRFCO",
+      "code": "10234030",
+      "distance_km": 2.915
+    },
+    "1707": {
+      "provider": "HRFCO",
+      "code": "11014070",
+      "distance_km": 2.073
+    },
+    "2906": {
+      "provider": "HRFCO",
+      "code": "10064020",
+      "distance_km": 3.231
+    },
+    "2910": {
+      "provider": "HRFCO",
+      "code": "10134020",
+      "distance_km": 0.0
+    },
+    "2911": {
+      "provider": "HRFCO",
+      "code": "10154010",
+      "distance_km": 2.845
+    },
+    "2922": {
+      "provider": "HRFCO",
+      "code": "10234030",
+      "distance_km": 10.695
+    },
+    "2925": {
+      "provider": "HRFCO",
+      "code": "10164080",
+      "distance_km": 0.0
+    },
+    "2932": {
+      "provider": "HRFCO",
+      "code": "10184220",
+      "distance_km": 1.681
+    },
+    "2935": {
+      "provider": "HRFCO",
+      "code": "10184110",
+      "distance_km": 0.0
+    },
+    "2944": {
+      "provider": "HRFCO",
+      "code": "10184080",
+      "distance_km": 2.593
+    },
+    "2948": {
+      "provider": "HRFCO",
+      "code": "10184200",
+      "distance_km": 3.959
+    },
+    "2970": {
+      "provider": "HRFCO",
+      "code": "10204010",
+      "distance_km": 4.365
+    },
+    "2983": {
+      "provider": "HRFCO",
+      "code": "10124080",
+      "distance_km": 1.67
+    },
+    "2999": {
+      "provider": "HRFCO",
+      "code": "11014140",
+      "distance_km": 7.454
+    },
+    "3002": {
+      "provider": "HRFCO",
+      "code": "11014080",
+      "distance_km": 0.0
+    },
+    "3003": {
+      "provider": "HRFCO",
+      "code": "11014070",
+      "distance_km": 5.592
+    },
+    "3008": {
+      "provider": "HRFCO",
+      "code": "10224020",
+      "distance_km": 0.23
+    },
+    "3010": {
+      "provider": "HRFCO",
+      "code": "10224020",
+      "distance_km": 2.106
+    },
+    "3013": {
+      "provider": "HRFCO",
+      "code": "10224090",
+      "distance_km": 6.71
+    },
+    "3073": {
+      "provider": "HRFCO",
+      "code": "10224050",
+      "distance_km": 5.246
+    },
+    "3076": {
+      "provider": "HRFCO",
+      "code": "10184160",
+      "distance_km": 2.993
+    },
+    "3077": {
+      "provider": "HRFCO",
+      "code": "11014140",
+      "distance_km": 5.157
+    },
+    "3078": {
+      "provider": "HRFCO",
+      "code": "10224060",
+      "distance_km": 5.77
+    },
+    "3082": {
+      "provider": "HRFCO",
+      "code": "10024200",
+      "distance_km": 2.026
+    },
+    "3083": {
+      "provider": "HRFCO",
+      "code": "10144170",
+      "distance_km": 1.246
+    }
+  },
+  "model_version": "warning-v1-20261107T181650",
+  "generated_at": "2026-11-07T18:16:50.343996+00:00",
+  "prediction_type": "NEW_OFFICIAL_WARNING_ISSUANCE"
+}

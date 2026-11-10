@@ -1,0 +1,5 @@
+// Portable authentic public bulletins only. No credentials or personal data.
+require('dotenv').config();const fs=require('node:fs'),path=require('node:path');
+const stamp=s=>s?String(s).replace(/[- :]/g,'').slice(0,12):null;
+async function run(db=require('./db')){const [rows]=await db.query('SELECT * FROM hr_flood_warning_history ORDER BY issued_at,station_code');const body={source:'HRFCO_FLOOD_FORECAST_ISSUANCE',source_documentation:'https://www.hrfco.go.kr/web/openapiPage/reference.do',exported_at:new Date().toISOString(),archive_coverage_verified:false,content:rows.map(r=>({sttnm:r.station_code,obsnm:r.station_name,rvrnm:r.river_name,ancdt:stamp(r.issued_at),kind:r.kind,no:r.bulletin_no,sttcurdt:stamp(r.observed_at),sttcurhgt:r.observed_level_m,wrnaranm:r.warning_areas}))};fs.writeFileSync(path.join(__dirname,'data/hrfco-expanded-history.json'),JSON.stringify(body,null,2));console.log(JSON.stringify({records:rows.length,stations:new Set(rows.map(r=>r.station_code)).size}));}
+if(require.main===module){const db=require('./db');run(db).catch(e=>{console.error(e.code||e.message);process.exitCode=1}).finally(()=>db.end());}module.exports={run};

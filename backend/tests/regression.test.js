@@ -32,11 +32,13 @@ test('HTTP route validation, KST history SQL, gauge inclusion and alert counts',
  pool.execute=async sql=>{
   if(sql.includes('COUNT(*)'))return [[{count:'0'}]];
   if(sql.includes('FROM alerts'))return [[]];
-  if(sql.includes('FROM stations'))return [[{station_id:207}]];
+  if(sql.includes('JOIN stations')||sql.includes('FROM stations s')&&sql.includes('water_readings'))waterSql=sql;
+  if(sql.includes('FROM stations')&&!sql.includes('water_readings'))return [[{station_id:207}]];
   if(sql.includes('DATE_SUB'))historySql=sql;
   if(sql.includes('JOIN stations'))waterSql=sql;
   return [[]];
  };
+ pool.query=pool.execute;
  const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
  const base=`http://127.0.0.1:${server.address().port}`;
  try {
@@ -71,6 +73,7 @@ test('authentication login and verified-account preference persistence',async()=
   if(sql.includes('INSERT INTO user_alert_preferences')){saved=true;assert.deepEqual(args,[7,207,false,true]);return [{affectedRows:1}]}
   return [[]];
  };
+ pool.query=pool.execute;
  const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));const base=`http://127.0.0.1:${server.address().port}`;
  try{
   assert.equal((await fetch(base+'/api/alert-preferences')).status,401);

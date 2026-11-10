@@ -72,13 +72,13 @@ async function importKmaStations() {
             await pool.query(
                 `INSERT INTO stations
                  (station_name, latitude, longitude,
-                  data_source, external_station_id)
-                 VALUES (?, ?, ?, 'KMA', ?)
+                  data_source, external_station_id,coordinate_source_url)
+                 VALUES (?, ?, ?, 'KMA', ?,?)
                  ON DUPLICATE KEY UPDATE
                     station_name = VALUES(station_name),
                     latitude = VALUES(latitude),
-                    longitude = VALUES(longitude)`,
-                [stationName, latitude, longitude, externalId]
+                    longitude = VALUES(longitude), coordinate_source_url=VALUES(coordinate_source_url)`,
+                [stationName, latitude, longitude, externalId,"https://apihub.kma.go.kr/api/typ01/url/stn_inf.php"]
             );
 
             imported++;

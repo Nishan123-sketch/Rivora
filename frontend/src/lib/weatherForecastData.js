@@ -132,7 +132,8 @@ export async function fetchStationForecast(fetchImpl, stationId, signal) {
 export async function requestStationForecastImport(fetchImpl, stationId, signal) {
   const response = await fetchImpl('/api/weather/forecast/import', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', 'X-Rivora-Request': '1' },
     body: JSON.stringify({ station_id: Number(stationId) }),
     signal
   });

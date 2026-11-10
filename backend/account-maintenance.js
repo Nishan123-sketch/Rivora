@@ -1,0 +1,4 @@
+'use strict';
+async function cleanup(db=require('./db')){await db.execute('DELETE FROM account_sessions WHERE expires_at<UTC_TIMESTAMP()');await db.execute('DELETE FROM guest_sessions WHERE created_at<NOW()-INTERVAL 1 DAY');await db.execute('DELETE FROM account_actions WHERE expires_at<UTC_TIMESTAMP()');await db.execute('DELETE FROM account_audit WHERE created_at<NOW()-INTERVAL 90 DAY');await db.execute("UPDATE admin_messages SET body='[Message content removed under 30-day retention policy]' WHERE created_at<NOW()-INTERVAL 30 DAY AND body<>'[Message content removed under 30-day retention policy]'");}
+function start(){const tick=()=>cleanup().catch(e=>console.error('[Account retention]',e.code||e.name));const timer=setInterval(tick,24*3600000);timer.unref();return timer;}
+module.exports={cleanup,start};

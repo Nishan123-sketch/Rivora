@@ -1,0 +1,14 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const {transition}=require('../unified-alerts');
+const {resolvePlaces}=require('../place-resolver');
+const {nearest,located}=require('../geo');
+const {chunks,rollingStart}=require('../history-backfill');
+const {token,verify}=require('../unsubscribe');
+const HOUR=3600000,now=Date.parse('2026-11-05T03:00:00Z'),kst=t=>new Date(t+9*HOUR).toISOString().slice(0,19).replace('T',' ');
+const r={data_status:'FRESH',level:'High',observed_at:kst(now)};
+test('alerts require two distinct consecutive high readings, never duplicate scheduler ticks',()=>{const first=transition({},r,now);assert.equal(first.action,null);assert.equal(first.consecutive_high,1);assert.equal(transition(first,r,now).consecutive_high,1);const second=transition(first,{...r,observed_at:kst(now+HOUR)},now+HOUR);assert.equal(second.action,'CREATE');assert.equal(transition({...second,active_alert_id:3},{...r,observed_at:kst(now+2*HOUR)},now+2*HOUR).action,null);});
+test('stale data breaks consecutive evidence; cooldown and three-hour low recovery apply',()=>{const prev={last_observed_at:kst(now-HOUR),consecutive_high:1,last_alert_at:kst(now-HOUR)};assert.equal(transition(prev,r,now).action,null);assert.equal(transition(prev,{...r,data_status:'STALE'},now).consecutive_high,0);let state={active_alert_id:3};for(let h=0;h<=3;h++){state=transition(state,{...r,level:'Low',observed_at:kst(now+h*HOUR)},now+h*HOUR);assert.equal(state.action,h===3?'CLEAR':null);}});
+test('resolver handles Taehwa Brige and Ulsn, and returns candidates instead of inventing places',()=>{const stations=[{station_id:207,station_name:'태화교',external_station_id:'2201670'},{station_id:31,station_name:'울산',external_station_id:'152'}];assert.equal(resolvePlaces('water level at taehwa brige',stations)[0].station_id,207);assert.equal(resolvePlaces('Ulsn',stations)[0].station_id,31);assert.deepEqual(resolvePlaces('xyzzy unknown',stations),[]);});
+test('nearest rain gauge requires valid sourced geometry and computes real distance',()=>{assert.equal(located({latitude:null,longitude:129}),false);const s=nearest({latitude:35.5,longitude:129.3},[{station_id:1,latitude:35.51,longitude:129.3},{station_id:2,latitude:36,longitude:130}]);assert.equal(s.station_id,1);assert.ok(s.distance_km>1&&s.distance_km<1.2);});
+test('rolling backfill covers 13 months in bounded non-overlapping inclusive chunks',()=>{assert.equal(rollingStart(now),'2025-10-05');const c=chunks('2025-10-05','2026-11-05');assert.equal(c[0][0],'2025-10-05');assert.equal(c.at(-1)[1],'2026-11-05');for(let i=1;i<c.length;i++)assert.equal(Date.parse(c[i][0])-Date.parse(c[i-1][1]),86400000);});
+test('unsubscribe tokens are signed, reject modifications and contain no email address',()=>{const env={JWT_SECRET:'synthetic-unsubscribe-test-secret-123456789'};const t=token(23,env);assert.equal(verify(t,env),23);assert.equal(verify(t+'x',env),null);assert.ok(!t.includes('@'));});

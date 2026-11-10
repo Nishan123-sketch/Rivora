@@ -1,0 +1,747 @@
+{
+  "status": "INDEPENDENT_TEST_ACCEPTANCE_FAILED",
+  "probability_available": false,
+  "features": [
+    "level",
+    "change_1h",
+    "change_3h",
+    "change_6h",
+    "acceleration_1h",
+    "percentile_72h",
+    "rain_1h",
+    "rain_3h",
+    "rain_6h",
+    "rain_12h",
+    "rain_24h"
+  ],
+  "target": "New official advisory/warning issuance in (t,t+3h], not physical inundation",
+  "horizon_hours": 3,
+  "split_method": "Frozen calendar seasons; global storm groups; chronological train/validation/test; 72h purge",
+  "probability": null,
+  "split_counts": {
+    "train": {
+      "samples": 220411,
+      "positive_warning_events": 91,
+      "groups": 121,
+      "start": "2022-06-23 16:00:00",
+      "end": "2024-12-28 23:00:00"
+    },
+    "validation": {
+      "samples": 428415,
+      "positive_warning_events": 53,
+      "groups": 119,
+      "start": "2025-01-01 00:00:00",
+      "end": "2025-12-28 23:00:00"
+    },
+    "test": {
+      "samples": 425265,
+      "positive_warning_events": 21,
+      "groups": 102,
+      "start": "2026-01-01 00:00:00",
+      "end": "2026-11-08 12:00:00"
+    }
+  },
+  "split_policy": {
+    "policy_version": "calendar-seasons-2026-v1",
+    "validation_start": "2025-01-01 00:00:00",
+    "test_start": "2026-01-01 00:00:00",
+    "reason": "Full calendar warning seasons; replaces hour-quantile validation dominated by winter. Boundaries frozen before fitting candidates and evaluating test predictions. The 2026 period has previously been inspected for event counts, so this is a retrospective holdout, not prospective validation."
+  },
+  "validation_blocks": {
+    "selection": {
+      "start": "2025-01-01 00:00:00",
+      "end": "2025-08-10 08:00:00",
+      "events": 37,
+      "storm_groups": 2
+    },
+    "calibration": {
+      "start": "2025-08-13 09:00:00",
+      "end": "2025-09-14 13:00:00",
+      "events": 13,
+      "storm_groups": 2
+    },
+    "thresholds": {
+      "start": "2025-09-17 14:00:00",
+      "end": "2025-12-28 23:00:00",
+      "events": 3,
+      "storm_groups": 1
+    }
+  },
+  "model_name": "Gradient Boosting",
+  "validation_candidate_pr_auc": {
+    "Logistic Regression": 0.2704597373708415,
+    "Random Forest": 0.31185796177470526,
+    "Gradient Boosting": 0.3639126661068073
+  },
+  "thresholds": {
+    "moderate": 0.0027093923287047753,
+    "high": 0.005773158070153315
+  },
+  "validation": {
+    "samples": 137298,
+    "positive_samples": 9,
+    "positive_warning_events": 3,
+    "precision": 0.012364760432766615,
+    "recall": 0.8888888888888888,
+    "f1": 0.024390243902439025,
+    "pr_auc_average_precision": 0.05316984052864847,
+    "roc_auc": 0.9980090660334524,
+    "confusion_matrix": [
+      [
+        136650,
+        639
+      ],
+      [
+        1,
+        8
+      ]
+    ],
+    "false_alarm_episodes": 227,
+    "station_days": 5768,
+    "false_alarms_per_station_day": 0.039355062413314844,
+    "missed_warning_events": 0,
+    "event_detection_rate": 1.0,
+    "median_lead_minutes": 160.0,
+    "brier_score": 6.735098672875564e-05,
+    "calibration_bins": [
+      {
+        "mean_probability": 0.0001882325852194925,
+        "observed_frequency": 5.099550511047812e-05,
+        "samples": 137267
+      },
+      {
+        "mean_probability": 0.12938717953637136,
+        "observed_frequency": 0.08,
+        "samples": 25
+      },
+      {
+        "mean_probability": 0.2413214977734466,
+        "observed_frequency": 0.0,
+        "samples": 6
+      }
+    ]
+  },
+  "test": {
+    "samples": 425265,
+    "positive_samples": 63,
+    "positive_warning_events": 21,
+    "precision": 0.018760195758564437,
+    "recall": 0.7301587301587301,
+    "f1": 0.03658051689860835,
+    "pr_auc_average_precision": 0.05429699183371418,
+    "roc_auc": 0.9633031934102955,
+    "confusion_matrix": [
+      [
+        422796,
+        2406
+      ],
+      [
+        17,
+        46
+      ]
+    ],
+    "false_alarm_episodes": 839,
+    "station_days": 17778,
+    "false_alarms_per_station_day": 0.04719316008549893,
+    "missed_warning_events": 2,
+    "event_detection_rate": 0.9047619047619048,
+    "median_lead_minutes": 150.0,
+    "brier_score": 0.00015318727878597767,
+    "calibration_bins": [
+      {
+        "mean_probability": 0.00018979452664788098,
+        "observed_frequency": 0.00010116885316870259,
+        "samples": 425032
+      },
+      {
+        "mean_probability": 0.13792241007667966,
+        "observed_frequency": 0.08053691275167785,
+        "samples": 149
+      },
+      {
+        "mean_probability": 0.24259352894603764,
+        "observed_frequency": 0.09230769230769231,
+        "samples": 65
+      },
+      {
+        "mean_probability": 0.3370517821613293,
+        "observed_frequency": 0.07692307692307693,
+        "samples": 13
+      },
+      {
+        "mean_probability": 0.4446650202016247,
+        "observed_frequency": 0.3333333333333333,
+        "samples": 3
+      },
+      {
+        "mean_probability": 0.5429058673726401,
+        "observed_frequency": 0.0,
+        "samples": 3
+      }
+    ]
+  },
+  "baseline_climatology": {
+    "samples": 425265,
+    "positive_samples": 63,
+    "positive_warning_events": 21,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "pr_auc_average_precision": 0.0001481429226482311,
+    "roc_auc": 0.5,
+    "confusion_matrix": [
+      [
+        425202,
+        0
+      ],
+      [
+        63,
+        0
+      ]
+    ],
+    "false_alarm_episodes": 0,
+    "station_days": 17778,
+    "false_alarms_per_station_day": 0.0,
+    "missed_warning_events": 21,
+    "event_detection_rate": 0.0,
+    "median_lead_minutes": null,
+    "brier_score": 0.00014908444570041626,
+    "calibration_bins": [
+      {
+        "mean_probability": 0.0011297076824659386,
+        "observed_frequency": 0.0001481429226482311,
+        "samples": 425265
+      }
+    ]
+  },
+  "baseline_rule": {
+    "samples": 425265,
+    "positive_samples": 63,
+    "positive_warning_events": 21,
+    "precision": 0.07534246575342465,
+    "recall": 0.5238095238095238,
+    "f1": 0.1317365269461078,
+    "pr_auc_average_precision": 0.03953564535781683,
+    "roc_auc": 0.7614285176726087,
+    "confusion_matrix": [
+      [
+        424797,
+        405
+      ],
+      [
+        30,
+        33
+      ]
+    ],
+    "false_alarm_episodes": 203,
+    "station_days": 17778,
+    "false_alarms_per_station_day": 0.011418607267409158,
+    "missed_warning_events": 2,
+    "event_detection_rate": 0.9047619047619048,
+    "median_lead_minutes": 60.0,
+    "brier_score": 0.0010228916087615958,
+    "calibration_bins": [
+      {
+        "mean_probability": 0.0,
+        "observed_frequency": 7.061698055914525e-05,
+        "samples": 424827
+      },
+      {
+        "mean_probability": 1.0,
+        "observed_frequency": 0.07534246575342465,
+        "samples": 438
+      }
+    ]
+  },
+  "calibration_method": "Sigmoid on disjoint chronological validation partition",
+  "acceptance_rule": "Predeclared: test Brier beats training climatology, event recall >= 0.8, precision >= 0.2",
+  "by_station": {},
+  "by_river": {},
+  "eligible_station_ids": [],
+  "explanation": {
+    "method": "Validation permutation importance; global association, not causation",
+    "values": [
+      {
+        "feature": "level",
+        "validation_pr_auc_drop": 0.031616536832814915
+      },
+      {
+        "feature": "change_1h",
+        "validation_pr_auc_drop": 0.013085899691833068
+      },
+      {
+        "feature": "change_3h",
+        "validation_pr_auc_drop": -0.024619333906997637
+      },
+      {
+        "feature": "change_6h",
+        "validation_pr_auc_drop": -0.04507202197596073
+      },
+      {
+        "feature": "acceleration_1h",
+        "validation_pr_auc_drop": -0.004425821176809258
+      },
+      {
+        "feature": "percentile_72h",
+        "validation_pr_auc_drop": 0.01027115173632779
+      },
+      {
+        "feature": "rain_1h",
+        "validation_pr_auc_drop": -0.008386579346407033
+      },
+      {
+        "feature": "rain_3h",
+        "validation_pr_auc_drop": 0.038696089431512946
+      },
+      {
+        "feature": "rain_6h",
+        "validation_pr_auc_drop": 0.025635008354117552
+      },
+      {
+        "feature": "rain_12h",
+        "validation_pr_auc_drop": -0.027881465294687435
+      },
+      {
+        "feature": "rain_24h",
+        "validation_pr_auc_drop": 0.049283338769201025
+      }
+    ]
+  },
+  "dataset": {
+    "gauges_in_scope": 789,
+    "historical_records": 647,
+    "issuance_records": 395,
+    "complete_coverage_intervals": 79,
+    "confirmed_negative_samples": 1080725,
+    "unknown_samples_excluded": 104691,
+    "usable_samples": 1081182,
+    "positive_warning_events": 165,
+    "training_station_ids": [
+      1566,
+      1567,
+      1583,
+      1671,
+      1674,
+      1679,
+      1692,
+      1694,
+      1696,
+      1704,
+      1706,
+      1707,
+      2385,
+      2400,
+      2404,
+      2409,
+      2410,
+      2906,
+      2910,
+      2911,
+      2922,
+      2925,
+      2932,
+      2935,
+      2944,
+      2948,
+      2970,
+      2983,
+      2999,
+      3002,
+      3003,
+      3008,
+      3010,
+      3013,
+      3073,
+      3076,
+      3077,
+      3078,
+      3082,
+      3089,
+      3090,
+      3091,
+      3093,
+      3094,
+      3095,
+      3096,
+      3098,
+      3099,
+      3103,
+      3104,
+      3106,
+      3107,
+      3108,
+      3109,
+      3110,
+      3111,
+      3113,
+      3114,
+      3115,
+      3117,
+      3381,
+      3382,
+      3384,
+      3385
+    ]
+  },
+  "station_ids": [],
+  "rainfall_sources": {
+    "1671": {
+      "provider": "HRFCO",
+      "code": "10044130",
+      "distance_km": 8.634
+    },
+    "1692": {
+      "provider": "HRFCO",
+      "code": "10184110",
+      "distance_km": 5.17
+    },
+    "1694": {
+      "provider": "HRFCO",
+      "code": "10184100",
+      "distance_km": 0.0
+    },
+    "1696": {
+      "provider": "HRFCO",
+      "code": "10184080",
+      "distance_km": 1.833
+    },
+    "1679": {
+      "provider": "HRFCO",
+      "code": "10074060",
+      "distance_km": 10.191
+    },
+    "1567": {
+      "provider": "HRFCO",
+      "code": "10214010",
+      "distance_km": 0.0
+    },
+    "1706": {
+      "provider": "HRFCO",
+      "code": "11014010",
+      "distance_km": 4.744
+    },
+    "1674": {
+      "provider": "HRFCO",
+      "code": "10064060",
+      "distance_km": 0.0
+    },
+    "1566": {
+      "provider": "HRFCO",
+      "code": "10184010",
+      "distance_km": 1.215
+    },
+    "1704": {
+      "provider": "HRFCO",
+      "code": "10234030",
+      "distance_km": 2.915
+    },
+    "1707": {
+      "provider": "HRFCO",
+      "code": "11014070",
+      "distance_km": 2.073
+    },
+    "2385": {
+      "provider": "HRFCO",
+      "code": "30014160",
+      "distance_km": 4.683
+    },
+    "2400": {
+      "provider": "HRFCO",
+      "code": "30034010",
+      "distance_km": 1.032
+    },
+    "2404": {
+      "provider": "HRFCO",
+      "code": "30044030",
+      "distance_km": 5.28
+    },
+    "2410": {
+      "provider": "HRFCO",
+      "code": "30064020",
+      "distance_km": 5.793
+    },
+    "2409": {
+      "provider": "HRFCO",
+      "code": "30064020",
+      "distance_km": 6.466
+    },
+    "1583": {
+      "provider": "HRFCO",
+      "code": "30094040",
+      "distance_km": 0.0
+    },
+    "2906": {
+      "provider": "HRFCO",
+      "code": "10064020",
+      "distance_km": 3.231
+    },
+    "2910": {
+      "provider": "HRFCO",
+      "code": "10134020",
+      "distance_km": 0.0
+    },
+    "2911": {
+      "provider": "HRFCO",
+      "code": "10154010",
+      "distance_km": 2.845
+    },
+    "2922": {
+      "provider": "HRFCO",
+      "code": "10234030",
+      "distance_km": 10.695
+    },
+    "2925": {
+      "provider": "HRFCO",
+      "code": "10164080",
+      "distance_km": 0.0
+    },
+    "2932": {
+      "provider": "HRFCO",
+      "code": "10184220",
+      "distance_km": 1.681
+    },
+    "2935": {
+      "provider": "HRFCO",
+      "code": "10184110",
+      "distance_km": 0.0
+    },
+    "2944": {
+      "provider": "HRFCO",
+      "code": "10184080",
+      "distance_km": 2.593
+    },
+    "2948": {
+      "provider": "HRFCO",
+      "code": "10184200",
+      "distance_km": 3.959
+    },
+    "2970": {
+      "provider": "HRFCO",
+      "code": "10204010",
+      "distance_km": 4.365
+    },
+    "2983": {
+      "provider": "HRFCO",
+      "code": "10124080",
+      "distance_km": 1.67
+    },
+    "2999": {
+      "provider": "HRFCO",
+      "code": "11014140",
+      "distance_km": 7.454
+    },
+    "3002": {
+      "provider": "HRFCO",
+      "code": "11014080",
+      "distance_km": 0.0
+    },
+    "3003": {
+      "provider": "HRFCO",
+      "code": "11014070",
+      "distance_km": 5.592
+    },
+    "3008": {
+      "provider": "HRFCO",
+      "code": "10224020",
+      "distance_km": 0.23
+    },
+    "3010": {
+      "provider": "HRFCO",
+      "code": "10224020",
+      "distance_km": 2.106
+    },
+    "3013": {
+      "provider": "HRFCO",
+      "code": "10224090",
+      "distance_km": 6.71
+    },
+    "3073": {
+      "provider": "HRFCO",
+      "code": "10224050",
+      "distance_km": 5.246
+    },
+    "3076": {
+      "provider": "HRFCO",
+      "code": "10184160",
+      "distance_km": 2.993
+    },
+    "3077": {
+      "provider": "HRFCO",
+      "code": "11014140",
+      "distance_km": 5.157
+    },
+    "3078": {
+      "provider": "HRFCO",
+      "code": "10224060",
+      "distance_km": 5.77
+    },
+    "3082": {
+      "provider": "HRFCO",
+      "code": "10024200",
+      "distance_km": 2.026
+    },
+    "3083": {
+      "provider": "HRFCO",
+      "code": "10144170",
+      "distance_km": 1.246
+    },
+    "3089": {
+      "provider": "HRFCO",
+      "code": "30044030",
+      "distance_km": 4.795
+    },
+    "3090": {
+      "provider": "HRFCO",
+      "code": "30074030",
+      "distance_km": 0.718
+    },
+    "3091": {
+      "provider": "HRFCO",
+      "code": "30074150",
+      "distance_km": 1.997
+    },
+    "3092": {
+      "provider": "HRFCO",
+      "code": "30084010",
+      "distance_km": 4.512
+    },
+    "3093": {
+      "provider": "HRFCO",
+      "code": "30094020",
+      "distance_km": 0.0
+    },
+    "3094": {
+      "provider": "HRFCO",
+      "code": "30094050",
+      "distance_km": 5.24
+    },
+    "3095": {
+      "provider": "HRFCO",
+      "code": "30094010",
+      "distance_km": 1.242
+    },
+    "3096": {
+      "provider": "HRFCO",
+      "code": "30114020",
+      "distance_km": 7.524
+    },
+    "3097": {
+      "provider": "HRFCO",
+      "code": "30114110",
+      "distance_km": 5.799
+    },
+    "3098": {
+      "provider": "HRFCO",
+      "code": "30114030",
+      "distance_km": 2.042
+    },
+    "3099": {
+      "provider": "HRFCO",
+      "code": "30114060",
+      "distance_km": 0.04
+    },
+    "3103": {
+      "provider": "HRFCO",
+      "code": "30124070",
+      "distance_km": 6.083
+    },
+    "3104": {
+      "provider": "HRFCO",
+      "code": "30124110",
+      "distance_km": 6.342
+    },
+    "3105": {
+      "provider": "HRFCO",
+      "code": "30124120",
+      "distance_km": 0.04
+    },
+    "3106": {
+      "provider": "HRFCO",
+      "code": "30144010",
+      "distance_km": 0.139
+    },
+    "3107": {
+      "provider": "HRFCO",
+      "code": "30124090",
+      "distance_km": 6.315
+    },
+    "3108": {
+      "provider": "HRFCO",
+      "code": "30124090",
+      "distance_km": 3.221
+    },
+    "3109": {
+      "provider": "HRFCO",
+      "code": "30144010",
+      "distance_km": 6.18
+    },
+    "3110": {
+      "provider": "HRFCO",
+      "code": "30134040",
+      "distance_km": 0.642
+    },
+    "3111": {
+      "provider": "HRFCO",
+      "code": "30134050",
+      "distance_km": 7.023
+    },
+    "3112": {
+      "provider": "HRFCO",
+      "code": "30134030",
+      "distance_km": 6.7
+    },
+    "3113": {
+      "provider": "HRFCO",
+      "code": "31014020",
+      "distance_km": 6.444
+    },
+    "3114": {
+      "provider": "HRFCO",
+      "code": "31014020",
+      "distance_km": 2.147
+    },
+    "3115": {
+      "provider": "HRFCO",
+      "code": "31014110",
+      "distance_km": 0.748
+    },
+    "3116": {
+      "provider": "HRFCO",
+      "code": "31014070",
+      "distance_km": 2.007
+    },
+    "3117": {
+      "provider": "HRFCO",
+      "code": "31014090",
+      "distance_km": 11.037
+    },
+    "3381": {
+      "provider": "HRFCO",
+      "code": "30094050",
+      "distance_km": 0.0
+    },
+    "3382": {
+      "provider": "HRFCO",
+      "code": "30114020",
+      "distance_km": 0.0
+    },
+    "3383": {
+      "provider": "HRFCO",
+      "code": "30114110",
+      "distance_km": 0.0
+    },
+    "3384": {
+      "provider": "HRFCO",
+      "code": "30114070",
+      "distance_km": 4.868
+    },
+    "3385": {
+      "provider": "HRFCO",
+      "code": "32034050",
+      "distance_km": 3.921
+    }
+  },
+  "model_version": "warning-v1-20261108T070103",
+  "generated_at": "2026-11-08T07:01:03.407450+00:00",
+  "prediction_type": "NEW_OFFICIAL_WARNING_ISSUANCE"
+}

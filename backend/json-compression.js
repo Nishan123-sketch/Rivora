@@ -1,0 +1,3 @@
+'use strict';
+function jsonCompression(req,res,next){if(req.acceptsEncodings('gzip')!=='gzip'||req.path.includes('/chat'))return next();const original=res.json.bind(res);res.json=body=>{const text=JSON.stringify(body);if(Buffer.byteLength(text)<2048)return original(body);res.vary('Accept-Encoding');require('zlib').gzip(text,{level:4},(error,compressed)=>{if(res.writableEnded||res.destroyed)return;if(error)return original(body);res.set('Content-Type','application/json; charset=utf-8');res.set('Content-Encoding','gzip');res.send(compressed);});return res;};next();}
+module.exports={jsonCompression};

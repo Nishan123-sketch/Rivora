@@ -10,11 +10,11 @@ const pool = mysql.createPool({
   dateStrings: true,
   waitForConnections: true,
   connectionLimit: 20,
-  queueLimit: 0,
+  queueLimit: 100,
   // Fail fast with a real error instead of letting API requests hang when MySQL is
   // unreachable (the browser would otherwise just time out: "cannot reach the server").
   connectTimeout: 10000,
   enableKeepAlive: true,
   keepAliveInitialDelay: 10000,
 });
-module.exports = pool;
+module.exports = require('./performance-metrics').instrument(pool);

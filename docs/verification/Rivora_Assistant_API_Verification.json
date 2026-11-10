@@ -1,0 +1,47 @@
+{
+  "checked_at": "2026-11-07T05:54:25.199Z",
+  "checks": [
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "status": 200,
+      "ms": 202,
+      "response": "{\"mode\":\"DATABASE_GROUNDED\",\"retrieved_at\":\"2026-11-07T05:54:19.327Z\",\"station_ids\":[31],\"evidence\":[{\"status\":\"AVAILABLE\",\"evidence_type\":\"OBSERVATION\",\"station_id\":31,\"station_name\":\"Ulsan\",\"metric\":\"wind_speed\",\"value\":2.8,\"unit\":\"m/s\",\"observed_at\":\"2026-11-07T14:00:00+09:00\",\"issued_at\":null,\"valid_at\":null,\"retrieved_at\":\"2026-11-07T05:54:19.327Z\",\"source\":\"KMA\",\"freshness\":\"FRESH\",\"missing_fields\":[],\"limitations\":[]}],\"tools\":[\"resolve_location\",\"get_latest_readings\"],\"intent\":\"data\",\"answer\":\"### Ulsan\\n\\nWind speed: **2.8 m/s** · Ulsan · 2026-11-07T14:00:00+09:00 · KMA.\"}"
+    },
+    {
+      "path": "/api/chat/stream",
+      "method": "POST",
+      "status": 200,
+      "ms": 142,
+      "response": "event: meta\ndata: {\"mode\":\"DATABASE_GROUNDED\",\"retrieved_at\":\"2026-11-07T05:54:19.429Z\",\"station_ids\":[207],\"evidence\":[{\"status\":\"AVAILABLE\",\"evidence_type\":\"OBSERVATION\",\"station_id\":207,\"station_name\":\"Taehwa Bridge\",\"metric\":\"hourly_rainfall\",\"value\":0,\"unit\":\"mm\",\"observed_at\":\"2026-11-07T13:00:00+09:00\",\"issued_at\":null,\"valid_at\":null,\"retrieved_at\":\"2026-11-07T05:54:19.429Z\",\"source\":\"Nearby KMA AWS 152\",\"freshness\":\"FRESH\",\"missing_fields\":[],\"limitations\":[\"Nearby rainfall gauge; not measured at the river gauge.\"]},{\"status\":\"AVAILABLE\",\"evidence_type\":\"OBSERVATION\",\"station_id\":207,\"station_name\":\"Taehwa Bridge\",\"metric\":\"water_level\",\"value\":4.62,\"unit\":\"m\",\"observed_at\":\"2026-11-07T14:30:00+09:00\",\"issued_at\":null,\"valid_at\":null,\"retrieved_at\":\"2026-11-07T05:54:19.429Z\",\"source\":\"WAMIS\",\"freshness\":\"FRESH\",\"missing_fields\":[],\"limitations\":[]},{\"status\":\"AVAILABLE\",\"evidence_type\":\"OBSERVATION\",\"station_id\":31,\"station_name\":\"Ulsan\",\"metric\":\"temperature\",\"value\":12.4,\"unit\":\"°C\",\"observed_at\":\"2026-11-07T14:00:00+09:00\",\"issued_at\":null,\"valid_at\":null,\"retrieved_at\":\"2026-11-07T05:54:19.429Z\",\"source\":\"KMA\",\"freshness\":\"FRESH\",\"missing_fields\":[],\"limitations\":[]},{\"status\":\"MISSING\",\"evidence_type\":\"OBSERVATION\",\"station_id\":31,\"station_name\":\"Ulsan\",\"metric\":\"hourly_rainfall\",\"value\":null,\"unit\":\"mm\",\"observed_at\":\"2026-11-07T14:00:00+09:00\",\"issued_at\":null,\"valid_at\":null,\"retrieved_at\":\"2026-11-07T05:54:19.429Z\",\"source\":\"KMA\",\"freshness\":\"FRESH\",\"missing_fields\":[\"hourly_rainfall\"],\"limitations\":[]},{\"status\":\"AVAILABLE\",\"evidence_type\":\"OBSERVATION\",\"station_id\":31,\"station_name\":\"Ulsan\",\"metric\":\"wind_speed\",\"value\":2.8,\"unit\":\"m/s\",\"observed_at\":\"2026-11-07T14:00:00+09:00\",\"issued_at\":null,\"valid_at\":null,\"retrieved_at\":\"2026-11-07T05:54:19.429Z\",\"source\":\"KMA\",\"freshness\":\"FRESH\",\"missing_fields\":[],\"limitations\":[]},{\"status\":\"AVAILABLE\",\"evidence_type\":\"OBSERVATION\",\"station_id\":31,\"station_name\":\"Ulsan\",\"metric\":\"humidity\",\"value\":15,\"unit\":\"%\",\"observed_at\":\"2026-11-07T14:00:00+09:00\",\"issued_at\":null,\"valid_at\":null,\"retrieved_at\":\"2026-11-07T05:54:19.429Z\",\"source\":\"KMA\",\"freshness\":\"FRESH\",\"missing_fields\":[],\"limitations\":[]}],\"tools\":[\"resolve_location\",\"get_latest_readings\"],\"intent\":\"data\"}\n\nevent: token\ndata: {\"text\":\"### Taehwa Bridge\\n\\nHourly rainfall: **0 mm** · Taehwa Bridge · 2026-11-07T13:00:00+09:00 · Nearby KMA AWS 152.\\n\\nWater level: **4.62 m** · Taehwa Bridge · 2026-11-07T14:30:00+09:00 · WAMIS.\\n\\nTemperat"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "status": 400,
+      "ms": 5,
+      "response": "{\"message\":\"Invalid conversation or station.\"}"
+    },
+    {
+      "path": "/api/chat/conversations",
+      "method": "GET",
+      "status": 401,
+      "ms": 4,
+      "response": "{\"success\":false,\"message\":\"Authentication required.\"}"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "status": 200,
+      "ms": 7,
+      "response": "{\"mode\":\"EMERGENCY_GUIDANCE\",\"retrieved_at\":\"2026-11-07T05:54:19.576Z\",\"station_ids\":[],\"evidence\":[],\"tools\":[],\"intent\":\"emergency\",\"guidance_source\":{\"authority\":\"Ministry of the Interior and Safety, National Disaster Safety Portal\",\"source_url\":\"https://www.safekorea.go.kr/safekorea-kor/acts/nacts/action-guide.do?category=inundation&menuSn=4\",\"reviewed_at\":\"2026-11-07\"},\"answer\":\"Stay out of moving water and flooded roads. If you can do so safely, move to higher ground and contact emergency rescue services. In South Korea, call 119. Follow official evacuation instructions. This app cannot assess your immediate safety.\"}"
+    },
+    {
+      "path": "/api/chat",
+      "method": "POST",
+      "status": 200,
+      "ms": 5618,
+      "response": "{\"answer\":\"Hello! How's your day going so far?\",\"mode\":\"LANGUAGE_MODEL\",\"evidence\":[],\"station_ids\":[],\"retrieved_at\":\"2026-11-07T05:54:25.194Z\"}"
+    }
+  ]
+}

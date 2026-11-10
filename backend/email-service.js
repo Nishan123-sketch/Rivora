@@ -9,10 +9,12 @@ function smtpConfig(env = process.env) {
   }
   const port = env.SMTP_PORT ? Number(env.SMTP_PORT) : 465;
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid SMTP_PORT');
+  const configuredSecure=env.SMTP_SECURE;
+  if(configuredSecure!==undefined&&!['true','false'].includes(String(configuredSecure).toLowerCase()))throw new Error('SMTP_SECURE must be true or false');
   return {
     host: env.SMTP_HOST,
     port,
-    secure: port === 465,
+    secure: configuredSecure===undefined?port===465:String(configuredSecure).toLowerCase()==='true',
     auth: { user: env.SMTP_USER, pass: env.SMTP_APP_PASSWORD }
   };
 }

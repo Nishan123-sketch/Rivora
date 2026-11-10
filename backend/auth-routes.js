@@ -106,44 +106,26 @@ router.post('/auth/register', authLimiter, async (req, res) => {
             });
         }
 
+        await require('./monitoring-locations').registrationLocation({location:req.body.location,stationId:Number(req.body.station_id),province:req.body.province},pool);
         const passwordHash = await bcrypt.hash(password, 12);
 
-        const [result] = await pool.execute(
-            `INSERT INTO users (email, password_hash)
-             VALUES (?, ?)`,
-            [email, passwordHash]
-        );
+        const result = await require('./register-account').createAccount({email,passwordHash,stationId:Number(req.body.station_id),consent:false},pool);
 
-        let emailSent = false;
-
-        try {
-            await sendVerificationEmail(result.insertId, email);
-            emailSent = true;
-        } catch (error) {
-            console.error(
-                'OTP email delivery failed:',
-                error.message
-            );
-        }
+        // Do not make the public registration response reveal account existence
+        // through SMTP latency. Existing authenticated resend remains available.
+        setImmediate(()=>{void sendVerificationEmail(result.insertId,email).catch(()=>console.error('Account verification delivery unavailable.'));});
 
         return res.status(201).json({
             success: true,
-            message: emailSent
-                ? 'Account created. Check your email for the 6-digit verification code.'
-                : 'Account created, but the verification email could not be sent. Please request a new code.',
-            verification_email_sent: emailSent,
-            user: {
-                user_id: result.insertId,
-                email,
-                email_verified: false
-            }
+            message: 'If this address is eligible, check your email for a verification code. Existing account holders can sign in or recover their password.'
         });
 
     } catch (error) {
+        if(error.status===400)return res.status(400).json({success:false,message:error.message});
         if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({
-                success: false,
-                message: 'An account with this email already exists.'
+            return res.status(201).json({
+                success: true,
+                message: 'If this address is eligible, check your email for a verification code. Existing account holders can sign in or recover their password.'
             });
         }
 
@@ -174,7 +156,7 @@ router.post('/auth/login', authLimiter, async (req, res) => {
 
         const [rows] = await pool.execute(
             `SELECT user_id, email, password_hash,
-                    email_verified_at
+                    email_verified_at, account_status, must_change_password
              FROM users
              WHERE email = ?
              LIMIT 1`,
@@ -182,6 +164,8 @@ router.post('/auth/login', authLimiter, async (req, res) => {
         );
 
         if (!rows.length) {
+            await bcrypt.compare(password,'$2b$12$GHEl2WLDk4uMLuzRROGoB.7UOqV5DGaT0qwdxU5wc6TQ7BNbv0KlK');
+            await require('./account-sessions').audit(pool,null,'EMAIL_LOGIN','FAILED');
             return res.status(401).json({
                 success: false,
                 message: 'Invalid email or password.'
@@ -196,13 +180,18 @@ router.post('/auth/login', authLimiter, async (req, res) => {
         );
 
         if (!matches) {
+            await require('./account-sessions').audit(pool,null,'EMAIL_LOGIN','FAILED');
             return res.status(401).json({
                 success: false,
                 message: 'Invalid email or password.'
             });
         }
 
-        const token = createToken(user);
+        if(user.account_status&&user.account_status!=='ACTIVE'){await require('./account-sessions').audit(pool,null,'EMAIL_LOGIN','FAILED');return res.status(401).json({success:false,message:'Invalid email or password.'});}
+        const sessionUser=await require('./account-sessions').issue(req,res,user,pool);
+        await pool.execute('UPDATE users SET last_login_at=UTC_TIMESTAMP() WHERE user_id=?',[user.user_id]);
+        await require('./account-sessions').audit(pool,user.user_id,'EMAIL_LOGIN','SUCCESS');
+        const token = user.must_change_password?null:createToken(user);
 
         return res.json({
             success: true,
@@ -210,11 +199,7 @@ router.post('/auth/login', authLimiter, async (req, res) => {
             token,
             token_type: 'Bearer',
             expires_in: 7200,
-            user: {
-                user_id: user.user_id,
-                email: user.email,
-                email_verified: Boolean(user.email_verified_at)
-            }
+            user: sessionUser
         });
 
     } catch (error) {
@@ -285,7 +270,7 @@ router.post('/auth/verify-otp', otpLimiter, async (req, res) => {
 
             return res.status(400).json({
                 success: false,
-                message: 'Email is already verified.'
+                message: 'Invalid or expired verification code.'
             });
         }
 
@@ -309,7 +294,7 @@ router.post('/auth/verify-otp', otpLimiter, async (req, res) => {
 
             return res.status(400).json({
                 success: false,
-                message: 'No active verification code. Request a new code.'
+                message: 'Invalid or expired verification code.'
             });
         }
 
@@ -327,7 +312,7 @@ router.post('/auth/verify-otp', otpLimiter, async (req, res) => {
 
             return res.status(400).json({
                 success: false,
-                message: 'Verification code expired. Request a new code.'
+                message: 'Invalid or expired verification code.'
             });
         }
 
@@ -361,7 +346,7 @@ router.post('/auth/verify-otp', otpLimiter, async (req, res) => {
 
             return res.status(400).json({
                 success: false,
-                message: 'Incorrect verification code.'
+                message: 'Invalid or expired verification code.'
             });
         }
 

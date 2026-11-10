@@ -5,6 +5,10 @@ require('dotenv').config();
 const pool = require('./db');
 
 const INDEXES = [
+  ['water_readings','idx_water_recent','(observed_at,station_id,water_level)'],
+  ['water_readings','idx_water_station_observed','(station_id,observed_at)'],
+  ['weather_readings','idx_weather_station_observed','(station_id,observed_at)'],
+  ['aws_rainfall_readings','idx_aws_station_observed','(aws_station_code,observed_at)'],
   ['weather_readings',       'idx_weather_observed',   '(observed_at)'],
   ['water_readings',         'idx_water_observed',     '(observed_at)'],
   ['aws_rainfall_readings',  'idx_aws_observed',       '(observed_at)'],

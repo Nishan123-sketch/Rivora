@@ -1,3 +1,4 @@
+import {apiFetch} from '../lib/apiFetch.js';
 
 import { useEffect, useState } from 'react';
 import './RiverPredictionCard.css';
@@ -27,7 +28,7 @@ export default function RiverPredictionCard({ stationId, stationName, gaugeCode 
 
     async function loadPrediction() {
       try {
-        const response = await fetch(`/api/rivers/${encodeURIComponent(stationId)}/prediction`, {signal: controller.signal});
+        const response = await apiFetch(`/api/rivers/${encodeURIComponent(stationId)}/prediction`, {signal: controller.signal});
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);

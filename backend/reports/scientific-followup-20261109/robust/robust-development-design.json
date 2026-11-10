@@ -1,0 +1,84 @@
+{
+  "created_at": "2026-11-08T16:56:05.444818+00:00",
+  "station_ids": [
+    207,
+    1511,
+    1515,
+    1516,
+    1517,
+    1518,
+    1519,
+    1538,
+    1540,
+    1542,
+    1543,
+    1546
+  ],
+  "horizons": [
+    3,
+    6
+  ],
+  "selection": "Same frozen 12-station cohort and train/selection dates as November 9 continuation",
+  "cv": "Two expanding training-only 168h folds at .70/.85; timestamp-based 78h embargo",
+  "candidate_selection": "Require >=5% pooled CV MAE improvement, nonworse MAE in each fold and nonworse pooled CV RMSE; choose minimum pooled CV RMSE. Assess that choice once on inspected selection; retain persistence if existing MAE/RMSE/rising/high-water selection requirements fail.",
+  "independent_acceptance": "NOT_EVALUATED_NOT_DEPLOYED",
+  "final_test_used": false,
+  "extreme_targets_removed": 0,
+  "limits": "Selection already inspected; all performance remains development-only. No verified catchment/upstream features are fabricated.",
+  "source_sha256": "84350f3e0a3312b5b2e870ca7056694c0d5717a6557f85a6c2cc744cb33c725e",
+  "environment": {
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "sklearn": "1.8.0"
+  },
+  "candidate_specs": [
+    {
+      "name": "RIDGE_50",
+      "model": "Pipeline(steps=[('standardscaler', StandardScaler()),\n                ('ridge', Ridge(alpha=50))])",
+      "persistence_blend_weight": 1.0,
+      "soft_training_weights": false
+    },
+    {
+      "name": "HUBER",
+      "model": "Pipeline(steps=[('standardscaler', StandardScaler()),\n                ('huberregressor', HuberRegressor(alpha=1.0, max_iter=2000))])",
+      "persistence_blend_weight": 1.0,
+      "soft_training_weights": false
+    },
+    {
+      "name": "HGB_absolute_error_3",
+      "model": "HistGradientBoostingRegressor(early_stopping=False, l2_regularization=25,\n                              learning_rate=0.03, loss='absolute_error',\n                              max_leaf_nodes=3, min_samples_leaf=100,\n                              random_state=42)",
+      "persistence_blend_weight": 1.0,
+      "soft_training_weights": false
+    },
+    {
+      "name": "HGB_absolute_error_7",
+      "model": "HistGradientBoostingRegressor(early_stopping=False, l2_regularization=25,\n                              learning_rate=0.03, loss='absolute_error',\n                              max_leaf_nodes=7, min_samples_leaf=100,\n                              random_state=42)",
+      "persistence_blend_weight": 1.0,
+      "soft_training_weights": false
+    },
+    {
+      "name": "HGB_squared_error_3",
+      "model": "HistGradientBoostingRegressor(early_stopping=False, l2_regularization=25,\n                              learning_rate=0.03, max_leaf_nodes=3,\n                              min_samples_leaf=100, random_state=42)",
+      "persistence_blend_weight": 1.0,
+      "soft_training_weights": false
+    },
+    {
+      "name": "HGB_squared_error_7",
+      "model": "HistGradientBoostingRegressor(early_stopping=False, l2_regularization=25,\n                              learning_rate=0.03, max_leaf_nodes=7,\n                              min_samples_leaf=100, random_state=42)",
+      "persistence_blend_weight": 1.0,
+      "soft_training_weights": false
+    },
+    {
+      "name": "HGB_MAE_HALF",
+      "model": "HistGradientBoostingRegressor(early_stopping=False, l2_regularization=25,\n                              learning_rate=0.03, loss='absolute_error',\n                              max_leaf_nodes=3, min_samples_leaf=100,\n                              random_state=42)",
+      "persistence_blend_weight": 0.5,
+      "soft_training_weights": false
+    },
+    {
+      "name": "HGB_SQUARED_SOFT_WEIGHTS",
+      "model": "HistGradientBoostingRegressor(early_stopping=False, l2_regularization=25,\n                              learning_rate=0.03, max_leaf_nodes=3,\n                              min_samples_leaf=100, random_state=42)",
+      "persistence_blend_weight": 1.0,
+      "soft_training_weights": true
+    }
+  ]
+}

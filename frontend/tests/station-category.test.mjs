@@ -1,0 +1,4 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {stationCounts,stationCategory} from '../src/lib/stationCategory.js';
+test('every station belongs to exactly one category, including Severe and unavailable',()=>{const rows=['Low','Moderate','High','Severe',null,undefined].map(level=>({level}));const c=stationCounts(rows);assert.equal(c.All,c.Low+c.Moderate+c.High+c['Not assessed']);assert.equal(c.High,2);assert.equal(c['Not assessed'],2);assert.equal(stationCategory({level:null}),'Not assessed');});
+
+test('the reported 789-row discrepancy includes an explicit unassessed category',()=>{const rows=[...Array.from({length:787},()=>({level:'Low'})),{level:'Severe'},{level:null}];const c=stationCounts(rows);assert.deepEqual(c,{All:789,Low:787,Moderate:0,High:1,'Not assessed':1});assert.equal(c.All,c.Low+c.Moderate+c.High+c['Not assessed']);});

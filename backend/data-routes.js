@@ -21,7 +21,7 @@ router.get('/stations', async (req, res) => {
                 FROM stations
                 ORDER BY data_source, station_name
             `);
-            return r;
+            return require('./official-station-policy').publicStations(r);
         });
         res.json({ success: true, count: rows.length, data: rows });
     } catch (error) {

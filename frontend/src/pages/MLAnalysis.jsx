@@ -1,3 +1,4 @@
+import {apiFetch} from '../lib/apiFetch.js';
 
 import { useEffect, useMemo, useState } from 'react';
 import { Section, Notice } from '../components/Shared';
@@ -70,7 +71,7 @@ function showTime(value) {
 }
 
 async function getJson(url, signal) {
-  const response = await fetch(url, { signal });
+  const response = await apiFetch(url, { signal });
 
   if (!response.ok) {
     throw new Error(`${url}: HTTP ${response.status}`);

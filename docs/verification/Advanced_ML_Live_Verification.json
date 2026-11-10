@@ -1,0 +1,118 @@
+{
+  "checked_at": "2026-11-07T00:14:04.391Z",
+  "checks": [
+    {
+      "route": "/api/ml/overview",
+      "http_status": 200,
+      "ms": 126,
+      "success": true,
+      "counts": {
+        "gauges": 789,
+        "level_forecasts": 68,
+        "experimental_grades": 0,
+        "validated_warning_models": 0,
+        "official_warning_coverage": 0
+      }
+    },
+    {
+      "route": "/api/ml/stations/207",
+      "http_status": 200,
+      "ms": 8,
+      "success": true,
+      "forecasts": [
+        {
+          "horizon": 1,
+          "status": "AVAILABLE",
+          "value": 4.85,
+          "reason": null
+        },
+        {
+          "horizon": 3,
+          "status": "AVAILABLE",
+          "value": 4.833,
+          "reason": null
+        },
+        {
+          "horizon": 6,
+          "status": "AVAILABLE",
+          "value": 4.746,
+          "reason": null
+        }
+      ],
+      "warning": {
+        "station_id": 207,
+        "station_code": "2201670",
+        "observed_at": "2026-11-07 08:00:00",
+        "issued_at": "2026-11-07 09:13:22",
+        "valid_at": "2026-11-07 12:13:22",
+        "horizon_hours": 3,
+        "prediction_type": "NEW_OFFICIAL_WARNING_ISSUANCE",
+        "model_name": null,
+        "model_version": "warning-v1-20261106T175303",
+        "probability": null,
+        "prediction_value": null,
+        "level": null,
+        "validation_status": "INSUFFICIENT_VALIDATION_DATA",
+        "data_quality_status": "INCOMPLETE",
+        "status": "INSUFFICIENT_VALIDATION_DATA",
+        "reason": "NO_COMPLETE_WARNING_ARCHIVE_COVERAGE"
+      },
+      "quality": {
+        "status": "INCOMPLETE",
+        "issues": [
+          "INCOMPLETE_RAINFALL_WINDOWS"
+        ],
+        "rainfall_distance_km": "4.045",
+        "forecast_features": "EXCLUDED_WITHOUT_ARCHIVED_AVAILABILITY_EVIDENCE"
+      }
+    },
+    {
+      "route": "/api/ml/stations/207/level-forecast",
+      "http_status": 200,
+      "ms": 3,
+      "success": true
+    },
+    {
+      "route": "/api/ml/stations/207/warning-prediction",
+      "http_status": 200,
+      "ms": 3,
+      "success": true
+    },
+    {
+      "route": "/api/ml/stations/207/warning-history",
+      "http_status": 200,
+      "ms": 4,
+      "success": true
+    },
+    {
+      "route": "/api/ml/stations/207/assessment",
+      "http_status": 200,
+      "ms": 3,
+      "success": true
+    },
+    {
+      "route": "/api/ml/stations/207/status",
+      "http_status": 200,
+      "ms": 2,
+      "success": true
+    },
+    {
+      "route": "/api/ml/models/performance?station_id=207",
+      "http_status": 200,
+      "ms": 46,
+      "success": true
+    },
+    {
+      "route": "/api/ml/stations/invalid",
+      "http_status": 400,
+      "ms": 79,
+      "success": false
+    },
+    {
+      "route": "/api/ml/stations/999999",
+      "http_status": 404,
+      "ms": 9,
+      "success": false
+    }
+  ]
+}

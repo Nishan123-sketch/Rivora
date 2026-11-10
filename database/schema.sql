@@ -4,8 +4,8 @@ USE weather_flood_db;
 CREATE TABLE IF NOT EXISTS stations (
  station_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  station_name VARCHAR(100) NOT NULL,
- latitude DECIMAL(9,6) NOT NULL,
- longitude DECIMAL(9,6) NOT NULL,
+ latitude DECIMAL(9,6) NULL,
+ longitude DECIMAL(9,6) NULL,
  external_station_id VARCHAR(50) NULL,
  data_source VARCHAR(50) NOT NULL
 ) ENGINE=InnoDB;

@@ -31,7 +31,7 @@ function validateThreshold(r) {
   if (lv.some(Number.isNaN)) e.push('all four levels must be numbers');
   else if (!(lv[0] < lv[1] && lv[1] < lv[2] && lv[2] < lv[3])) e.push('levels must be strictly increasing: interest < caution < alert < severe');
   if (!isUrl(r.source_url)) e.push('source_url must be the real official source (not a placeholder)');
-  return { errors: e, value: e.length ? null : [id, ...lv, r.source_url] };
+  return { errors: e, value: e.length ? null : [id, ...lv, r.source_url, r.reference_source||null] };
 }
 function validateRainfall(r) {
   const e = []; const id = num(r.station_id);
@@ -50,9 +50,9 @@ function validateLocation(r, knownRivers) {
 }
 
 const SQL = {
-  thresholds: `INSERT INTO flood_thresholds (station_id,interest_level_m,caution_level_m,alert_level_m,severe_level_m,source_url,verification_status,verified_at)
-    VALUES (?,?,?,?,?,?, 'VERIFIED', NOW()) ON DUPLICATE KEY UPDATE interest_level_m=VALUES(interest_level_m),caution_level_m=VALUES(caution_level_m),
-    alert_level_m=VALUES(alert_level_m),severe_level_m=VALUES(severe_level_m),source_url=VALUES(source_url),verification_status='VERIFIED',verified_at=NOW()`,
+  thresholds: `INSERT INTO flood_thresholds (station_id,interest_level_m,caution_level_m,alert_level_m,severe_level_m,source_url,reference_source,verification_status,verified_at)
+    VALUES (?,?,?,?,?,?,?, 'VERIFIED', NOW()) ON DUPLICATE KEY UPDATE interest_level_m=VALUES(interest_level_m),caution_level_m=VALUES(caution_level_m),
+    alert_level_m=VALUES(alert_level_m),severe_level_m=VALUES(severe_level_m),source_url=VALUES(source_url),reference_source=VALUES(reference_source),verification_status='VERIFIED',verified_at=NOW()`,
   rainfall: `INSERT INTO station_rainfall_links (station_id,aws_station_code,reference_url,verification_status) VALUES (?,?,?, 'VERIFIED')
     ON DUPLICATE KEY UPDATE aws_station_code=VALUES(aws_station_code),reference_url=VALUES(reference_url),verification_status='VERIFIED'`,
   locations: `INSERT INTO river_locations (river_id,latitude,longitude,source_url) VALUES (?,?,?,?)

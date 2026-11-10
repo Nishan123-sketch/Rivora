@@ -1,0 +1,159 @@
+{
+  "checked_at": "2026-11-07T00:27:20.488Z",
+  "real_database_verified": true,
+  "hrfco_key_configured": true,
+  "authentic_warning_history": {
+    "records": 329,
+    "stations": 121,
+    "issuances": "217"
+  },
+  "coverage": {
+    "intervals": 211,
+    "complete_intervals": "0"
+  },
+  "level_network": {
+    "evaluated": 789,
+    "available_at_evaluation": 68,
+    "generated_at": "2026-11-07T00:10:43.791Z",
+    "overall": [
+      {
+        "horizon_hours": 1,
+        "gauges": 64,
+        "test_samples": 45823,
+        "mae_m": 0.0071963686358378996,
+        "rmse_m": 0.02372644105161301,
+        "persistence_mae_m": 0.007219904851275561
+      },
+      {
+        "horizon_hours": 3,
+        "gauges": 68,
+        "test_samples": 48682,
+        "mae_m": 0.02063153526970954,
+        "rmse_m": 0.07168386068472529,
+        "persistence_mae_m": 0.022554757405201093
+      },
+      {
+        "horizon_hours": 6,
+        "gauges": 68,
+        "test_samples": 48629,
+        "mae_m": 0.02936808077484629,
+        "rmse_m": 0.08014105649175429,
+        "persistence_mae_m": 0.03415979559522096
+      }
+    ]
+  },
+  "warning_model": {
+    "status": "INSUFFICIENT_VALIDATION_DATA",
+    "reason": "NO_COMPLETE_WARNING_ARCHIVE_COVERAGE",
+    "probability_available": false
+  },
+  "persisted_predictions": 48,
+  "tests": {
+    "backend": 187,
+    "frontend": 20,
+    "python": 8,
+    "failures": 0,
+    "skipped": 0
+  },
+  "api_checks": [
+    {
+      "route": "/api/ml/overview",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/stations/207",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/stations/207/level-forecast",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/stations/207/warning-prediction",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/stations/207/warning-history",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/stations/207/assessment",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/stations/207/status",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/models/performance?station_id=207",
+      "status": 200
+    },
+    {
+      "route": "/api/ml/stations/invalid",
+      "status": 400
+    },
+    {
+      "route": "/api/ml/stations/999999",
+      "status": 404
+    }
+  ],
+  "existing_routes": [
+    {
+      "route": "/api/stations",
+      "status": 200,
+      "ms": 125,
+      "json": true
+    },
+    {
+      "route": "/api/weather/latest",
+      "status": 200,
+      "ms": 8,
+      "json": true
+    },
+    {
+      "route": "/api/river-catalog",
+      "status": 200,
+      "ms": 133,
+      "json": true
+    },
+    {
+      "route": "/api/risk/unified",
+      "status": 200,
+      "ms": 89,
+      "json": true
+    },
+    {
+      "route": "/api/map/rivers",
+      "status": 200,
+      "ms": 4244,
+      "json": true
+    },
+    {
+      "route": "/api/risk-alerts",
+      "status": 200,
+      "ms": 11620,
+      "json": true
+    },
+    {
+      "route": "/api/chat/status",
+      "status": 200,
+      "ms": 13,
+      "json": true
+    }
+  ],
+  "email_delivery_enabled": false,
+  "automatic_alerts_enabled": false,
+  "browser_checks": [
+    "Desktop layout",
+    "1/3/6-hour plotted forecasts",
+    "Persistence and Ridge method labels",
+    "Real holdout errors",
+    "Official history separated from current status",
+    "Unavailable warning probability",
+    "WAMIS-code search",
+    "15-to-30 row loading",
+    "Station selection",
+    "Sticky page and search headers",
+    "Narrow layout"
+  ]
+}

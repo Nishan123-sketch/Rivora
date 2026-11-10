@@ -6,7 +6,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "migrate": "node migrate.js",
-    "test": "node --test tests/*.test.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
     "check:live": "node check-system.js",
     "rivers:setup": "node setup-rivers.js",
     "rivers:refresh": "node river-importer.js",
@@ -15,7 +15,33 @@
     "setup:monitoring": "node setup-monitoring.js",
     "import:reference": "node import-reference-data.js",
     "diagnose": "node diagnose.js",
-    "optimize:db": "node add-performance-indexes.js"
+    "optimize:db": "node add-performance-indexes.js",
+    "migrate:completion": "node migrate-completion.js",
+    "backfill:water": "node history-backfill.js",
+    "backfill:rainfall": "node rainfall-backfill.js",
+    "aggregate:daily": "node history-daily.js",
+    "import:coordinates": "node import-wamis-stations.js",
+    "link:rainfall": "node link-nearest-rainfall.js",
+    "check:coordinates": "node check-map-coordinates.js",
+    "serve": "node server.js --frontend",
+    "import:snapshot": "node import-monitoring-snapshot.js",
+    "import:aws-stations": "node import-aws-stations.js",
+    "import:official-yeongsan": "node import-official-yeongsan.js",
+    "reconcile:official": "node reconcile-official-network.js",
+    "ml:migrate": "node advanced-ml-migrate.js",
+    "ml:history": "node advanced-hrfco-import.js data/hrfco-expanded-history.json",
+    "ml:history:fetch": "node advanced-hrfco-import.js --fetch",
+    "ml:evaluate:levels": "node ml-refresh-network.js",
+    "ml:enrich": "node enrich-ml-history.js",
+    "ml:train:warning": "python ml/advanced_warning.py train",
+    "ml:test": "python -m unittest discover -s ml -p test_advanced_warning.py -v",
+    "assistant:migrate": "node assistant-history.js",
+    "assistant:cleanup": "node assistant-retention.js",
+    "ml:levels:train": "node level-pipeline.js --train",
+    "ml:levels:refresh": "node level-pipeline.js",
+    "ml:test:levels": "python -m unittest discover -s ml -p test_level_research.py -v",
+    "ml:levels:benchmark": "python ml/level_pooled_benchmark.py",
+    "ml:levels:provenance": "node level-history-provenance.js 207"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -27,7 +53,8 @@
     "iconv-lite": "^0.7.3",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.12.0",
-    "nodemailer": "^10.2.1"
+    "nodemailer": "^10.2.1",
+    "openid-client": "^6.8.9"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

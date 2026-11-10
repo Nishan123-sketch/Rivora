@@ -101,7 +101,7 @@ def run(mode):
             try:
                 links=fetch(cur,"SELECT * FROM station_rainfall_links WHERE station_id=%s AND verification_status='VERIFIED'",(sid,))
                 thresholds=fetch(cur,'SELECT * FROM flood_thresholds WHERE station_id=%s',(sid,)); threshold=thresholds[0] if thresholds else None
-                start=os.getenv('ML_HISTORY_START','2026-01-01') if mode=='train' else now-timedelta(days=3)
+                start=(os.getenv('ML_HISTORY_START') or (now-pd.DateOffset(months=13)).strftime('%Y-%m-%d')) if mode=='train' else now-timedelta(days=3)
                 water=fetch(cur,'SELECT observed_at,water_level FROM water_readings WHERE station_id=%s AND observed_at>=%s ORDER BY observed_at',(sid,start))
                 rain=fetch(cur,'SELECT observed_at,hourly_rainfall FROM aws_rainfall_readings WHERE aws_station_code=%s AND observed_at>=%s ORDER BY observed_at',(links[0]['aws_station_code'],start)) if links else []
                 data=features(water,rain); model_file=ROOT/f'station_{sid}.joblib'

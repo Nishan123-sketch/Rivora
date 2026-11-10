@@ -81,7 +81,7 @@ function parsePrecipitation(value) {
 async function importKmaForecast(requestedStationId = null) {
   const key = process.env.KMA_API_KEY;
 
-  if (!key) throw new Error('KMA_API_KEY missing');
+  if (!key) throw Object.assign(new Error('KMA_API_KEY missing'),{code:'KMA_KEY_MISSING'});
 
   // Default to Ulsan; optional database station ID supports other KMA stations.
   const defaultStation = requestedStationId === null ? await findUlsanKma() : null;
@@ -129,19 +129,12 @@ async function importKmaForecast(requestedStationId = null) {
       signal: AbortSignal.timeout(30000)
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `KMA forecast HTTP ${response.status}, page ${pageNo}`
-      );
-    }
-
-    const data = await response.json();
+    if (!response.ok) throw Object.assign(new Error(`KMA forecast HTTP ${response.status}, page ${pageNo}`),{code:'KMA_HTTP_ERROR'});
+    let data;try{data=await response.json();}catch{throw Object.assign(new Error('KMA forecast response was not valid JSON'),{code:'KMA_RESPONSE_ERROR',publicMessage:'the service returned an unreadable response'});}
 
     if (data.response?.header?.resultCode !== '00') {
-      throw new Error(
-        data.response?.header?.resultMsg ||
-        'KMA forecast API error'
-      );
+      const resultMsg=String(data.response?.header?.resultMsg||'KMA forecast API error').slice(0,180);
+      throw Object.assign(new Error(resultMsg),{code:'KMA_RESPONSE_ERROR',publicMessage:resultMsg});
     }
 
     const body = data.response?.body;
@@ -218,12 +211,14 @@ async function importKmaForecast(requestedStationId = null) {
     }
   }
 
+  if(!forecasts.size)throw Object.assign(new Error('KMA returned no supported forecast categories'),{code:'KMA_EMPTY_FORECAST'});
+
   const issuedAt = toSqlDate(baseDate, baseTime);
 
   let inserted = 0;
   let updated = 0;
 
-  const connection = await pool.getConnection();
+  let connection;try{connection=await pool.getConnection();}catch(error){throw Object.assign(error,{code:'KMA_DATABASE_ERROR',detailCode:error.code});}
 
   try {
     await connection.beginTransaction();
@@ -281,7 +276,7 @@ async function importKmaForecast(requestedStationId = null) {
     await connection.commit();
   } catch (error) {
     await connection.rollback();
-    throw error;
+    throw Object.assign(error,{code:'KMA_DATABASE_ERROR',detailCode:error.code});
   } finally {
     connection.release();
   }
@@ -292,6 +287,7 @@ async function importKmaForecast(requestedStationId = null) {
   console.log('Inserted:', inserted);
   console.log('Updated:', updated);
   console.log('Import complete.');
+  return {issued_at:issuedAt,record_count:forecasts.size,inserted,updated};
 }
 
 // Run the importer only when executed directly.

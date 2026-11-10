@@ -9,7 +9,7 @@ function kstMillis(value) {
 }
 function measurementType(stationName) {
   const s = String(stationName || '');
-  if (/댐|저수지|조정지|방수로|dam|reservoir|spillway/i.test(s)) return 'POTENTIAL_DAM_OR_RESERVOIR';
+  if (/댐|저수지|조정지|방수로|\b(?:dam|reservoir|spillway)\b/i.test(s)) return 'POTENTIAL_DAM_OR_RESERVOIR';
   return 'UNCONFIRMED_RIVER_STAGE';
 }
 function evaluateGaugeSafety({station, analysis, nowMs=Date.now(), maxAgeHours=3}) {

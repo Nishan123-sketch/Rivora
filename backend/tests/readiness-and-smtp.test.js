@@ -10,6 +10,8 @@ test('SMTP configuration uses explicit credentials and supports standard 465/587
   const dummy={SMTP_HOST:'smtp.example.test',SMTP_USER:'fake@example.test',SMTP_APP_PASSWORD:'not-a-real-password'};
   const secure=smtpConfig(dummy);
   assert.equal(secure.port,465);assert.equal(secure.secure,true);
+  assert.equal(smtpConfig({...dummy,SMTP_SECURE:'false'}).secure,false);
+  assert.equal(smtpConfig({...dummy,SMTP_PORT:'587',SMTP_SECURE:'true'}).secure,true);
   const tls=smtpConfig({...dummy,SMTP_PORT:'587'});
   assert.equal(tls.secure,false);
   assert.equal(tls.port,587);

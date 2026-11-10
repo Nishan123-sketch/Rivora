@@ -1,0 +1,835 @@
+{
+  "design": {
+    "created_at": "2026-11-08T17:02:15.145159+00:00",
+    "source_sha256": "376a66903ee0d54bf2a0480cff0a399f1fe026f67329a1e0ed860754c82b706c",
+    "features_before": "2026-01-01",
+    "test_predictions_read": false,
+    "deploy": false,
+    "provenance": "Only official-URL water records plus independently reconciled history; original records retained",
+    "selection": "Saved 2025 selection only; AP ranking",
+    "calibration": "Saved disjoint 2025 block, sigmoid C=1",
+    "decision": "Saved disjoint threshold block; precision>=.2 and event recall>=.8; >=2 events",
+    "purge_hours": 72,
+    "features": [
+      "rain growth",
+      "recent rainfall intensity",
+      "positive-rise x observed rainfall",
+      "rise acceleration"
+    ],
+    "reference": "No current thresholds backfilled into historical data; no invented upstream gauge topology"
+  },
+  "counts": {
+    "training": {
+      "samples": 220411,
+      "events": 91,
+      "positive_fraction": 0.0011297076824659386
+    },
+    "selection": {
+      "samples": 239239,
+      "events": 38,
+      "positive_fraction": 0.00043471173178286147
+    },
+    "calibration": {
+      "samples": 43788,
+      "events": 13,
+      "positive_fraction": 0.0007993057458664474
+    },
+    "thresholds": {
+      "samples": 129359,
+      "events": 3,
+      "positive_fraction": 6.957382169002543e-05
+    }
+  },
+  "feature_audit": [
+    {
+      "station_id": 1671,
+      "water_rows": 3474,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 2979,
+      "usable": 2799,
+      "missing_feature_or_label_rows": 675
+    },
+    {
+      "station_id": 1692,
+      "water_rows": 3230,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 4021,
+      "usable": 3134,
+      "missing_feature_or_label_rows": 887
+    },
+    {
+      "station_id": 1694,
+      "water_rows": 4486,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4486,
+      "usable": 4381,
+      "missing_feature_or_label_rows": 105
+    },
+    {
+      "station_id": 1696,
+      "water_rows": 4176,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4176,
+      "usable": 4068,
+      "missing_feature_or_label_rows": 108
+    },
+    {
+      "station_id": 1679,
+      "water_rows": 15559,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 16350,
+      "usable": 15371,
+      "missing_feature_or_label_rows": 14443
+    },
+    {
+      "station_id": 1567,
+      "water_rows": 10484,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 11810,
+      "usable": 10342,
+      "missing_feature_or_label_rows": 1646
+    },
+    {
+      "station_id": 1706,
+      "water_rows": 12028,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 12819,
+      "usable": 11932,
+      "missing_feature_or_label_rows": 887
+    },
+    {
+      "station_id": 1674,
+      "water_rows": 15236,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 16327,
+      "usable": 15020,
+      "missing_feature_or_label_rows": 14771
+    },
+    {
+      "station_id": 1566,
+      "water_rows": 3230,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 3972,
+      "usable": 3039,
+      "missing_feature_or_label_rows": 982
+    },
+    {
+      "station_id": 1704,
+      "water_rows": 10518,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 12823,
+      "usable": 10377,
+      "missing_feature_or_label_rows": 2446
+    },
+    {
+      "station_id": 1707,
+      "water_rows": 12028,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 12819,
+      "usable": 11934,
+      "missing_feature_or_label_rows": 885
+    },
+    {
+      "station_id": 2385,
+      "water_rows": 12229,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 13019,
+      "usable": 12088,
+      "missing_feature_or_label_rows": 933
+    },
+    {
+      "station_id": 2400,
+      "water_rows": 14336,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13017,
+      "usable": 12940,
+      "missing_feature_or_label_rows": 77
+    },
+    {
+      "station_id": 2404,
+      "water_rows": 14331,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13010,
+      "usable": 12907,
+      "missing_feature_or_label_rows": 105
+    },
+    {
+      "station_id": 2410,
+      "water_rows": 14332,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13010,
+      "usable": 12912,
+      "missing_feature_or_label_rows": 100
+    },
+    {
+      "station_id": 2409,
+      "water_rows": 14331,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13010,
+      "usable": 12898,
+      "missing_feature_or_label_rows": 114
+    },
+    {
+      "station_id": 1583,
+      "water_rows": 12225,
+      "raw_unverified_rows_excluded": 2111,
+      "rain_rows": 13017,
+      "usable": 12127,
+      "missing_feature_or_label_rows": 890
+    },
+    {
+      "station_id": 2906,
+      "water_rows": 12818,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12818,
+      "usable": 12724,
+      "missing_feature_or_label_rows": 94
+    },
+    {
+      "station_id": 2910,
+      "water_rows": 2239,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 2149,
+      "usable": 2080,
+      "missing_feature_or_label_rows": 159
+    },
+    {
+      "station_id": 2911,
+      "water_rows": 12612,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 10658,
+      "usable": 10326,
+      "missing_feature_or_label_rows": 2286
+    },
+    {
+      "station_id": 2922,
+      "water_rows": 11239,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12822,
+      "usable": 11059,
+      "missing_feature_or_label_rows": 1763
+    },
+    {
+      "station_id": 2925,
+      "water_rows": 16361,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 16361,
+      "usable": 16197,
+      "missing_feature_or_label_rows": 13628
+    },
+    {
+      "station_id": 2932,
+      "water_rows": 4021,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4021,
+      "usable": 3948,
+      "missing_feature_or_label_rows": 73
+    },
+    {
+      "station_id": 2935,
+      "water_rows": 8518,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 8518,
+      "usable": 8320,
+      "missing_feature_or_label_rows": 22470
+    },
+    {
+      "station_id": 2944,
+      "water_rows": 12823,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12823,
+      "usable": 12748,
+      "missing_feature_or_label_rows": 75
+    },
+    {
+      "station_id": 2948,
+      "water_rows": 6953,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 6953,
+      "usable": 6796,
+      "missing_feature_or_label_rows": 23029
+    },
+    {
+      "station_id": 2970,
+      "water_rows": 12823,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12726,
+      "usable": 12630,
+      "missing_feature_or_label_rows": 193
+    },
+    {
+      "station_id": 2983,
+      "water_rows": 2008,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 2697,
+      "usable": 1901,
+      "missing_feature_or_label_rows": 107
+    },
+    {
+      "station_id": 2999,
+      "water_rows": 12821,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12821,
+      "usable": 12748,
+      "missing_feature_or_label_rows": 73
+    },
+    {
+      "station_id": 3002,
+      "water_rows": 4072,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4072,
+      "usable": 3999,
+      "missing_feature_or_label_rows": 73
+    },
+    {
+      "station_id": 3003,
+      "water_rows": 16361,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 16361,
+      "usable": 16194,
+      "missing_feature_or_label_rows": 13631
+    },
+    {
+      "station_id": 3008,
+      "water_rows": 4364,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4364,
+      "usable": 4222,
+      "missing_feature_or_label_rows": 142
+    },
+    {
+      "station_id": 3010,
+      "water_rows": 11851,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 10783,
+      "usable": 9661,
+      "missing_feature_or_label_rows": 3162
+    },
+    {
+      "station_id": 3013,
+      "water_rows": 11853,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12773,
+      "usable": 11653,
+      "missing_feature_or_label_rows": 1169
+    },
+    {
+      "station_id": 3073,
+      "water_rows": 12821,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 6480,
+      "usable": 6400,
+      "missing_feature_or_label_rows": 6421
+    },
+    {
+      "station_id": 3076,
+      "water_rows": 8754,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 10685,
+      "usable": 8651,
+      "missing_feature_or_label_rows": 4170
+    },
+    {
+      "station_id": 3077,
+      "water_rows": 12819,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12819,
+      "usable": 12746,
+      "missing_feature_or_label_rows": 73
+    },
+    {
+      "station_id": 3078,
+      "water_rows": 12823,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 8503,
+      "usable": 8363,
+      "missing_feature_or_label_rows": 4460
+    },
+    {
+      "station_id": 3082,
+      "water_rows": 3079,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 3489,
+      "usable": 2856,
+      "missing_feature_or_label_rows": 223
+    },
+    {
+      "station_id": 3083,
+      "water_rows": 3058,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 0,
+      "usable": 0,
+      "missing_feature_or_label_rows": 3058
+    },
+    {
+      "station_id": 3089,
+      "water_rows": 13014,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13012,
+      "usable": 12904,
+      "missing_feature_or_label_rows": 110
+    },
+    {
+      "station_id": 3090,
+      "water_rows": 13043,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13044,
+      "usable": 12966,
+      "missing_feature_or_label_rows": 78
+    },
+    {
+      "station_id": 3091,
+      "water_rows": 13012,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13010,
+      "usable": 12912,
+      "missing_feature_or_label_rows": 100
+    },
+    {
+      "station_id": 3092,
+      "water_rows": 13054,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 0,
+      "usable": 0,
+      "missing_feature_or_label_rows": 13055
+    },
+    {
+      "station_id": 3093,
+      "water_rows": 13016,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13017,
+      "usable": 12940,
+      "missing_feature_or_label_rows": 77
+    },
+    {
+      "station_id": 3094,
+      "water_rows": 13061,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13062,
+      "usable": 12957,
+      "missing_feature_or_label_rows": 105
+    },
+    {
+      "station_id": 3095,
+      "water_rows": 13062,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13063,
+      "usable": 12953,
+      "missing_feature_or_label_rows": 110
+    },
+    {
+      "station_id": 3096,
+      "water_rows": 4071,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4071,
+      "usable": 4001,
+      "missing_feature_or_label_rows": 70
+    },
+    {
+      "station_id": 3097,
+      "water_rows": 11260,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 0,
+      "usable": 0,
+      "missing_feature_or_label_rows": 11260
+    },
+    {
+      "station_id": 3098,
+      "water_rows": 4071,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4071,
+      "usable": 3998,
+      "missing_feature_or_label_rows": 73
+    },
+    {
+      "station_id": 3099,
+      "water_rows": 11265,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 11265,
+      "usable": 11162,
+      "missing_feature_or_label_rows": 103
+    },
+    {
+      "station_id": 3103,
+      "water_rows": 13022,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13022,
+      "usable": 12949,
+      "missing_feature_or_label_rows": 73
+    },
+    {
+      "station_id": 3104,
+      "water_rows": 10893,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 6576,
+      "usable": 6479,
+      "missing_feature_or_label_rows": 6575
+    },
+    {
+      "station_id": 3105,
+      "water_rows": 4071,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 0,
+      "usable": 0,
+      "missing_feature_or_label_rows": 4071
+    },
+    {
+      "station_id": 3106,
+      "water_rows": 12988,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12989,
+      "usable": 12911,
+      "missing_feature_or_label_rows": 78
+    },
+    {
+      "station_id": 3107,
+      "water_rows": 8694,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 8382,
+      "usable": 8235,
+      "missing_feature_or_label_rows": 4779
+    },
+    {
+      "station_id": 3108,
+      "water_rows": 4071,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 4071,
+      "usable": 3998,
+      "missing_feature_or_label_rows": 73
+    },
+    {
+      "station_id": 3109,
+      "water_rows": 12994,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12994,
+      "usable": 12890,
+      "missing_feature_or_label_rows": 104
+    },
+    {
+      "station_id": 3110,
+      "water_rows": 13019,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13019,
+      "usable": 12947,
+      "missing_feature_or_label_rows": 72
+    },
+    {
+      "station_id": 3111,
+      "water_rows": 12991,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12992,
+      "usable": 12914,
+      "missing_feature_or_label_rows": 78
+    },
+    {
+      "station_id": 3112,
+      "water_rows": 13013,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 0,
+      "usable": 0,
+      "missing_feature_or_label_rows": 13014
+    },
+    {
+      "station_id": 3113,
+      "water_rows": 13012,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13012,
+      "usable": 12885,
+      "missing_feature_or_label_rows": 127
+    },
+    {
+      "station_id": 3114,
+      "water_rows": 13009,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13010,
+      "usable": 12905,
+      "missing_feature_or_label_rows": 105
+    },
+    {
+      "station_id": 3115,
+      "water_rows": 13088,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13089,
+      "usable": 12939,
+      "missing_feature_or_label_rows": 150
+    },
+    {
+      "station_id": 3116,
+      "water_rows": 13020,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 0,
+      "usable": 0,
+      "missing_feature_or_label_rows": 13021
+    },
+    {
+      "station_id": 3117,
+      "water_rows": 13055,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13055,
+      "usable": 12924,
+      "missing_feature_or_label_rows": 131
+    },
+    {
+      "station_id": 3381,
+      "water_rows": 13061,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13062,
+      "usable": 12962,
+      "missing_feature_or_label_rows": 100
+    },
+    {
+      "station_id": 3382,
+      "water_rows": 13039,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13039,
+      "usable": 12943,
+      "missing_feature_or_label_rows": 96
+    },
+    {
+      "station_id": 3383,
+      "water_rows": 13017,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 0,
+      "usable": 0,
+      "missing_feature_or_label_rows": 13017
+    },
+    {
+      "station_id": 3384,
+      "water_rows": 13088,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 13089,
+      "usable": 12952,
+      "missing_feature_or_label_rows": 137
+    },
+    {
+      "station_id": 3385,
+      "water_rows": 12990,
+      "raw_unverified_rows_excluded": 0,
+      "rain_rows": 12987,
+      "usable": 12805,
+      "missing_feature_or_label_rows": 186
+    }
+  ],
+  "candidates": [
+    {
+      "name": "Existing HGB",
+      "features": [
+        "level",
+        "change_1h",
+        "change_3h",
+        "change_6h",
+        "acceleration_1h",
+        "percentile_72h",
+        "rain_1h",
+        "rain_3h",
+        "rain_6h",
+        "rain_12h",
+        "rain_24h"
+      ],
+      "selection_ap": 0.3576303356472315,
+      "decision_ap": 0.06041562116335444,
+      "brier": 7.117822045221811e-05,
+      "baseline_brier": 7.069286497612448e-05,
+      "qualified_threshold": null,
+      "operating_metrics": null,
+      "diagnostic_at_frozen_existing_threshold": {
+        "samples": 129359,
+        "positive_samples": 9,
+        "positive_warning_events": 3,
+        "precision": 0.01309328968903437,
+        "recall": 0.8888888888888888,
+        "f1": 0.025806451612903226,
+        "pr_auc_average_precision": 0.06041562116335444,
+        "roc_auc": 0.9978439204569856,
+        "confusion_matrix": [
+          [
+            128747,
+            603
+          ],
+          [
+            1,
+            8
+          ]
+        ],
+        "false_alarm_episodes": 219,
+        "station_days": 5456,
+        "false_alarms_per_station_day": 0.040139296187683284,
+        "missed_warning_events": 0,
+        "event_detection_rate": 1.0,
+        "median_lead_minutes": 160.0,
+        "brier_score": 7.117822045221811e-05,
+        "calibration_bins": [
+          {
+            "mean_probability": 0.00018938050053302552,
+            "observed_frequency": 5.4125106317173125e-05,
+            "samples": 129330
+          },
+          {
+            "mean_probability": 0.136993187564234,
+            "observed_frequency": 0.08695652173913043,
+            "samples": 23
+          },
+          {
+            "mean_probability": 0.2518380836417366,
+            "observed_frequency": 0.0,
+            "samples": 6
+          }
+        ]
+      },
+      "false_positive_diagnosis": {
+        "false_positive_samples": 603,
+        "true_positive_samples": 8,
+        "fp_with_rain_6h_under_1mm": 0,
+        "fp_with_nonpositive_1h_rise": 132,
+        "fp_station_count": 54
+      },
+      "probability_enabled": false
+    },
+    {
+      "name": "Hydrological HGB",
+      "features": [
+        "change_1h",
+        "change_3h",
+        "change_6h",
+        "acceleration_1h",
+        "percentile_72h",
+        "rain_1h",
+        "rain_3h",
+        "rain_6h",
+        "rain_12h",
+        "rain_24h",
+        "rain_growth_3h",
+        "recent_rain_intensity",
+        "rise_rain_interaction",
+        "rise_acceleration"
+      ],
+      "selection_ap": 0.3564581174275409,
+      "decision_ap": 0.08624012306826656,
+      "brier": 6.776640500757369e-05,
+      "baseline_brier": 7.069286497612448e-05,
+      "qualified_threshold": null,
+      "operating_metrics": null,
+      "diagnostic_at_frozen_existing_threshold": {
+        "samples": 129359,
+        "positive_samples": 9,
+        "positive_warning_events": 3,
+        "precision": 0.01642710472279261,
+        "recall": 0.8888888888888888,
+        "f1": 0.03225806451612903,
+        "pr_auc_average_precision": 0.08624012306826656,
+        "roc_auc": 0.9988420736159428,
+        "confusion_matrix": [
+          [
+            128871,
+            479
+          ],
+          [
+            1,
+            8
+          ]
+        ],
+        "false_alarm_episodes": 195,
+        "station_days": 5456,
+        "false_alarms_per_station_day": 0.03574046920821115,
+        "missed_warning_events": 0,
+        "event_detection_rate": 1.0,
+        "median_lead_minutes": 160.0,
+        "brier_score": 6.776640500757369e-05,
+        "calibration_bins": [
+          {
+            "mean_probability": 0.00013378980219791008,
+            "observed_frequency": 4.6394024449650885e-05,
+            "samples": 129327
+          },
+          {
+            "mean_probability": 0.1336388849551203,
+            "observed_frequency": 0.10714285714285714,
+            "samples": 28
+          },
+          {
+            "mean_probability": 0.22024114105166231,
+            "observed_frequency": 0.0,
+            "samples": 4
+          }
+        ]
+      },
+      "false_positive_diagnosis": {
+        "false_positive_samples": 479,
+        "true_positive_samples": 8,
+        "fp_with_rain_6h_under_1mm": 0,
+        "fp_with_nonpositive_1h_rise": 58,
+        "fp_station_count": 58
+      },
+      "probability_enabled": false
+    },
+    {
+      "name": "Hydrological logistic",
+      "features": [
+        "change_1h",
+        "change_3h",
+        "change_6h",
+        "acceleration_1h",
+        "percentile_72h",
+        "rain_1h",
+        "rain_3h",
+        "rain_6h",
+        "rain_12h",
+        "rain_24h",
+        "rain_growth_3h",
+        "recent_rain_intensity",
+        "rise_rain_interaction",
+        "rise_acceleration"
+      ],
+      "selection_ap": 0.33357242259712117,
+      "decision_ap": 0.06583475443855673,
+      "brier": 6.858705202608172e-05,
+      "baseline_brier": 7.069286497612448e-05,
+      "qualified_threshold": null,
+      "operating_metrics": null,
+      "diagnostic_at_frozen_existing_threshold": {
+        "samples": 129359,
+        "positive_samples": 9,
+        "positive_warning_events": 3,
+        "precision": 0.023809523809523808,
+        "recall": 0.3333333333333333,
+        "f1": 0.044444444444444446,
+        "pr_auc_average_precision": 0.06583475443855673,
+        "roc_auc": 0.9982777133530902,
+        "confusion_matrix": [
+          [
+            129227,
+            123
+          ],
+          [
+            6,
+            3
+          ]
+        ],
+        "false_alarm_episodes": 56,
+        "station_days": 5456,
+        "false_alarms_per_station_day": 0.010263929618768328,
+        "missed_warning_events": 2,
+        "event_detection_rate": 0.3333333333333333,
+        "median_lead_minutes": 150.0,
+        "brier_score": 6.858705202608172e-05,
+        "calibration_bins": [
+          {
+            "mean_probability": 0.00031926357545383635,
+            "observed_frequency": 6.957382169002543e-05,
+            "samples": 129359
+          }
+        ]
+      },
+      "false_positive_diagnosis": {
+        "false_positive_samples": 123,
+        "true_positive_samples": 3,
+        "fp_with_rain_6h_under_1mm": 17,
+        "fp_with_nonpositive_1h_rise": 0,
+        "fp_station_count": 33
+      },
+      "probability_enabled": false
+    }
+  ],
+  "ranked_development_candidate": "Existing HGB",
+  "independent_evaluation": "NOT_RUN_ALREADY_INSPECTED_2026_EXCLUDED"
+}

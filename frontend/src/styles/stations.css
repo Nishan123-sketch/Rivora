@@ -1,1 +1,86 @@
-/* stations page-specific adjustments. Shared visual tokens are in variables.css. */
+/* Station names and flood assessment must remain separate columns. */
+.stations-page .stations-scroll {overflow-x:auto;}
+.stations-page .stations-grid {
+  display:grid;
+  grid-template-columns:minmax(45px,.45fr) minmax(215px,2.4fr) minmax(110px,1.1fr) minmax(115px,1.1fr) minmax(240px,2fr) minmax(54px,.5fr);
+  gap:14px;
+  align-items:center;
+  text-align:left;
+  min-width:880px;
+  width:100%;
+  box-sizing:border-box;
+}
+.stations-page .station-table-head {padding:12px 19px;font-size:12px;}
+.stations-page .srow {padding:16px 19px;margin-bottom:12px;font:inherit;cursor:pointer;}
+.stations-page .srow > span {min-width:0;overflow-wrap:anywhere;}
+.stations-page .stations-name {font-weight:600;}
+.stations-page .fresh-badge {display:table;margin-top:5px;}
+.stations-page .stations-risk small {display:block;font-size:11px;line-height:1.35;color:var(--fw-muted);margin-top:5px;}
+.stations-page .stations-view {white-space:nowrap;font-weight:600;}
+@media(max-width:760px) {
+ .stations-page .stations-scroll {overflow-x:visible;}
+ .stations-page .station-table-head {display:none;}
+ .stations-page .srow.stations-grid {display:grid;grid-template-columns:1fr 1fr;min-width:0;gap:12px;}
+ .stations-page .srow > span::before {content:attr(data-label);display:block;font-size:11px;color:var(--fw-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+ .stations-page .stations-name,.stations-page .stations-risk {grid-column:span 2;}
+ .stations-page .stations-view {grid-column:span 2;}
+}
+/* River-only layout: River and Station are separate English-labelled columns. */
+.stations-page .stations-grid {
+  grid-template-columns: minmax(45px,.4fr) minmax(140px,1.25fr) minmax(190px,1.9fr) minmax(120px,1.1fr) minmax(240px,2fr) minmax(54px,.5fr);
+  min-width: 940px;
+}
+.stations-page .stations-name small {display:block;margin-top:4px;font-weight:400;font-size:11px;}
+.stations-page .stations-river {font-weight:600;}
+@media(max-width:760px){
+  .stations-page .srow .stations-river,
+  .stations-page .srow .stations-name,
+  .stations-page .srow .stations-risk {grid-column:span 2;}
+}
+/* Trend is observational context, never an official flood risk grade. */
+.stations-page .stations-risk .station-conditions {font-weight:600;opacity:.9;}
+
+.stations-page .experimental-screening {color: var(--fw-text, inherit);font-weight:600;}
+
+/* Show unresolved, conflicting published flood-stage evidence distinctly. */
+.stations-risk .station-stage-conflict {
+  display: block;
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.55rem;
+  border-left: 3px solid #b7791f;
+  background: rgba(183, 121, 31, 0.08);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.stations-risk .station-stage-conflict a {
+  text-decoration: underline;
+}
+
+/* Reference layout: aligned ID / river / station / measurement / assessment / action. */
+.stations-page .stations-grid{grid-template-columns:70px minmax(150px,1.1fr) minmax(230px,1.7fr) minmax(160px,1.1fr) minmax(250px,1.7fr) 80px;gap:22px;min-width:1100px;}
+.stations-page .station-table-head{padding:22px 24px 14px;letter-spacing:.06em;color:var(--fw-muted,#72879a);}
+.stations-page .srow.stations-grid{padding:20px 24px;border:1px solid var(--fw-line,#23384b);border-radius:18px;background:var(--fw-surface-2,#f5f8fa);margin-bottom:14px;cursor:default;}
+.station-river-id,.station-reading-time{display:block;font-size:10px;color:var(--fw-muted,#72879a);margin-top:5px;font-weight:400;overflow-wrap:anywhere;}
+.station-view-button{border:0;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;padding:8px 0;}
+.station-view-button:focus-visible{outline:2px solid #0b8590;outline-offset:4px;}
+.official-risk-pill{display:inline-flex;border:1px solid #d6e2e8;border-radius:24px;padding:6px 11px;background:#eef4f8;color:#36546b;}
+.official-risk-pill.low{background:#eaf7f0;border-color:#bfe5d1;color:#176f48;}
+.official-risk-pill.moderate{background:#fff5da;border-color:#f2d28a;color:#8a5a00;}
+.official-risk-pill.high,.official-risk-pill.severe{background:#ffecef;border-color:#f2b4bd;color:#aa273a;}
+@media(max-width:760px){.stations-page .srow.stations-grid{grid-template-columns:1fr 1fr;min-width:0;gap:12px;}.stations-page .stations-river,.stations-page .stations-name,.stations-page .stations-risk,.stations-page .stations-view{grid-column:span 2;}}
+
+
+.station-risk-filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.station-risk-filters button{border:1px solid var(--fw-line);border-radius:22px;padding:8px 14px;color:var(--fw-ink);background:var(--fw-surface-2);font:inherit;font-size:12px;cursor:pointer}.station-risk-filters button[aria-pressed="true"]{background:#0b8590;border-color:#0b8590;color:white}.station-risk-filters button span{margin-left:8px;opacity:.75}.station-load-more{scroll-margin-top:100px}
+
+.station-coverage-filter{display:flex;align-items:center;gap:12px;margin-top:20px;font-size:12px;color:var(--fw-muted)}.station-coverage-filter select{padding:9px 12px;border:1px solid var(--fw-line);border-radius:10px;background:var(--fw-surface-2);color:var(--fw-ink);max-width:100%}.station-designation{font-weight:600}.detail-designation{color:#0b96a3;font-size:12px}@media(max-width:760px){.station-coverage-filter{align-items:stretch;flex-direction:column}}
+
+/* Final compact layout overrides, including lazily loaded page styles. */
+.topbar button.page-back-button{color:#fff;background:linear-gradient(115deg,#187de1,#0b9fae);border:0;padding:9px 14px}
+.stations-page .stations-grid{grid-template-columns:42px minmax(105px,1fr) minmax(145px,1.35fr) 126px minmax(180px,1.35fr) 50px;gap:10px;min-width:740px}
+.stations-page .srow.stations-grid{padding:11px 14px;min-height:88px;margin-bottom:9px;border-radius:12px;font-size:12px}
+.stations-page .station-table-head{padding:12px 14px;font-size:10px}
+.stations-page .stations-name,.stations-page .stations-river{font-size:12px;overflow-wrap:anywhere}
+.stations-page .station-risk-filters,.stations-page .station-coverage-filter{margin-top:12px}
+.stations-page .stations-toolbar p{font-size:11px}.stations-page .station-reading-time{font-size:9px}
+@media(max-width:760px){.stations-page .srow.stations-grid{min-width:0;grid-template-columns:1fr 1fr}}

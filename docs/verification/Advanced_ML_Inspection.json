@@ -1,0 +1,625 @@
+{
+  "hrfco_key_configured": false,
+  "tables": [
+    {
+      "Tables_in_weather_flood_db": "alerts"
+    },
+    {
+      "Tables_in_weather_flood_db": "aws_rainfall_readings"
+    },
+    {
+      "Tables_in_weather_flood_db": "email_notifications"
+    },
+    {
+      "Tables_in_weather_flood_db": "email_verification_tokens"
+    },
+    {
+      "Tables_in_weather_flood_db": "flood_thresholds"
+    },
+    {
+      "Tables_in_weather_flood_db": "hr_flood_warning_history"
+    },
+    {
+      "Tables_in_weather_flood_db": "ml_models"
+    },
+    {
+      "Tables_in_weather_flood_db": "ml_predictions"
+    },
+    {
+      "Tables_in_weather_flood_db": "oauth_identities"
+    },
+    {
+      "Tables_in_weather_flood_db": "official_alert_snapshots"
+    },
+    {
+      "Tables_in_weather_flood_db": "official_station_registry"
+    },
+    {
+      "Tables_in_weather_flood_db": "prediction_history"
+    },
+    {
+      "Tables_in_weather_flood_db": "rain_daily"
+    },
+    {
+      "Tables_in_weather_flood_db": "rainfall_stations"
+    },
+    {
+      "Tables_in_weather_flood_db": "risk_assessments"
+    },
+    {
+      "Tables_in_weather_flood_db": "river_gauge_links"
+    },
+    {
+      "Tables_in_weather_flood_db": "river_locations"
+    },
+    {
+      "Tables_in_weather_flood_db": "station_rainfall_links"
+    },
+    {
+      "Tables_in_weather_flood_db": "stations"
+    },
+    {
+      "Tables_in_weather_flood_db": "unified_alert_state"
+    },
+    {
+      "Tables_in_weather_flood_db": "user_alert_preferences"
+    },
+    {
+      "Tables_in_weather_flood_db": "users"
+    },
+    {
+      "Tables_in_weather_flood_db": "water_daily"
+    },
+    {
+      "Tables_in_weather_flood_db": "water_readings"
+    },
+    {
+      "Tables_in_weather_flood_db": "weather_forecasts"
+    },
+    {
+      "Tables_in_weather_flood_db": "weather_readings"
+    },
+    {
+      "Tables_in_weather_flood_db": "weekly_weather_snapshots"
+    }
+  ],
+  "events": [
+    {
+      "events": 111,
+      "gauges": 73,
+      "first_event": "2025-07-18 01:10:00",
+      "last_event": "2025-07-19 22:20:00"
+    }
+  ],
+  "water_indexes": [
+    {
+      "Table": "water_readings",
+      "Non_unique": 0,
+      "Key_name": "PRIMARY",
+      "Seq_in_index": 1,
+      "Column_name": "reading_id",
+      "Collation": "A",
+      "Cardinality": 1796452,
+      "Sub_part": null,
+      "Packed": null,
+      "Null": "",
+      "Index_type": "BTREE",
+      "Comment": "",
+      "Index_comment": "",
+      "Visible": "YES",
+      "Expression": null
+    },
+    {
+      "Table": "water_readings",
+      "Non_unique": 0,
+      "Key_name": "uq_water_station_time",
+      "Seq_in_index": 1,
+      "Column_name": "station_id",
+      "Collation": "A",
+      "Cardinality": 199,
+      "Sub_part": null,
+      "Packed": null,
+      "Null": "",
+      "Index_type": "BTREE",
+      "Comment": "",
+      "Index_comment": "",
+      "Visible": "YES",
+      "Expression": null
+    },
+    {
+      "Table": "water_readings",
+      "Non_unique": 0,
+      "Key_name": "uq_water_station_time",
+      "Seq_in_index": 2,
+      "Column_name": "observed_at",
+      "Collation": "A",
+      "Cardinality": 1440437,
+      "Sub_part": null,
+      "Packed": null,
+      "Null": "",
+      "Index_type": "BTREE",
+      "Comment": "",
+      "Index_comment": "",
+      "Visible": "YES",
+      "Expression": null
+    }
+  ],
+  "rain_indexes": [
+    {
+      "Table": "aws_rainfall_readings",
+      "Non_unique": 0,
+      "Key_name": "PRIMARY",
+      "Seq_in_index": 1,
+      "Column_name": "id",
+      "Collation": "A",
+      "Cardinality": 140873,
+      "Sub_part": null,
+      "Packed": null,
+      "Null": "",
+      "Index_type": "BTREE",
+      "Comment": "",
+      "Index_comment": "",
+      "Visible": "YES",
+      "Expression": null
+    },
+    {
+      "Table": "aws_rainfall_readings",
+      "Non_unique": 0,
+      "Key_name": "unique_aws_hour",
+      "Seq_in_index": 1,
+      "Column_name": "aws_station_code",
+      "Collation": "A",
+      "Cardinality": 818,
+      "Sub_part": null,
+      "Packed": null,
+      "Null": "",
+      "Index_type": "BTREE",
+      "Comment": "",
+      "Index_comment": "",
+      "Visible": "YES",
+      "Expression": null
+    },
+    {
+      "Table": "aws_rainfall_readings",
+      "Non_unique": 0,
+      "Key_name": "unique_aws_hour",
+      "Seq_in_index": 2,
+      "Column_name": "observed_at",
+      "Collation": "A",
+      "Cardinality": 137881,
+      "Sub_part": null,
+      "Packed": null,
+      "Null": "",
+      "Index_type": "BTREE",
+      "Comment": "",
+      "Index_comment": "",
+      "Visible": "YES",
+      "Expression": null
+    },
+    {
+      "Table": "aws_rainfall_readings",
+      "Non_unique": 1,
+      "Key_name": "idx_aws_time",
+      "Seq_in_index": 1,
+      "Column_name": "observed_at",
+      "Collation": "A",
+      "Cardinality": 439,
+      "Sub_part": null,
+      "Packed": null,
+      "Null": "",
+      "Index_type": "BTREE",
+      "Comment": "",
+      "Index_comment": "",
+      "Visible": "YES",
+      "Expression": null
+    }
+  ],
+  "forecast_columns": [
+    {
+      "Field": "forecast_id",
+      "Type": "bigint unsigned",
+      "Null": "NO",
+      "Key": "PRI",
+      "Default": null,
+      "Extra": "auto_increment"
+    },
+    {
+      "Field": "station_id",
+      "Type": "int unsigned",
+      "Null": "NO",
+      "Key": "MUL",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "issued_at",
+      "Type": "datetime",
+      "Null": "NO",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "valid_at",
+      "Type": "datetime",
+      "Null": "NO",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "rainfall_forecast",
+      "Type": "decimal(6,2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "temperature_forecast",
+      "Type": "decimal(4,1)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "source",
+      "Type": "varchar(50)",
+      "Null": "NO",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "precipitation_probability",
+      "Type": "decimal(5,2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "humidity_forecast",
+      "Type": "decimal(5,2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "wind_speed_forecast",
+      "Type": "decimal(6,2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "precipitation_raw",
+      "Type": "varchar(80)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "precipitation_min_mm",
+      "Type": "decimal(8,2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "precipitation_max_mm",
+      "Type": "decimal(8,2)",
+      "Null": "YES",
+      "Key": "",
+      "Default": null,
+      "Extra": ""
+    },
+    {
+      "Field": "precipitation_max_exclusive",
+      "Type": "tinyint(1)",
+      "Null": "NO",
+      "Key": "",
+      "Default": "0",
+      "Extra": ""
+    }
+  ],
+  "water_coverage": [
+    {
+      "station_id": 207,
+      "external_station_id": "2201670",
+      "records": 9710,
+      "first_at": "2025-07-17 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    },
+    {
+      "station_id": 2366,
+      "external_station_id": "2002607",
+      "records": 9566,
+      "first_at": "2025-10-05 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    },
+    {
+      "station_id": 2358,
+      "external_station_id": "2001640",
+      "records": 9564,
+      "first_at": "2025-10-05 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    },
+    {
+      "station_id": 2365,
+      "external_station_id": "2002604",
+      "records": 9564,
+      "first_at": "2025-10-05 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    },
+    {
+      "station_id": 2357,
+      "external_station_id": "2001625",
+      "records": 9564,
+      "first_at": "2025-10-05 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    },
+    {
+      "station_id": 2355,
+      "external_station_id": "2001610",
+      "records": 9564,
+      "first_at": "2025-10-05 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    },
+    {
+      "station_id": 2362,
+      "external_station_id": "2001668",
+      "records": 9564,
+      "first_at": "2025-10-05 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    },
+    {
+      "station_id": 2360,
+      "external_station_id": "2001655",
+      "records": 9564,
+      "first_at": "2025-10-05 01:00:00",
+      "last_at": "2026-11-07 02:10:00"
+    }
+  ],
+  "source_inventory": [
+    "backend\\add-performance-indexes.js",
+    "backend\\ai-outlook-routes.js",
+    "backend\\ai-water-level-outlook.js",
+    "backend\\alert-routes.js",
+    "backend\\anthropic-provider.js",
+    "backend\\assistant-fallback.js",
+    "backend\\audit-river-gauges.js",
+    "backend\\auth-middleware.js",
+    "backend\\auth-routes.js",
+    "backend\\automatic-alerts.js",
+    "backend\\aws-rainfall-importer.js",
+    "backend\\aws-rainfall-scheduler.js",
+    "backend\\backfill-aws-rainfall.js",
+    "backend\\backfill-river-history.js",
+    "backend\\chat-context.js",
+    "backend\\chat-routes.js",
+    "backend\\chat-stream.js",
+    "backend\\chat-tools.js",
+    "backend\\check-gauge-consistency.js",
+    "backend\\check-kma-rainfall.js",
+    "backend\\check-map-coordinates.js",
+    "backend\\check-readiness.js",
+    "backend\\check-system.js",
+    "backend\\check-wamis-history.js",
+    "backend\\combined-analysis.js",
+    "backend\\combined-stage-safety.js",
+    "backend\\compare-historical-floods.js",
+    "backend\\config\\risk-config.js",
+    "backend\\data-routes.js",
+    "backend\\db.js",
+    "backend\\diagnose.js",
+    "backend\\display-names.js",
+    "backend\\email-queue.js",
+    "backend\\email-service.js",
+    "backend\\email-verification.js",
+    "backend\\experimental-flood-potential.js",
+    "backend\\experimental-flood-risk.js",
+    "backend\\experimental-gauge-screening.js",
+    "backend\\experimental-risk-grade.js",
+    "backend\\flood-condition-classifier.js",
+    "backend\\flood-prediction-routes.js",
+    "backend\\forecast-rainfall-analysis.js",
+    "backend\\forecast-routes.js",
+    "backend\\gauge-risk-safety.js",
+    "backend\\geo.js",
+    "backend\\grounded-answer.js",
+    "backend\\history-backfill.js",
+    "backend\\history-daily.js",
+    "backend\\hrfco-fetch-history.js",
+    "backend\\hrfco-live-feed.js",
+    "backend\\hrfco-station-bulletins.js",
+    "backend\\hrfco-warning-history.js",
+    "backend\\hybrid-flood-risk.js",
+    "backend\\import-aws-stations.js",
+    "backend\\import-historical-flood-events.js",
+    "backend\\import-kma-forecast.js",
+    "backend\\import-kma-history.js",
+    "backend\\import-kma-hourly-history.js",
+    "backend\\import-kma-range.js",
+    "backend\\import-kma-stations.js",
+    "backend\\import-kma-weather.js",
+    "backend\\import-kwater.js",
+    "backend\\import-monitoring-snapshot.js",
+    "backend\\import-official-yeongsan.js",
+    "backend\\import-reference-data.js",
+    "backend\\import-river-history.js",
+    "backend\\import-wamis-stations.js",
+    "backend\\inspect-kma-columns.js",
+    "backend\\inspect-kma.js",
+    "backend\\kma-forecast-scheduler.js",
+    "backend\\kma-grid.js",
+    "backend\\kma-scheduler.js",
+    "backend\\kwater-scheduler.js",
+    "backend\\link-nearest-rainfall.js",
+    "backend\\local-assistant.js",
+    "backend\\map-data.js",
+    "backend\\migrate-completion.js",
+    "backend\\migrate-forecast-fields.js",
+    "backend\\migrate.js",
+    "backend\\ml\\pipeline.py",
+    "backend\\ml\\test_pipeline.py",
+    "backend\\ml\\train_model.py",
+    "backend\\ml-validation-gate.js",
+    "backend\\monitoring-routes.js",
+    "backend\\monitoring-store.js",
+    "backend\\multi-river-ml.js",
+    "backend\\official-alerts.js",
+    "backend\\official-feed-scheduler.js",
+    "backend\\official-station-policy.js",
+    "backend\\official-two-stage.js",
+    "backend\\oidc-routes.js",
+    "backend\\place-resolver.js",
+    "backend\\prediction-scheduler.js",
+    "backend\\prediction-store.js",
+    "backend\\preference-routes.js",
+    "backend\\published-stage-reference.js",
+    "backend\\rainfall-analysis.js",
+    "backend\\rainfall-backfill.js",
+    "backend\\rainfall-reference.js",
+    "backend\\reconcile-official-network.js",
+    "backend\\register-account.js",
+    "backend\\risk-alerts.js",
+    "backend\\risk-engine.js",
+    "backend\\risk-readiness.js",
+    "backend\\risk-scheduler.js",
+    "backend\\risk-validation-readiness.js",
+    "backend\\river-analysis.js",
+    "backend\\river-catalog.js",
+    "backend\\river-discovery.js",
+    "backend\\river-importer.js",
+    "backend\\river-network-expand.js",
+    "backend\\river-network-registry.js",
+    "backend\\river-prediction.js",
+    "backend\\river-routes.js",
+    "backend\\river-scheduler.js",
+    "backend\\server.js",
+    "backend\\setup-monitoring.js",
+    "backend\\setup-rivers.js",
+    "backend\\station-defaults.js",
+    "backend\\taehwa-published-stages.js",
+    "backend\\test-kma-24h.js",
+    "backend\\test-kma-forecast.js",
+    "backend\\test-kma-history.js",
+    "backend\\test-kma-stations.js",
+    "backend\\test-kma.js",
+    "backend\\test-kwater-level.js",
+    "backend\\test-kwater.js",
+    "backend\\test-river-gauge-audit.js",
+    "backend\\tests\\ai-outlook-forecast.test.js",
+    "backend\\tests\\alert-config.test.js",
+    "backend\\tests\\alert-engine.test.js",
+    "backend\\tests\\assistant-tools.test.js",
+    "backend\\tests\\auth-verification.test.js",
+    "backend\\tests\\chat-grounding.test.js",
+    "backend\\tests\\chat.test.js",
+    "backend\\tests\\combined-stage-safety.test.js",
+    "backend\\tests\\completion.test.js",
+    "backend\\tests\\experimental-flood-potential.test.js",
+    "backend\\tests\\experimental-gauge-screening.test.js",
+    "backend\\tests\\experimental-risk-grade.test.js",
+    "backend\\tests\\flood-risk-calculation-v2.test.js",
+    "backend\\tests\\forecast-config.test.js",
+    "backend\\tests\\gauge-risk-safety.test.js",
+    "backend\\tests\\hrfco-fetch-history.test.js",
+    "backend\\tests\\hrfco-warning-history.test.js",
+    "backend\\tests\\hybrid-onepass.test.js",
+    "backend\\tests\\kma-grid.test.js",
+    "backend\\tests\\monitoring-concurrency.test.js",
+    "backend\\tests\\monitoring.test.js",
+    "backend\\tests\\multi-river.test.js",
+    "backend\\tests\\national-reconciliation.test.js",
+    "backend\\tests\\official-alerts.test.js",
+    "backend\\tests\\official-assessment-performance.test.js",
+    "backend\\tests\\official-feed-scheduler.test.js",
+    "backend\\tests\\official-station-policy.test.js",
+    "backend\\tests\\official-two-stage.test.js",
+    "backend\\tests\\oidc.test.js",
+    "backend\\tests\\published-stage-reference.test.js",
+    "backend\\tests\\rainfall-link-selection.test.js",
+    "backend\\tests\\rainfall-reference.test.js",
+    "backend\\tests\\readiness-and-smtp.test.js",
+    "backend\\tests\\redesign-grounding.test.js",
+    "backend\\tests\\reference-and-stream.test.js",
+    "backend\\tests\\regression.test.js",
+    "backend\\tests\\risk-alerts.test.js",
+    "backend\\tests\\risk-engine.test.js",
+    "backend\\tests\\risk-readiness.test.js",
+    "backend\\tests\\risk-validation-readiness.test.js",
+    "backend\\tests\\river-network-registry.test.js",
+    "backend\\tests\\unified-email.test.js",
+    "backend\\tests\\verified-risk-evidence.test.js",
+    "backend\\tests\\weather-multicity-scheduler.test.js",
+    "backend\\tests\\wind-alerts.test.js",
+    "backend\\ttl-cache.js",
+    "backend\\unified-alerts.js",
+    "backend\\unified-email-queue.js",
+    "backend\\unified-risk-routes.js",
+    "backend\\unsubscribe.js",
+    "backend\\validate-all-rivers.js",
+    "backend\\validate-flood-history.js",
+    "backend\\verified-risk-evidence.js",
+    "backend\\verified-risk-routes.js",
+    "backend\\wamis-client.js",
+    "backend\\weather-columns.js",
+    "backend\\weekly-weather.js",
+    "backend\\wind-alerts.js",
+    "frontend\\src\\App.jsx",
+    "frontend\\src\\components\\Charts.jsx",
+    "frontend\\src\\components\\DataTable.jsx",
+    "frontend\\src\\components\\FloodRiskBadge.jsx",
+    "frontend\\src\\components\\FreshBadge.jsx",
+    "frontend\\src\\components\\HistoryChart.jsx",
+    "frontend\\src\\components\\RiskBadge.jsx",
+    "frontend\\src\\components\\RiskLight.jsx",
+    "frontend\\src\\components\\RiverAiOutlookCard.jsx",
+    "frontend\\src\\components\\RiverPredictionCard.jsx",
+    "frontend\\src\\components\\Shared.jsx",
+    "frontend\\src\\components\\Sidebar.jsx",
+    "frontend\\src\\components\\StationOnboarding.jsx",
+    "frontend\\src\\components\\WeatherIcon.jsx",
+    "frontend\\src\\components\\WeeklyForecast.jsx",
+    "frontend\\src\\lib\\apiFetch.js",
+    "frontend\\src\\lib\\auth.js",
+    "frontend\\src\\lib\\data.js",
+    "frontend\\src\\lib\\floodRiskPresentation.js",
+    "frontend\\src\\lib\\format.js",
+    "frontend\\src\\lib\\officialDesignation.js",
+    "frontend\\src\\lib\\overviewRiskMetric.js",
+    "frontend\\src\\lib\\risk.js",
+    "frontend\\src\\lib\\riverEnglishNames.js",
+    "frontend\\src\\lib\\stationWeather.js",
+    "frontend\\src\\lib\\table-columns.js",
+    "frontend\\src\\lib\\time.js",
+    "frontend\\src\\lib\\useRisk.js",
+    "frontend\\src\\lib\\weatherCondition.js",
+    "frontend\\src\\lib\\weatherForecastData.js",
+    "frontend\\src\\main.jsx",
+    "frontend\\src\\pages\\About.jsx",
+    "frontend\\src\\pages\\AIAssistant.jsx",
+    "frontend\\src\\pages\\AlertPreferences.jsx",
+    "frontend\\src\\pages\\Alerts.jsx",
+    "frontend\\src\\pages\\AuthCallback.jsx",
+    "frontend\\src\\pages\\Dashboard.jsx",
+    "frontend\\src\\pages\\HistoricalData.jsx",
+    "frontend\\src\\pages\\LiveMap.jsx",
+    "frontend\\src\\pages\\Login.jsx",
+    "frontend\\src\\pages\\MLAnalysis.jsx",
+    "frontend\\src\\pages\\Onboarding.jsx",
+    "frontend\\src\\pages\\Register.jsx",
+    "frontend\\src\\pages\\RiskAnalysis.jsx",
+    "frontend\\src\\pages\\RiverMonitoring.jsx",
+    "frontend\\src\\pages\\StationDetails.jsx",
+    "frontend\\src\\pages\\Stations.jsx",
+    "frontend\\src\\pages\\WeatherForecast.jsx"
+  ]
+}

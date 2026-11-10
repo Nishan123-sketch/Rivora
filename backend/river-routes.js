@@ -1,7 +1,5 @@
 const express=require('express');
 const pool=require('./db');
-const {analyzeRiver}=require('./river-analysis');
-const {evaluateGaugeSafety}=require('./gauge-risk-safety');
 const {getCatalog}=require('./river-network-registry');
 const router=express.Router();
 
@@ -16,31 +14,31 @@ router.get('/river-catalog',async(req,res)=>{
      w.water_level AS latest_water_level
    FROM river_gauge_links l
    JOIN stations s ON s.station_id=l.station_id AND s.data_source='RIVER_GAUGE'
-   LEFT JOIN water_readings w ON w.reading_id=(
-     SELECT w2.reading_id FROM water_readings w2 WHERE w2.station_id=s.station_id
-     ORDER BY w2.observed_at DESC LIMIT 1)
+   LEFT JOIN (SELECT station_id,MAX(observed_at) AS observed_at FROM water_readings GROUP BY station_id) latest ON latest.station_id=s.station_id
+   LEFT JOIN water_readings w ON w.station_id=latest.station_id AND w.observed_at=latest.observed_at
    WHERE l.verification_status='VERIFIED'
    ORDER BY s.station_name`);
+  const eligible=await require('./official-station-policy').ids();
+  const officialLinked=linked.filter(s=>eligible.has(String(s.station_id)));
   const allCatalog=getCatalog();
-  const data=allCatalog.map(r=>({...r,stations:linked.filter(s=>s.river_id===r.river_id).map(s=>({
+  const data=allCatalog.map(r=>({...r,stations:officialLinked.filter(s=>s.river_id===r.river_id).map(s=>({
     station_id:s.station_id,station_name:s.station_name,external_station_id:s.external_station_id,
     latitude:s.latitude,longitude:s.longitude,reference_url:s.reference_url,
     verification_status:s.verification_status,source_river_name:s.source_river_name,
     latest_observed_at:s.latest_observed_at,latest_water_level:s.latest_water_level
   }))}));
   const monitored=data.filter(r=>r.stations.length>0);
-  const includeUnlinked=req.query.include_unlinked==='true';
-  const visible=includeUnlinked?data:monitored;
-  const gauges=linked.length;
+  const visible=monitored;
+  const gauges=officialLinked.length;
   const monitored_rivers=monitored.length;
-  return res.json({success:true,count:visible.length,candidate_rivers:allCatalog.length,unlinked_rivers:data.length-monitored_rivers,monitored_rivers,gauges,
-    caveat:'A verified gauge identity is not a verified flood-warning threshold.',data:visible});
+  return res.json({success:true,count:visible.length,candidate_rivers:monitored_rivers,unlinked_rivers:0,excluded_rivers:data.length-monitored_rivers,monitored_rivers,gauges,
+    caveat:'Only gauges with verified official thresholds are included. A comparison is not an issued warning.',data:visible});
  }catch(e){console.error('Catalog query failed',e);return res.status(503).json({success:false,message:'River catalog unavailable. Run npm run rivers:setup to initialize mapping.'});}
 });
 
 router.get('/rivers',async(req,res)=>{
  try{const [data]=await pool.execute(`SELECT station_id,station_name,latitude,longitude,data_source,external_station_id FROM stations WHERE data_source='RIVER_GAUGE' ORDER BY station_name`);
-  res.json({success:true,count:data.length,data});}
+  const allowed=await require('./official-station-policy').ids();const visible=data.filter(s=>allowed.has(String(s.station_id)));res.json({success:true,count:visible.length,data:visible});}
  catch(e){console.error(e);res.status(500).json({success:false,message:'Could not load river gauges'});}
 });
 
@@ -49,29 +47,8 @@ async function findStation(stationId){
  return rows[0]||null;
 }
 router.get('/rivers/:stationId/risk',async(req,res)=>{
- try{
-  const id=Number(req.params.stationId);
-  if(!Number.isSafeInteger(id)||id<=0)return res.status(400).json({success:false,message:'Invalid station ID'});
-  const station=await findStation(id);
-  if(!station)return res.status(404).json({success:false,message:'River gauge not found'});
-  const a=await analyzeRiver(station.external_station_id);
-  const available=a.status==='OBSERVATION_ANALYSIS';
-  const safety=evaluateGaugeSafety({station,analysis:a});
-  const assessmentAllowed=safety.stage_comparison_allowed;
-  return res.json({success:true,station,observation_available:available,
-   latest_observation:available?{observed_at:a.latest_observed_at,water_level_m:a.latest_water_level}:null,
-   data_freshness:a.data_freshness||null,
-   river_trend:{trend:a.trend||'UNKNOWN',previous_hour_available:a.changes?.['1h']!=null,
-     previous_hour_change_m:a.changes?.['1h']??null,changes:a.changes||null},
-   flood_thresholds:a.thresholds||null,risk_level:assessmentAllowed?(a.risk_level??null):null,
-   gauge_data_quality:safety,
-   assessment_status:assessmentAllowed?'ASSESSED':'NOT_ASSESSED',assessment_type:assessmentAllowed?(a.assessment_type||null):null,
-   official_warning_issued:null,
-   message:assessmentAllowed?'Stage comparison uses verified station-specific thresholds; no official warning feed is checked.':'Official flood-stage risk withheld: stale or unsuitable observation, or unverified gauge-specific thresholds.',
-   limitations:['Flood warning thresholds must be verified separately for each gauge.',
-    'Water-level trends and rainfall alone do not establish a flood-risk category.',
-    'No official flood-warning feed is connected. Experimental model output is not an official warning.']});
- }catch(e){console.error('River risk error:',e);res.status(500).json({success:false,message:'River risk analysis unavailable'});}
+ const id=Number(req.params.stationId);if(!Number.isSafeInteger(id)||id<=0)return res.status(400).json({message:'Invalid station ID'});
+ try{const r=(await require('./risk-engine').getUnified()).find(s=>Number(s.station_id)===id);if(!r)return res.status(404).json({message:'River gauge not found'});return res.json({success:true,station:r,unified_risk:r,risk_level:r.level,risk_score:r.score,risk_basis:r.basis,assessment_status:r.level?'ASSESSED':'NOT_ASSESSED',observation_available:r.water_level!==null,latest_observation:{water_level_m:r.water_level,observed_at:r.observed_at},river_trend:{trend:r.rise_1h===null?'UNKNOWN':r.rise_1h>0?'RISING':r.rise_1h<0?'FALLING':'UNCHANGED',changes:{'1h':r.rise_1h,'3h':r.rise_3h,'6h':r.rise_6h}},message:r.reasons.join(', '),official_warning_issued:null});}catch{return res.status(503).json({message:'Unified risk unavailable'});}
 });
 
 router.get('/rivers/:stationId/history',async(req,res)=>{

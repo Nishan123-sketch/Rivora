@@ -1,4 +1,5 @@
 const test=require('node:test');
+test.after(()=>pool.end());
 const assert=require('node:assert/strict');
 const pool=require('../db');
 const app=require('../server');

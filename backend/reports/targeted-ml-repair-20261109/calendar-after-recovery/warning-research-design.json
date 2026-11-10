@@ -1,0 +1,39 @@
+{
+  "created_at": "2026-11-09T00:03:28.818683+00:00",
+  "source_sha256": "bbc5eecf49f4b0ca1b3082ab0d2a38f3bb2a67ad3b8a0baf8279eb9fb92e806a",
+  "features_before": "2026-01-01",
+  "test_predictions_read": false,
+  "deploy": false,
+  "provenance": "Only official-URL water records plus independently reconciled history; original records retained",
+  "selection": "Saved 2025 selection only; AP ranking",
+  "calibration": "Saved disjoint 2025 block, sigmoid C=1",
+  "decision": "Saved disjoint threshold block; precision>=.2 and event recall>=.8; >=2 events",
+  "purge_hours": 72,
+  "features": [
+    "rain growth",
+    "recent rainfall intensity",
+    "positive-rise x observed rainfall",
+    "rise acceleration"
+  ],
+  "reference": "No current thresholds backfilled into historical data; no invented upstream gauge topology",
+  "target_scope": "Confirmed NONE at forecast origin only; exact match to live new-issuance eligibility",
+  "station_context": "Training-only same-gauge median, p05/p95 range and p90; no current flood thresholds backfilled into history. Unknown gauges keep NaN context and an explicit missing flag for HGB.",
+  "candidate_selection": "Saved 2025 selection AP only; numerical Brier and threshold checks unchanged",
+  "additional_candidates": [
+    "Station-context HGB",
+    "Constrained station-context HGB",
+    "Balanced station-context HGB"
+  ],
+  "hypothesis": "Seasonal warning prevalence and official issuance-hour patterns vary; known origin-time cycles may improve discrimination without upstream assumptions. Paired ablation against the previous best selection-AP model; all other parameters unchanged.",
+  "calendar_features": [
+    "season_sin",
+    "season_cos",
+    "kst_hour_sin",
+    "kst_hour_cos"
+  ],
+  "candidate_names": [
+    "Balanced station-context HGB",
+    "Calendar station-context HGB"
+  ],
+  "limitation": "Temporal associations can reflect agency practice, not flood physics; no independent accuracy claim."
+}

@@ -1,0 +1,3 @@
+import RiskLight from './RiskLight';
+import {thresholdLabels} from '../lib/officialDesignation';
+export default function RiskBadge({assessment:a}){const labels=thresholdLabels(a);const status={STALE:'Out of date',MISSING:'Awaiting reading',FUTURE_TIMESTAMP:'Time needs checking',INSUFFICIENT_HISTORY:'Collecting history'};return <span className="unified-risk-badge"><RiskLight level={a?.level} label={a?.level||status[a?.data_status]||'Not assessed'}/>{!a?.level&&a?.measurement_compatibility?.note&&<small>{a.measurement_compatibility.note}</small>}{a?.display_source==='Official warning'&&<small>Official warning</small>}{a?.threshold_verified&&<small>{labels.lower} {a.advisory_stage_m} m · {labels.upper} {a.warning_stage_m} m</small>}</span>}

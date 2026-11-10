@@ -1,0 +1,1643 @@
+{
+  "station_id": 2950,
+  "external_station_id": "1018683",
+  "station_name": "\uc11c\uc6b8\uc2dc(\ud55c\uac15\ub300\uad50)",
+  "river_id": "han",
+  "engine_sha256": "b8d9f971a293ba1090eac5f7131e73f25fd921f80141f561f9146fbf35d494fe",
+  "policy_sha256": "ca20552b8235fa4f569f8f626814c6b380fe06a67b65e4f18ed5e9f12f63f18d",
+  "quality": {
+    "historical_start": "2026-10-01 01:00:00",
+    "historical_end": "2026-11-10 00:20:00",
+    "observation_count": 1058,
+    "invalid_timestamp_rows": 0,
+    "future_timestamp_rows": 0,
+    "derived_provenanced_count": 8931,
+    "raw_unverified_provenance_rows": 24,
+    "official_reconciliation_value_differences": 0,
+    "duplicate_records": 0,
+    "conflicting_duplicates": 0,
+    "invalid_numeric_rows": 0,
+    "sampling_median_minutes": 60.0,
+    "hourly_grid_samples": 8785,
+    "missing_percentage": 0.06829823562891292,
+    "recent_hourly_coverage": 0.9979166666666667,
+    "longest_gap_hours": 6.0,
+    "historical_datum_epochs": "UNAVAILABLE",
+    "relocation_history": "UNAVAILABLE",
+    "rainfall_hour_coverage": 0.0,
+    "rainfall_72h_coverage": 0.0,
+    "longest_constant_hours": 23,
+    "latest_constant_hours": 0,
+    "suspected_discontinuity_hours": 12,
+    "suspected_discontinuity_examples": [
+      "2026-07-15 11:00:00",
+      "2026-07-15 12:00:00",
+      "2026-07-15 13:00:00",
+      "2026-07-15 14:00:00",
+      "2026-07-18 13:00:00",
+      "2026-07-18 14:00:00",
+      "2026-07-18 15:00:00",
+      "2026-07-18 16:00:00"
+    ],
+    "flags": [
+      "UNVERIFIED_RAW_PROVENANCE",
+      "SUSPECTED_STEP_OR_REAL_HYDROLOGICAL_RISE_NO_DATUM_CORRECTION"
+    ],
+    "forecasting_eligible": true,
+    "exclusion_reason": null,
+    "station_id": 2950,
+    "station_code": "1018683",
+    "river": "han",
+    "rainfall_source": {
+      "provider": "HRFCO",
+      "code": "10184070",
+      "distance_km": 2.278
+    },
+    "reference_status": "CURRENT_POINT_REFERENCE_ONLY_NOT_HISTORICAL_DATUM_EPOCHS"
+  },
+  "model_version": "level-research-v4-20261108-2950-40c786242296-b8d9f971",
+  "artifact_name": "level-research-v4-20261108-2950-40c786242296-b8d9f971.joblib",
+  "artifact_sha256": "798e07e5630e5c80b97031e33bce63381e888674eac26403482e227246b01e74",
+  "dataset_sha256": "40c786242296ae7eb182f48cd1591a992d6a6b56c41db3493ec19cf47b93d8b7",
+  "horizons": [
+    {
+      "horizon_hours": 1,
+      "forecast_status": "UNAVAILABLE",
+      "reason": null,
+      "predicted_level_m": null,
+      "prediction_type": "RIVER_WATER_LEVEL_NOT_FLOOD_PROBABILITY",
+      "interval": {
+        "status": "RETROSPECTIVE_COVERAGE_CHECKED",
+        "calibrated": false,
+        "empirical_coverage_checked": true,
+        "nominal_coverage": 0.9,
+        "test_coverage": 0.9484978540772532,
+        "calibration_blocks": 14,
+        "test_blocks": 21,
+        "radius_m": 0.1277105759834034,
+        "limitation": "Chronological empirical residual interval; exchangeability and future coverage are not guaranteed. Not flood probability."
+      },
+      "model_kind": "HIST_GRADIENT_BOOSTING",
+      "validation_status": "RETROSPECTIVE_ACCEPTED_LEVEL_MODEL",
+      "advanced_accepted": true,
+      "trained_candidate_count": 3,
+      "candidate_comparison_test": {
+        "PERSISTENCE": {
+          "pairs": 1398,
+          "mae_m": 0.0784334763948498,
+          "rmse_m": 0.1374577578499411,
+          "bias_m": 0.0007367668097281833,
+          "median_absolute_error_m": 0.030000000000000027,
+          "p95_absolute_error_m": 0.32000000000000006
+        },
+        "BOUNDED_TREND": {
+          "pairs": 1398,
+          "mae_m": 0.061316165951359095,
+          "rmse_m": 0.12338165546039971,
+          "bias_m": -0.011573676680972818,
+          "median_absolute_error_m": 0.020000000000000018,
+          "p95_absolute_error_m": 0.3214999999999987
+        },
+        "RIDGE": {
+          "pairs": 1398,
+          "mae_m": 0.04949791603736525,
+          "rmse_m": 0.08002560558852781,
+          "bias_m": -0.0031895005100817217,
+          "median_absolute_error_m": 0.028246759524520104,
+          "p95_absolute_error_m": 0.17107641003979351
+        },
+        "ELASTIC_NET": {
+          "pairs": 1398,
+          "mae_m": 0.04954293761634255,
+          "rmse_m": 0.08036939075239953,
+          "bias_m": -0.0030001943125524595,
+          "median_absolute_error_m": 0.02777840046213048,
+          "p95_absolute_error_m": 0.17496736360504211
+        },
+        "HIST_GRADIENT_BOOSTING": {
+          "pairs": 1398,
+          "mae_m": 0.032139298843706636,
+          "rmse_m": 0.06021359755331129,
+          "bias_m": -0.0012927081017642362,
+          "median_absolute_error_m": 0.014580555678644802,
+          "p95_absolute_error_m": 0.13181415096837934
+        }
+      },
+      "model_features": "PAST_WATER_ONLY",
+      "holdout": {
+        "train_samples": 5169,
+        "validation_samples": 976,
+        "test_samples": 1398,
+        "periods": {
+          "train": {
+            "from": "2025-11-10 00:00:00",
+            "to": "2026-06-13 08:00:00",
+            "samples": 5169
+          },
+          "selection": {
+            "from": "2026-06-16 15:00:00",
+            "to": "2026-07-27 06:00:00",
+            "samples": 976
+          },
+          "calibration": {
+            "from": "2026-07-30 13:00:00",
+            "to": "2026-09-09 04:00:00",
+            "samples": 976
+          },
+          "test": {
+            "from": "2026-09-12 11:00:00",
+            "to": "2026-11-09 16:00:00",
+            "samples": 1398
+          }
+        },
+        "chosen_method": "HIST_GRADIENT_BOOSTING",
+        "model": {
+          "pairs": 1398,
+          "mae_m": 0.032139298843706636,
+          "rmse_m": 0.06021359755331129,
+          "bias_m": -0.0012927081017642362,
+          "median_absolute_error_m": 0.014580555678644802,
+          "p95_absolute_error_m": 0.13181415096837934
+        },
+        "persistence": {
+          "pairs": 1398,
+          "mae_m": 0.0784334763948498,
+          "rmse_m": 0.1374577578499411,
+          "bias_m": 0.0007367668097281833,
+          "median_absolute_error_m": 0.030000000000000027,
+          "p95_absolute_error_m": 0.32000000000000006
+        },
+        "regimes": {
+          "definitions": {
+            "high_water_cutoff_m": 0.98,
+            "rise_cutoff_m_per_hour": 0.22000000000000008,
+            "storm_separation_hours": 72,
+            "warning": "Training-derived conditions, not flood-event labels or independently verified historical threshold exceedances."
+          },
+          "groups": {
+            "rising": {
+              "samples": 103,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 103,
+                "mae_m": 0.06053094473042532,
+                "rmse_m": 0.07591716384947654,
+                "bias_m": -0.006522005408369544,
+                "median_absolute_error_m": 0.051731843497298424,
+                "p95_absolute_error_m": 0.14957736125001356
+              },
+              "persistence": {
+                "pairs": 103,
+                "mae_m": 0.27310679611650485,
+                "rmse_m": 0.3156608109550749,
+                "bias_m": -0.16281553398058252,
+                "median_absolute_error_m": 0.25,
+                "p95_absolute_error_m": 0.5489999999999997
+              },
+              "status": "EVALUATED"
+            },
+            "high_water_proxy": {
+              "samples": 253,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 253,
+                "mae_m": 0.03793907053914458,
+                "rmse_m": 0.05280082780055342,
+                "bias_m": 0.011822911886440234,
+                "median_absolute_error_m": 0.026852639580470905,
+                "p95_absolute_error_m": 0.11864883849698032
+              },
+              "persistence": {
+                "pairs": 253,
+                "mae_m": 0.1966798418972332,
+                "rmse_m": 0.22949161893641198,
+                "bias_m": 0.0591304347826087,
+                "median_absolute_error_m": 0.15999999999999992,
+                "p95_absolute_error_m": 0.47799999999999954
+              },
+              "status": "EVALUATED"
+            },
+            "heavy_point_rain": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "wet": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "dry": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            }
+          }
+        }
+      },
+      "evaluation": {
+        "periods": {
+          "train": {
+            "from": "2025-11-10 00:00:00",
+            "to": "2026-06-13 08:00:00",
+            "samples": 5169
+          },
+          "selection": {
+            "from": "2026-06-16 15:00:00",
+            "to": "2026-07-27 06:00:00",
+            "samples": 976
+          },
+          "calibration": {
+            "from": "2026-07-30 13:00:00",
+            "to": "2026-09-09 04:00:00",
+            "samples": 976
+          },
+          "test": {
+            "from": "2026-09-12 11:00:00",
+            "to": "2026-11-09 16:00:00",
+            "samples": 1398
+          }
+        },
+        "selection_candidates": {
+          "PERSISTENCE": {
+            "pairs": 976,
+            "mae_m": 0.08866803278688526,
+            "rmse_m": 0.15064750954180273,
+            "bias_m": -0.0006762295081967216,
+            "median_absolute_error_m": 0.040000000000000036,
+            "p95_absolute_error_m": 0.3225
+          },
+          "BOUNDED_TREND": {
+            "pairs": 976,
+            "mae_m": 0.06863729508196723,
+            "rmse_m": 0.1317306771844562,
+            "bias_m": -0.012776639344262295,
+            "median_absolute_error_m": 0.02000000000000024,
+            "p95_absolute_error_m": 0.32000000000000006
+          },
+          "RIDGE": {
+            "pairs": 976,
+            "mae_m": 0.07266240848385326,
+            "rmse_m": 0.10700283177259143,
+            "bias_m": 0.0018871235963908387,
+            "median_absolute_error_m": 0.048751993326565546,
+            "p95_absolute_error_m": 0.22197898005727412
+          },
+          "ELASTIC_NET": {
+            "pairs": 976,
+            "mae_m": 0.07283986188238835,
+            "rmse_m": 0.10768409942800256,
+            "bias_m": 0.0015725328248082542,
+            "median_absolute_error_m": 0.04779726205679846,
+            "p95_absolute_error_m": 0.22387267512474354
+          },
+          "HIST_GRADIENT_BOOSTING": {
+            "pairs": 976,
+            "mae_m": 0.06179042679074688,
+            "rmse_m": 0.10425572442978687,
+            "bias_m": 0.006961679664951684,
+            "median_absolute_error_m": 0.03048416591610853,
+            "p95_absolute_error_m": 0.21329248050902921
+          }
+        },
+        "rolling_origin": {
+          "BOUNDED_TREND": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.019404761904761907,
+                "rmse_m": 0.045092497528228935,
+                "bias_m": 0.00011904761904761849,
+                "median_absolute_error_m": 0.010000000000000009,
+                "p95_absolute_error_m": 0.08650000000000013
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.020535714285714282,
+                "rmse_m": 0.04009660952297706,
+                "bias_m": 0.00017857142857142873,
+                "median_absolute_error_m": 0.010000000000000009,
+                "p95_absolute_error_m": 0.07999999999999996
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.0580952380952381,
+                "rmse_m": 0.11099120514278427,
+                "bias_m": -0.007261904761904763,
+                "median_absolute_error_m": 0.019999999999999907,
+                "p95_absolute_error_m": 0.27999999999999997
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.06708333333333333,
+                "rmse_m": 0.11805214747648399,
+                "bias_m": -0.001964285714285715,
+                "median_absolute_error_m": 0.020000000000000018,
+                "p95_absolute_error_m": 0.25650000000000006
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "RIDGE": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.02279661640740255,
+                "rmse_m": 0.03484106754102156,
+                "bias_m": -0.0030143177685551825,
+                "median_absolute_error_m": 0.014497432707258617,
+                "p95_absolute_error_m": 0.06631299834374338
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.020535714285714282,
+                "rmse_m": 0.04009660952297706,
+                "bias_m": 0.00017857142857142873,
+                "median_absolute_error_m": 0.010000000000000009,
+                "p95_absolute_error_m": 0.07999999999999996
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.045636648201542125,
+                "rmse_m": 0.07259824717561103,
+                "bias_m": -0.019450487336622375,
+                "median_absolute_error_m": 0.025703445436118466,
+                "p95_absolute_error_m": 0.15134851451813058
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.06708333333333333,
+                "rmse_m": 0.11805214747648399,
+                "bias_m": -0.001964285714285715,
+                "median_absolute_error_m": 0.020000000000000018,
+                "p95_absolute_error_m": 0.25650000000000006
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "ELASTIC_NET": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.022820079065374404,
+                "rmse_m": 0.03495554608693328,
+                "bias_m": -0.003028221529967073,
+                "median_absolute_error_m": 0.014512521086075147,
+                "p95_absolute_error_m": 0.0661803763606257
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.020535714285714282,
+                "rmse_m": 0.04009660952297706,
+                "bias_m": 0.00017857142857142873,
+                "median_absolute_error_m": 0.010000000000000009,
+                "p95_absolute_error_m": 0.07999999999999996
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.04541807181006111,
+                "rmse_m": 0.07280587991260709,
+                "bias_m": -0.019266581760557348,
+                "median_absolute_error_m": 0.025202137848215733,
+                "p95_absolute_error_m": 0.15229003823594775
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.06708333333333333,
+                "rmse_m": 0.11805214747648399,
+                "bias_m": -0.001964285714285715,
+                "median_absolute_error_m": 0.020000000000000018,
+                "p95_absolute_error_m": 0.25650000000000006
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "HIST_GRADIENT_BOOSTING": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.01764222476027823,
+                "rmse_m": 0.03216667794164096,
+                "bias_m": -0.0020337019104911683,
+                "median_absolute_error_m": 0.010097971499050895,
+                "p95_absolute_error_m": 0.0686154074092771
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.020535714285714282,
+                "rmse_m": 0.04009660952297706,
+                "bias_m": 0.00017857142857142873,
+                "median_absolute_error_m": 0.010000000000000009,
+                "p95_absolute_error_m": 0.07999999999999996
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.030103376008622944,
+                "rmse_m": 0.05702680545126182,
+                "bias_m": -0.010656172853450982,
+                "median_absolute_error_m": 0.012972946545558584,
+                "p95_absolute_error_m": 0.12449193910442208
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.06708333333333333,
+                "rmse_m": 0.11805214747648399,
+                "bias_m": -0.001964285714285715,
+                "median_absolute_error_m": 0.020000000000000018,
+                "p95_absolute_error_m": 0.25650000000000006
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ]
+        },
+        "chosen_on_development": "HIST_GRADIENT_BOOSTING",
+        "chosen_test": {
+          "pairs": 1398,
+          "mae_m": 0.032139298843706636,
+          "rmse_m": 0.06021359755331129,
+          "bias_m": -0.0012927081017642362,
+          "median_absolute_error_m": 0.014580555678644802,
+          "p95_absolute_error_m": 0.13181415096837934
+        },
+        "persistence": {
+          "pairs": 1398,
+          "mae_m": 0.0784334763948498,
+          "rmse_m": 0.1374577578499411,
+          "bias_m": 0.0007367668097281833,
+          "median_absolute_error_m": 0.030000000000000027,
+          "p95_absolute_error_m": 0.32000000000000006
+        },
+        "mae_improvement_fraction": 0.5902349312950126,
+        "regimes": {
+          "definitions": {
+            "high_water_cutoff_m": 0.98,
+            "rise_cutoff_m_per_hour": 0.22000000000000008,
+            "storm_separation_hours": 72,
+            "warning": "Training-derived conditions, not flood-event labels or independently verified historical threshold exceedances."
+          },
+          "groups": {
+            "rising": {
+              "samples": 103,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 103,
+                "mae_m": 0.06053094473042532,
+                "rmse_m": 0.07591716384947654,
+                "bias_m": -0.006522005408369544,
+                "median_absolute_error_m": 0.051731843497298424,
+                "p95_absolute_error_m": 0.14957736125001356
+              },
+              "persistence": {
+                "pairs": 103,
+                "mae_m": 0.27310679611650485,
+                "rmse_m": 0.3156608109550749,
+                "bias_m": -0.16281553398058252,
+                "median_absolute_error_m": 0.25,
+                "p95_absolute_error_m": 0.5489999999999997
+              },
+              "status": "EVALUATED"
+            },
+            "high_water_proxy": {
+              "samples": 253,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 253,
+                "mae_m": 0.03793907053914458,
+                "rmse_m": 0.05280082780055342,
+                "bias_m": 0.011822911886440234,
+                "median_absolute_error_m": 0.026852639580470905,
+                "p95_absolute_error_m": 0.11864883849698032
+              },
+              "persistence": {
+                "pairs": 253,
+                "mae_m": 0.1966798418972332,
+                "rmse_m": 0.22949161893641198,
+                "bias_m": 0.0591304347826087,
+                "median_absolute_error_m": 0.15999999999999992,
+                "p95_absolute_error_m": 0.47799999999999954
+              },
+              "status": "EVALUATED"
+            },
+            "heavy_point_rain": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "wet": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "dry": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            }
+          }
+        },
+        "block_uncertainty": {
+          "status": "TIME_BLOCK_BOOTSTRAP",
+          "blocks": 21,
+          "block_hours": 72,
+          "replicates": 500,
+          "ci95_mae_improvement_m": [
+            0.03179573224268318,
+            0.06750513485762985
+          ],
+          "limitation": "Equal-time-block-weighted MAE improvement. Time blocks are proxies, not independently identified meteorological storms."
+        },
+        "advanced_accepted": true,
+        "test_used_for_selection": false,
+        "evaluation_type": "RETROSPECTIVE"
+      },
+      "research_readiness": "RETROSPECTIVE_RESEARCH_ONLY",
+      "model_rejection_reason": null
+    },
+    {
+      "horizon_hours": 3,
+      "forecast_status": "UNAVAILABLE",
+      "reason": null,
+      "predicted_level_m": null,
+      "prediction_type": "RIVER_WATER_LEVEL_NOT_FLOOD_PROBABILITY",
+      "interval": {
+        "status": "RETROSPECTIVE_COVERAGE_CHECKED",
+        "calibrated": false,
+        "empirical_coverage_checked": true,
+        "nominal_coverage": 0.9,
+        "test_coverage": 0.9606017191977078,
+        "calibration_blocks": 14,
+        "test_blocks": 21,
+        "radius_m": 0.33211976381475816,
+        "limitation": "Chronological empirical residual interval; exchangeability and future coverage are not guaranteed. Not flood probability."
+      },
+      "model_kind": "HIST_GRADIENT_BOOSTING",
+      "validation_status": "RETROSPECTIVE_ACCEPTED_LEVEL_MODEL",
+      "advanced_accepted": true,
+      "trained_candidate_count": 3,
+      "candidate_comparison_test": {
+        "PERSISTENCE": {
+          "pairs": 1396,
+          "mae_m": 0.18610315186246418,
+          "rmse_m": 0.30024130696304396,
+          "bias_m": 0.001633237822349571,
+          "median_absolute_error_m": 0.09000000000000008,
+          "p95_absolute_error_m": 0.6799999999999999
+        },
+        "BOUNDED_TREND": {
+          "pairs": 1396,
+          "mae_m": 0.23790114613180513,
+          "rmse_m": 0.3937823530165845,
+          "bias_m": -0.03526504297994269,
+          "median_absolute_error_m": 0.10500000000000004,
+          "p95_absolute_error_m": 0.9825
+        },
+        "RIDGE": {
+          "pairs": 1396,
+          "mae_m": 0.09278575170811176,
+          "rmse_m": 0.1483207035381425,
+          "bias_m": -0.010554163863898621,
+          "median_absolute_error_m": 0.053473061436649594,
+          "p95_absolute_error_m": 0.3447705061466743
+        },
+        "ELASTIC_NET": {
+          "pairs": 1396,
+          "mae_m": 0.0927575937068087,
+          "rmse_m": 0.1485769441052479,
+          "bias_m": -0.010409489213985212,
+          "median_absolute_error_m": 0.053283130950955826,
+          "p95_absolute_error_m": 0.34489963952471053
+        },
+        "HIST_GRADIENT_BOOSTING": {
+          "pairs": 1396,
+          "mae_m": 0.0785551293555856,
+          "rmse_m": 0.13472964741224078,
+          "bias_m": -0.002299924105236847,
+          "median_absolute_error_m": 0.03901163570637722,
+          "p95_absolute_error_m": 0.3035687240684001
+        }
+      },
+      "model_features": "PAST_WATER_ONLY",
+      "holdout": {
+        "train_samples": 5169,
+        "validation_samples": 976,
+        "test_samples": 1396,
+        "periods": {
+          "train": {
+            "from": "2025-11-10 00:00:00",
+            "to": "2026-06-13 08:00:00",
+            "samples": 5169
+          },
+          "selection": {
+            "from": "2026-06-16 15:00:00",
+            "to": "2026-07-27 06:00:00",
+            "samples": 976
+          },
+          "calibration": {
+            "from": "2026-07-30 13:00:00",
+            "to": "2026-09-09 04:00:00",
+            "samples": 976
+          },
+          "test": {
+            "from": "2026-09-12 11:00:00",
+            "to": "2026-11-09 14:00:00",
+            "samples": 1396
+          }
+        },
+        "chosen_method": "HIST_GRADIENT_BOOSTING",
+        "model": {
+          "pairs": 1396,
+          "mae_m": 0.0785551293555856,
+          "rmse_m": 0.13472964741224078,
+          "bias_m": -0.002299924105236847,
+          "median_absolute_error_m": 0.03901163570637722,
+          "p95_absolute_error_m": 0.3035687240684001
+        },
+        "persistence": {
+          "pairs": 1396,
+          "mae_m": 0.18610315186246418,
+          "rmse_m": 0.30024130696304396,
+          "bias_m": 0.001633237822349571,
+          "median_absolute_error_m": 0.09000000000000008,
+          "p95_absolute_error_m": 0.6799999999999999
+        },
+        "regimes": {
+          "definitions": {
+            "high_water_cutoff_m": 0.98,
+            "rise_cutoff_m_per_hour": 0.22000000000000008,
+            "storm_separation_hours": 72,
+            "warning": "Training-derived conditions, not flood-event labels or independently verified historical threshold exceedances."
+          },
+          "groups": {
+            "rising": {
+              "samples": 103,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 103,
+                "mae_m": 0.08222859147155423,
+                "rmse_m": 0.10613036126858358,
+                "bias_m": 0.006593979044396766,
+                "median_absolute_error_m": 0.06839486808177009,
+                "p95_absolute_error_m": 0.22940892398708923
+              },
+              "persistence": {
+                "pairs": 103,
+                "mae_m": 0.31601941747572815,
+                "rmse_m": 0.37983517120134275,
+                "bias_m": 0.15058252427184465,
+                "median_absolute_error_m": 0.30000000000000004,
+                "p95_absolute_error_m": 0.6399999999999999
+              },
+              "status": "EVALUATED"
+            },
+            "high_water_proxy": {
+              "samples": 253,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 253,
+                "mae_m": 0.06469150684863147,
+                "rmse_m": 0.08083882452056075,
+                "bias_m": 0.0393471449983174,
+                "median_absolute_error_m": 0.05800431588833965,
+                "p95_absolute_error_m": 0.1490739147249445
+              },
+              "persistence": {
+                "pairs": 253,
+                "mae_m": 0.35355731225296444,
+                "rmse_m": 0.3884859635476136,
+                "bias_m": 0.31292490118577077,
+                "median_absolute_error_m": 0.32999999999999985,
+                "p95_absolute_error_m": 0.6399999999999999
+              },
+              "status": "EVALUATED"
+            },
+            "heavy_point_rain": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "wet": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "dry": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            }
+          }
+        }
+      },
+      "evaluation": {
+        "periods": {
+          "train": {
+            "from": "2025-11-10 00:00:00",
+            "to": "2026-06-13 08:00:00",
+            "samples": 5169
+          },
+          "selection": {
+            "from": "2026-06-16 15:00:00",
+            "to": "2026-07-27 06:00:00",
+            "samples": 976
+          },
+          "calibration": {
+            "from": "2026-07-30 13:00:00",
+            "to": "2026-09-09 04:00:00",
+            "samples": 976
+          },
+          "test": {
+            "from": "2026-09-12 11:00:00",
+            "to": "2026-11-09 14:00:00",
+            "samples": 1396
+          }
+        },
+        "selection_candidates": {
+          "PERSISTENCE": {
+            "pairs": 976,
+            "mae_m": 0.21896516393442622,
+            "rmse_m": 0.33742561414623995,
+            "bias_m": -0.002038934426229508,
+            "median_absolute_error_m": 0.1299999999999999,
+            "p95_absolute_error_m": 0.7499999999999998
+          },
+          "BOUNDED_TREND": {
+            "pairs": 976,
+            "mae_m": 0.25975409836065577,
+            "rmse_m": 0.40984603266568687,
+            "bias_m": -0.038340163934426234,
+            "median_absolute_error_m": 0.14000000000000018,
+            "p95_absolute_error_m": 0.9624999999999999
+          },
+          "RIDGE": {
+            "pairs": 976,
+            "mae_m": 0.15161681250804201,
+            "rmse_m": 0.21860008588225102,
+            "bias_m": -0.0010452100300032147,
+            "median_absolute_error_m": 0.09837061542056763,
+            "p95_absolute_error_m": 0.46532088006718364
+          },
+          "ELASTIC_NET": {
+            "pairs": 976,
+            "mae_m": 0.15184955010890397,
+            "rmse_m": 0.21928718795714175,
+            "bias_m": -0.0013045987326244172,
+            "median_absolute_error_m": 0.09849211695601995,
+            "p95_absolute_error_m": 0.46344051610077286
+          },
+          "HIST_GRADIENT_BOOSTING": {
+            "pairs": 976,
+            "mae_m": 0.15021910066228544,
+            "rmse_m": 0.25417679647126984,
+            "bias_m": -0.0158370123932858,
+            "median_absolute_error_m": 0.08094307566264863,
+            "p95_absolute_error_m": 0.500347021351615
+          }
+        },
+        "rolling_origin": {
+          "BOUNDED_TREND": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.07166666666666666,
+                "rmse_m": 0.14628738838327793,
+                "bias_m": -0.0020238095238095236,
+                "median_absolute_error_m": 0.02000000000000013,
+                "p95_absolute_error_m": 0.3765
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.051607142857142844,
+                "rmse_m": 0.0860128727907299,
+                "bias_m": -0.0018452380952380949,
+                "median_absolute_error_m": 0.030000000000000027,
+                "p95_absolute_error_m": 0.18999999999999995
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.22238095238095237,
+                "rmse_m": 0.35922038599484546,
+                "bias_m": -0.020714285714285713,
+                "median_absolute_error_m": 0.08999999999999991,
+                "p95_absolute_error_m": 0.8065
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.1542261904761905,
+                "rmse_m": 0.2528304061732178,
+                "bias_m": -0.004821428571428569,
+                "median_absolute_error_m": 0.07999999999999996,
+                "p95_absolute_error_m": 0.5925000000000002
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "RIDGE": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.043718808783614324,
+                "rmse_m": 0.06667475140950456,
+                "bias_m": -0.002716552977715137,
+                "median_absolute_error_m": 0.02373475354185728,
+                "p95_absolute_error_m": 0.1313352572659284
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.051607142857142844,
+                "rmse_m": 0.0860128727907299,
+                "bias_m": -0.0018452380952380949,
+                "median_absolute_error_m": 0.030000000000000027,
+                "p95_absolute_error_m": 0.18999999999999995
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.08626250190848501,
+                "rmse_m": 0.14443182716502875,
+                "bias_m": -0.03968944253304846,
+                "median_absolute_error_m": 0.04262139132565712,
+                "p95_absolute_error_m": 0.27253313772330107
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.1542261904761905,
+                "rmse_m": 0.2528304061732178,
+                "bias_m": -0.004821428571428569,
+                "median_absolute_error_m": 0.07999999999999996,
+                "p95_absolute_error_m": 0.5925000000000002
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "ELASTIC_NET": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.04392567955839333,
+                "rmse_m": 0.06680867843266496,
+                "bias_m": -0.002802650252990387,
+                "median_absolute_error_m": 0.02443325619776998,
+                "p95_absolute_error_m": 0.13135371772401014
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.051607142857142844,
+                "rmse_m": 0.0860128727907299,
+                "bias_m": -0.0018452380952380949,
+                "median_absolute_error_m": 0.030000000000000027,
+                "p95_absolute_error_m": 0.18999999999999995
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.0861491270009563,
+                "rmse_m": 0.14448935064589544,
+                "bias_m": -0.03965654249143777,
+                "median_absolute_error_m": 0.04153175349101601,
+                "p95_absolute_error_m": 0.27226121390225916
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.1542261904761905,
+                "rmse_m": 0.2528304061732178,
+                "bias_m": -0.004821428571428569,
+                "median_absolute_error_m": 0.07999999999999996,
+                "p95_absolute_error_m": 0.5925000000000002
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "HIST_GRADIENT_BOOSTING": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.04128501427212633,
+                "rmse_m": 0.06716367774075188,
+                "bias_m": -0.005035426796455861,
+                "median_absolute_error_m": 0.02196598060539562,
+                "p95_absolute_error_m": 0.1622488995888151
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.051607142857142844,
+                "rmse_m": 0.0860128727907299,
+                "bias_m": -0.0018452380952380949,
+                "median_absolute_error_m": 0.030000000000000027,
+                "p95_absolute_error_m": 0.18999999999999995
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.0668624722947171,
+                "rmse_m": 0.11478230107699332,
+                "bias_m": -0.018042773693222002,
+                "median_absolute_error_m": 0.028681212712563076,
+                "p95_absolute_error_m": 0.2621461319372857
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.1542261904761905,
+                "rmse_m": 0.2528304061732178,
+                "bias_m": -0.004821428571428569,
+                "median_absolute_error_m": 0.07999999999999996,
+                "p95_absolute_error_m": 0.5925000000000002
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ]
+        },
+        "chosen_on_development": "HIST_GRADIENT_BOOSTING",
+        "chosen_test": {
+          "pairs": 1396,
+          "mae_m": 0.0785551293555856,
+          "rmse_m": 0.13472964741224078,
+          "bias_m": -0.002299924105236847,
+          "median_absolute_error_m": 0.03901163570637722,
+          "p95_absolute_error_m": 0.3035687240684001
+        },
+        "persistence": {
+          "pairs": 1396,
+          "mae_m": 0.18610315186246418,
+          "rmse_m": 0.30024130696304396,
+          "bias_m": 0.001633237822349571,
+          "median_absolute_error_m": 0.09000000000000008,
+          "p95_absolute_error_m": 0.6799999999999999
+        },
+        "mae_improvement_fraction": 0.5778946859876924,
+        "regimes": {
+          "definitions": {
+            "high_water_cutoff_m": 0.98,
+            "rise_cutoff_m_per_hour": 0.22000000000000008,
+            "storm_separation_hours": 72,
+            "warning": "Training-derived conditions, not flood-event labels or independently verified historical threshold exceedances."
+          },
+          "groups": {
+            "rising": {
+              "samples": 103,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 103,
+                "mae_m": 0.08222859147155423,
+                "rmse_m": 0.10613036126858358,
+                "bias_m": 0.006593979044396766,
+                "median_absolute_error_m": 0.06839486808177009,
+                "p95_absolute_error_m": 0.22940892398708923
+              },
+              "persistence": {
+                "pairs": 103,
+                "mae_m": 0.31601941747572815,
+                "rmse_m": 0.37983517120134275,
+                "bias_m": 0.15058252427184465,
+                "median_absolute_error_m": 0.30000000000000004,
+                "p95_absolute_error_m": 0.6399999999999999
+              },
+              "status": "EVALUATED"
+            },
+            "high_water_proxy": {
+              "samples": 253,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 253,
+                "mae_m": 0.06469150684863147,
+                "rmse_m": 0.08083882452056075,
+                "bias_m": 0.0393471449983174,
+                "median_absolute_error_m": 0.05800431588833965,
+                "p95_absolute_error_m": 0.1490739147249445
+              },
+              "persistence": {
+                "pairs": 253,
+                "mae_m": 0.35355731225296444,
+                "rmse_m": 0.3884859635476136,
+                "bias_m": 0.31292490118577077,
+                "median_absolute_error_m": 0.32999999999999985,
+                "p95_absolute_error_m": 0.6399999999999999
+              },
+              "status": "EVALUATED"
+            },
+            "heavy_point_rain": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "wet": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "dry": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            }
+          }
+        },
+        "block_uncertainty": {
+          "status": "TIME_BLOCK_BOOTSTRAP",
+          "blocks": 21,
+          "block_hours": 72,
+          "replicates": 500,
+          "ci95_mae_improvement_m": [
+            0.07219344201041286,
+            0.1497912254832278
+          ],
+          "limitation": "Equal-time-block-weighted MAE improvement. Time blocks are proxies, not independently identified meteorological storms."
+        },
+        "advanced_accepted": true,
+        "test_used_for_selection": false,
+        "evaluation_type": "RETROSPECTIVE"
+      },
+      "research_readiness": "RETROSPECTIVE_RESEARCH_ONLY",
+      "model_rejection_reason": null
+    },
+    {
+      "horizon_hours": 6,
+      "forecast_status": "UNAVAILABLE",
+      "reason": null,
+      "predicted_level_m": null,
+      "prediction_type": "RIVER_WATER_LEVEL_NOT_FLOOD_PROBABILITY",
+      "interval": {
+        "status": "RETROSPECTIVE_COVERAGE_CHECKED",
+        "calibrated": false,
+        "empirical_coverage_checked": true,
+        "nominal_coverage": 0.9,
+        "test_coverage": 0.9347202295552367,
+        "calibration_blocks": 14,
+        "test_blocks": 21,
+        "radius_m": 0.32950023122524097,
+        "limitation": "Chronological empirical residual interval; exchangeability and future coverage are not guaranteed. Not flood probability."
+      },
+      "model_kind": "ELASTIC_NET",
+      "validation_status": "RETROSPECTIVE_ACCEPTED_LEVEL_MODEL",
+      "advanced_accepted": true,
+      "trained_candidate_count": 3,
+      "candidate_comparison_test": {
+        "PERSISTENCE": {
+          "pairs": 1394,
+          "mae_m": 0.25215208034433284,
+          "rmse_m": 0.3651070478428279,
+          "bias_m": 0.0017503586800573878,
+          "median_absolute_error_m": 0.16000000000000003,
+          "p95_absolute_error_m": 0.8134999999999991
+        },
+        "BOUNDED_TREND": {
+          "pairs": 1394,
+          "mae_m": 0.49446197991391677,
+          "rmse_m": 0.7181233513653372,
+          "bias_m": -0.07189383070301292,
+          "median_absolute_error_m": 0.3400000000000002,
+          "p95_absolute_error_m": 1.67
+        },
+        "RIDGE": {
+          "pairs": 1394,
+          "mae_m": 0.1037429011604481,
+          "rmse_m": 0.1609724518448381,
+          "bias_m": -0.004245601633489946,
+          "median_absolute_error_m": 0.060951672874705765,
+          "p95_absolute_error_m": 0.37073163683764604
+        },
+        "ELASTIC_NET": {
+          "pairs": 1394,
+          "mae_m": 0.10368720032923294,
+          "rmse_m": 0.161010909369056,
+          "bias_m": -0.004232780059118228,
+          "median_absolute_error_m": 0.06072414897215983,
+          "p95_absolute_error_m": 0.37040371712026016
+        },
+        "HIST_GRADIENT_BOOSTING": {
+          "pairs": 1394,
+          "mae_m": 0.08852656902147542,
+          "rmse_m": 0.14350561115258048,
+          "bias_m": -0.011617701140966417,
+          "median_absolute_error_m": 0.047265641455463026,
+          "p95_absolute_error_m": 0.3200250101711172
+        }
+      },
+      "model_features": "PAST_WATER_ONLY",
+      "holdout": {
+        "train_samples": 5169,
+        "validation_samples": 976,
+        "test_samples": 1394,
+        "periods": {
+          "train": {
+            "from": "2025-11-10 00:00:00",
+            "to": "2026-06-13 08:00:00",
+            "samples": 5169
+          },
+          "selection": {
+            "from": "2026-06-16 15:00:00",
+            "to": "2026-07-27 06:00:00",
+            "samples": 976
+          },
+          "calibration": {
+            "from": "2026-07-30 13:00:00",
+            "to": "2026-09-09 04:00:00",
+            "samples": 976
+          },
+          "test": {
+            "from": "2026-09-12 11:00:00",
+            "to": "2026-11-09 17:00:00",
+            "samples": 1394
+          }
+        },
+        "chosen_method": "ELASTIC_NET",
+        "model": {
+          "pairs": 1394,
+          "mae_m": 0.10368720032923294,
+          "rmse_m": 0.161010909369056,
+          "bias_m": -0.004232780059118228,
+          "median_absolute_error_m": 0.06072414897215983,
+          "p95_absolute_error_m": 0.37040371712026016
+        },
+        "persistence": {
+          "pairs": 1394,
+          "mae_m": 0.25215208034433284,
+          "rmse_m": 0.3651070478428279,
+          "bias_m": 0.0017503586800573878,
+          "median_absolute_error_m": 0.16000000000000003,
+          "p95_absolute_error_m": 0.8134999999999991
+        },
+        "regimes": {
+          "definitions": {
+            "high_water_cutoff_m": 0.98,
+            "rise_cutoff_m_per_hour": 0.22000000000000008,
+            "storm_separation_hours": 72,
+            "warning": "Training-derived conditions, not flood-event labels or independently verified historical threshold exceedances."
+          },
+          "groups": {
+            "rising": {
+              "samples": 103,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 103,
+                "mae_m": 0.07532437222279928,
+                "rmse_m": 0.09145609028445381,
+                "bias_m": 0.006595169486514928,
+                "median_absolute_error_m": 0.06418716094592591,
+                "p95_absolute_error_m": 0.16160090285991036
+              },
+              "persistence": {
+                "pairs": 103,
+                "mae_m": 0.4732038834951456,
+                "rmse_m": 0.5514939991223488,
+                "bias_m": 0.4613592233009709,
+                "median_absolute_error_m": 0.44000000000000006,
+                "p95_absolute_error_m": 0.989
+              },
+              "status": "EVALUATED"
+            },
+            "high_water_proxy": {
+              "samples": 253,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 253,
+                "mae_m": 0.06184679905615539,
+                "rmse_m": 0.07783660412975348,
+                "bias_m": 0.01138463615663891,
+                "median_absolute_error_m": 0.04902417618487298,
+                "p95_absolute_error_m": 0.1456883446446955
+              },
+              "persistence": {
+                "pairs": 253,
+                "mae_m": 0.5100395256916995,
+                "rmse_m": 0.5575163727899421,
+                "bias_m": 0.5003162055335969,
+                "median_absolute_error_m": 0.45999999999999996,
+                "p95_absolute_error_m": 0.96
+              },
+              "status": "EVALUATED"
+            },
+            "heavy_point_rain": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "wet": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "dry": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            }
+          }
+        }
+      },
+      "evaluation": {
+        "periods": {
+          "train": {
+            "from": "2025-11-10 00:00:00",
+            "to": "2026-06-13 08:00:00",
+            "samples": 5169
+          },
+          "selection": {
+            "from": "2026-06-16 15:00:00",
+            "to": "2026-07-27 06:00:00",
+            "samples": 976
+          },
+          "calibration": {
+            "from": "2026-07-30 13:00:00",
+            "to": "2026-09-09 04:00:00",
+            "samples": 976
+          },
+          "test": {
+            "from": "2026-09-12 11:00:00",
+            "to": "2026-11-09 17:00:00",
+            "samples": 1394
+          }
+        },
+        "selection_candidates": {
+          "PERSISTENCE": {
+            "pairs": 976,
+            "mae_m": 0.30368852459016393,
+            "rmse_m": 0.4340301511774816,
+            "bias_m": -0.0034426229508196715,
+            "median_absolute_error_m": 0.19999999999999996,
+            "p95_absolute_error_m": 0.9225
+          },
+          "BOUNDED_TREND": {
+            "pairs": 976,
+            "mae_m": 0.5394672131147541,
+            "rmse_m": 0.7519650486732941,
+            "bias_m": -0.07604508196721312,
+            "median_absolute_error_m": 0.37999999999999995,
+            "p95_absolute_error_m": 1.63
+          },
+          "RIDGE": {
+            "pairs": 976,
+            "mae_m": 0.18900087286722492,
+            "rmse_m": 0.2843591898696211,
+            "bias_m": -0.013564279466595084,
+            "median_absolute_error_m": 0.11218908635332431,
+            "p95_absolute_error_m": 0.6223426957269638
+          },
+          "ELASTIC_NET": {
+            "pairs": 976,
+            "mae_m": 0.1889115936636192,
+            "rmse_m": 0.2842742459380828,
+            "bias_m": -0.013346004011319858,
+            "median_absolute_error_m": 0.11277775667464096,
+            "p95_absolute_error_m": 0.6224638411809238
+          },
+          "HIST_GRADIENT_BOOSTING": {
+            "pairs": 976,
+            "mae_m": 0.1914399144548739,
+            "rmse_m": 0.3086888276069066,
+            "bias_m": -0.039267442115537385,
+            "median_absolute_error_m": 0.10723417692661086,
+            "p95_absolute_error_m": 0.6485137904112843
+          }
+        },
+        "rolling_origin": {
+          "BOUNDED_TREND": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.15190476190476188,
+                "rmse_m": 0.27986603938313054,
+                "bias_m": -0.007023809523809525,
+                "median_absolute_error_m": 0.06000000000000005,
+                "p95_absolute_error_m": 0.5760000000000003
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.08178571428571428,
+                "rmse_m": 0.12108143658593701,
+                "bias_m": -0.006666666666666666,
+                "median_absolute_error_m": 0.050000000000000044,
+                "p95_absolute_error_m": 0.2595000000000001
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.4482738095238095,
+                "rmse_m": 0.6527373678812723,
+                "bias_m": -0.039107142857142854,
+                "median_absolute_error_m": 0.28499999999999975,
+                "p95_absolute_error_m": 1.5265000000000004
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.20815476190476195,
+                "rmse_m": 0.30323552844989277,
+                "bias_m": -0.007321428571428574,
+                "median_absolute_error_m": 0.14999999999999997,
+                "p95_absolute_error_m": 0.6960000000000003
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "RIDGE": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.06403844219728401,
+                "rmse_m": 0.09012352406291652,
+                "bias_m": -0.005071135090983838,
+                "median_absolute_error_m": 0.04710582973246302,
+                "p95_absolute_error_m": 0.18335650026903189
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.08178571428571428,
+                "rmse_m": 0.12108143658593701,
+                "bias_m": -0.006666666666666666,
+                "median_absolute_error_m": 0.050000000000000044,
+                "p95_absolute_error_m": 0.2595000000000001
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.09075871809892758,
+                "rmse_m": 0.15238651772282766,
+                "bias_m": -0.0269238908954391,
+                "median_absolute_error_m": 0.04547943939655946,
+                "p95_absolute_error_m": 0.31454829669156315
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.20815476190476195,
+                "rmse_m": 0.30323552844989277,
+                "bias_m": -0.007321428571428574,
+                "median_absolute_error_m": 0.14999999999999997,
+                "p95_absolute_error_m": 0.6960000000000003
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "ELASTIC_NET": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.06396184855820153,
+                "rmse_m": 0.09012310992482662,
+                "bias_m": -0.005097499064131622,
+                "median_absolute_error_m": 0.04613899943012961,
+                "p95_absolute_error_m": 0.1828140801575014
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.08178571428571428,
+                "rmse_m": 0.12108143658593701,
+                "bias_m": -0.006666666666666666,
+                "median_absolute_error_m": 0.050000000000000044,
+                "p95_absolute_error_m": 0.2595000000000001
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.09065877599715473,
+                "rmse_m": 0.15245011514240042,
+                "bias_m": -0.027244288496411622,
+                "median_absolute_error_m": 0.04561609246434423,
+                "p95_absolute_error_m": 0.3144477808635944
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.20815476190476195,
+                "rmse_m": 0.30323552844989277,
+                "bias_m": -0.007321428571428574,
+                "median_absolute_error_m": 0.14999999999999997,
+                "p95_absolute_error_m": 0.6960000000000003
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ],
+          "HIST_GRADIENT_BOOSTING": [
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.06384934412203506,
+                "rmse_m": 0.09304213559707354,
+                "bias_m": -0.0022276654370871974,
+                "median_absolute_error_m": 0.04286229626022431,
+                "p95_absolute_error_m": 0.20031036281125292
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.08178571428571428,
+                "rmse_m": 0.12108143658593701,
+                "bias_m": -0.006666666666666666,
+                "median_absolute_error_m": 0.050000000000000044,
+                "p95_absolute_error_m": 0.2595000000000001
+              },
+              "from": "2026-04-09 18:00:00",
+              "to": "2026-04-16 17:00:00"
+            },
+            {
+              "selected": {
+                "pairs": 168,
+                "mae_m": 0.0808613905593468,
+                "rmse_m": 0.13053103839337635,
+                "bias_m": -0.028947431938675085,
+                "median_absolute_error_m": 0.04281543606183319,
+                "p95_absolute_error_m": 0.30226029095779705
+              },
+              "persistence": {
+                "pairs": 168,
+                "mae_m": 0.20815476190476195,
+                "rmse_m": 0.30323552844989277,
+                "bias_m": -0.007321428571428574,
+                "median_absolute_error_m": 0.14999999999999997,
+                "p95_absolute_error_m": 0.6960000000000003
+              },
+              "from": "2026-05-12 01:00:00",
+              "to": "2026-05-19 00:00:00"
+            }
+          ]
+        },
+        "chosen_on_development": "ELASTIC_NET",
+        "chosen_test": {
+          "pairs": 1394,
+          "mae_m": 0.10368720032923294,
+          "rmse_m": 0.161010909369056,
+          "bias_m": -0.004232780059118228,
+          "median_absolute_error_m": 0.06072414897215983,
+          "p95_absolute_error_m": 0.37040371712026016
+        },
+        "persistence": {
+          "pairs": 1394,
+          "mae_m": 0.25215208034433284,
+          "rmse_m": 0.3651070478428279,
+          "bias_m": 0.0017503586800573878,
+          "median_absolute_error_m": 0.16000000000000003,
+          "p95_absolute_error_m": 0.8134999999999991
+        },
+        "mae_improvement_fraction": 0.5887910177554745,
+        "regimes": {
+          "definitions": {
+            "high_water_cutoff_m": 0.98,
+            "rise_cutoff_m_per_hour": 0.22000000000000008,
+            "storm_separation_hours": 72,
+            "warning": "Training-derived conditions, not flood-event labels or independently verified historical threshold exceedances."
+          },
+          "groups": {
+            "rising": {
+              "samples": 103,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 103,
+                "mae_m": 0.07532437222279928,
+                "rmse_m": 0.09145609028445381,
+                "bias_m": 0.006595169486514928,
+                "median_absolute_error_m": 0.06418716094592591,
+                "p95_absolute_error_m": 0.16160090285991036
+              },
+              "persistence": {
+                "pairs": 103,
+                "mae_m": 0.4732038834951456,
+                "rmse_m": 0.5514939991223488,
+                "bias_m": 0.4613592233009709,
+                "median_absolute_error_m": 0.44000000000000006,
+                "p95_absolute_error_m": 0.989
+              },
+              "status": "EVALUATED"
+            },
+            "high_water_proxy": {
+              "samples": 253,
+              "independent_time_episodes": 5,
+              "selected": {
+                "pairs": 253,
+                "mae_m": 0.06184679905615539,
+                "rmse_m": 0.07783660412975348,
+                "bias_m": 0.01138463615663891,
+                "median_absolute_error_m": 0.04902417618487298,
+                "p95_absolute_error_m": 0.1456883446446955
+              },
+              "persistence": {
+                "pairs": 253,
+                "mae_m": 0.5100395256916995,
+                "rmse_m": 0.5575163727899421,
+                "bias_m": 0.5003162055335969,
+                "median_absolute_error_m": 0.45999999999999996,
+                "p95_absolute_error_m": 0.96
+              },
+              "status": "EVALUATED"
+            },
+            "heavy_point_rain": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "wet": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            },
+            "dry": {
+              "samples": 0,
+              "independent_time_episodes": 0,
+              "selected": null,
+              "persistence": null,
+              "status": "LIMITED_SAMPLES"
+            }
+          }
+        },
+        "block_uncertainty": {
+          "status": "TIME_BLOCK_BOOTSTRAP",
+          "blocks": 21,
+          "block_hours": 72,
+          "replicates": 500,
+          "ci95_mae_improvement_m": [
+            0.10043393602544642,
+            0.22492899559333152
+          ],
+          "limitation": "Equal-time-block-weighted MAE improvement. Time blocks are proxies, not independently identified meteorological storms."
+        },
+        "advanced_accepted": true,
+        "test_used_for_selection": false,
+        "evaluation_type": "RETROSPECTIVE"
+      },
+      "research_readiness": "RETROSPECTIVE_RESEARCH_ONLY",
+      "model_rejection_reason": null
+    }
+  ],
+  "trained_candidate_count": 9,
+  "accepted_advanced_models": 3,
+  "eligible": true,
+  "generated_at": "2026-11-09T15:31:07.687151+00:00"
+}

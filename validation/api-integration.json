@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-11-05T05:41:57.889Z",
+  "environment": "Isolated MySQL 8.0 on port 3308; original deployment unchanged",
+  "checks": [
+    {
+      "name": "Built React application served at root",
+      "passed": true
+    },
+    {
+      "path": "/api/risk/unified",
+      "status": 200,
+      "duration_ms": 11543
+    },
+    {
+      "path": "/api/rivers/207/risk",
+      "status": 200,
+      "duration_ms": 7
+    },
+    {
+      "path": "/api/map/rivers",
+      "status": 200,
+      "duration_ms": 1557
+    },
+    {
+      "path": "/api/history?station_id=207&start=2025-11-05&end=2026-11-05",
+      "status": 200,
+      "duration_ms": 37
+    },
+    {
+      "path": "/api/history?station_id=all&start=2025-11-05&end=2026-11-05",
+      "status": 200,
+      "duration_ms": 6747
+    },
+    {
+      "path": "/api/chat/status",
+      "status": 200,
+      "duration_ms": 51
+    },
+    {
+      "name": "Misspelled station resolves in real HTTP chat; data-only fallback includes unified assessment",
+      "passed": true
+    },
+    {
+      "path": "/api/auth/providers",
+      "status": 200,
+      "duration_ms": 4
+    }
+  ],
+  "year_history": {
+    "rows": 366,
+    "coverage": {
+      "first_observed_at": "2025-11-05 00:00:00",
+      "last_observed_at": "2026-11-05 00:00:00",
+      "observed_hours": 8773,
+      "expected_hours": 8784,
+      "percent": 99.8747723132969
+    }
+  },
+  "station": {
+    "station_id": 207,
+    "tier": "B",
+    "level": "Low",
+    "basis": "Estimate relative to this station's history",
+    "percentile": 56.73,
+    "rain_3h": 2.9000000000000004,
+    "rainfall_link": {
+      "station_id": 207,
+      "aws_station_code": "152",
+      "verification_status": "AUTO_NEAREST",
+      "reference_url": "https://apihub.kma.go.kr/api/typ01/url/stn_inf.php?inf=AWS&stn=0&help=1",
+      "distance_km": "4.045",
+      "gauge_name": "울산"
+    }
+  },
+  "passed": true
+}

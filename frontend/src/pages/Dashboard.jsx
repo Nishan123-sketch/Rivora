@@ -1,7 +1,14 @@
+import {englishStationName} from '../lib/englishDisplay';
+import {overviewRiskMetric} from '../lib/overviewRiskMetric';
+import {apiFetch} from '../lib/apiFetch.js';
+import {useRisk} from '../lib/useRisk';
+import RiskBadge from '../components/RiskBadge';
+import HistoryChart from '../components/HistoryChart';
 import {riskColors} from '../lib/risk';
 import { parseTime } from "../lib/time";
 import { useEffect, useMemo, useState } from "react";
 import { metric } from "../lib/format";
+import '../styles/overview.css';
 
 const HOUR = 3600000;
 const num = (v) => v === null || v === undefined || v === "" || !Number.isFinite(Number(v)) ? null : Number(v);
@@ -15,46 +22,20 @@ function Kpi({ title, value, detail }) {
 
 // Uses the original mockup's teal, smooth, shaded area graph.
 // It shows observed water level, never invented risk scores.
-function RiverAreaChart({ readings }) {
-  const points = [...readings].filter(r => Number.isFinite(timestamp(r.observed_at)) && num(r.water_level) !== null).sort((a,b) => timestamp(a.observed_at) - timestamp(b.observed_at)).slice(-24);
-  if (points.length < 2) return <div className="chart-unavailable"><div className="chart-empty-message">Not enough historical observations for a trend.</div></div>;
-  const values = points.map(r => num(r.water_level));
-  const lo = Math.min(...values), hi = Math.max(...values), spread = Math.max(hi - lo, .1);
-  const firstTime = timestamp(points[0].observed_at), duration = timestamp(points.at(-1).observed_at) - firstTime;
-  const xy = values.map((v, i) => [12 + (timestamp(points[i].observed_at) - firstTime) * 596 / duration, 182 - ((v - lo + spread * .15) / (spread * 1.3)) * 160]);
-  // Catmull-Rom to cubic Bezier: smooth but data-driven, no made-up points.
-  const path = xy.reduce((d, p, i) => {
-    if (i === 0) return `M${p[0]},${p[1]}`;
-    const prev = xy[i-1];
-    // Horizontal control points keep the smooth line inside measured extrema.
-    const c1x = prev[0] + (p[0] - prev[0]) / 2;
-    const c1y = prev[1];
-    const c2x = c1x;
-    const c2y = p[1];
-    return `${d} C${c1x},${c1y} ${c2x},${c2y} ${p[0]},${p[1]}`;
-  }, "");
-  return <div className="original-area-chart">
-    <svg viewBox="0 0 620 200" role="img" aria-label="Observed Taehwa Bridge river water level, smooth teal area chart" style={{width:"100%",height:"auto",display:"block"}}>
-      <path d={`${path} L608,190 L12,190 Z`} fill="#bfece4" opacity=".48" />
-      <path d={path} stroke="#087f8e" strokeWidth="3.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <line x1="12" y1="190" x2="608" y2="190" stroke="#d9e7e8" />
-    </svg>
-    <div className="chart-axis"><span>{kst(points[0].observed_at)} KST</span><span>Observed river level (m)</span><span>{kst(points.at(-1).observed_at)} KST</span></div>
-  </div>;
-}
+function RiverAreaChart({readings}){return <HistoryChart rows={readings} field="water_level" label="Water level (m)"/>;}
 
 async function getJson(path, signal) {
-  const response = await fetch(path, { signal });
+  const response = await apiFetch(path, { signal });
   if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
   return response.json();
 }
 
-export default function Dashboard({ weather = [], ulsanId = null, riverId = null }) {
+export default function Dashboard({ weather = [], ulsanId = null, riverId = null, riverName = 'Taehwa Bridge', personalized = false }) {
   const RIVER_ID = riverId;
+  const {data:unifiedRisk,loading:riskLoading,error:riskError}=useRisk();
   const [history, setHistory] = useState([]);
   const [monitoring,setMonitoring]=useState([]);
   const [official,setOfficial]=useState(null);
-  const [alerts, setAlerts] = useState(null);
   const [combined, setCombined] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [latestWeather, setLatestWeather] = useState(null);
@@ -70,7 +51,6 @@ export default function Dashboard({ weather = [], ulsanId = null, riverId = null
       const requests = [
         ["monitoring", "/api/monitoring/stations", setMonitoring, data => data.data||[]],
         ["official", "/api/official-alerts", setOfficial, data => data],
-        ["alerts", "/api/alerts", setAlerts, data => data],
         ...(RIVER_ID ? [
         ["history", `/api/rivers/${RIVER_ID}/history?hours=24`, setHistory, data => Array.isArray(data.readings) ? data.readings : []]] : []),
         ["combined", "/api/combined-analysis", setCombined, data => data],
@@ -103,7 +83,7 @@ export default function Dashboard({ weather = [], ulsanId = null, riverId = null
   const awsAge = now - awsTime;
   const awsFresh = Number.isFinite(awsTime) && awsAge >= 0 && awsAge <= 3 * HOUR;
   const awsHourly = awsFresh ? num(weatherLatest?.aws_hourly_rainfall) : null;
-  const awsStationCode = weatherLatest?.aws_station_code;
+  
   const rainfall6h = num(combined?.weather?.rainfall_6h);
   const rainStation = combined?.weather?.station;
   // Aggregate bounds from each upcoming KMA hourly period. Never treat a missing
@@ -141,66 +121,52 @@ export default function Dashboard({ weather = [], ulsanId = null, riverId = null
     return `${result.min.toFixed(1)}–${result.max.toFixed(1)} mm${result.upperExclusive ? " (upper bound excluded)" : ""}`;
   };
   const next6h = forecastPeriods[6];
-  const summary=monitoring.find(s=>String(s.station_id)===String(RIVER_ID));
-  const riskLevel=summary?.risk_level||'No risk data';
-  const riskScore=num(summary?.risk_score);
-  const verified=summary?.prediction?.status==='ML_STAGE';
-  const rain1h = awsHourly ?? num(combined?.weather?.rainfall_1h);
+  const baseSummary=monitoring.find(s=>String(s.station_id)===String(RIVER_ID));
+  const assessment=unifiedRisk.find(s=>String(s.station_id)===String(RIVER_ID));
+  const summary={...baseSummary,risk_level:assessment?.level,risk_score:assessment?.score};
+  const riskLevel=summary?.risk_level||(riskLoading?'Checking conditions…':riskError?'Assessment reconnecting':'Not assessable');
+  const riskMetric=overviewRiskMetric(assessment);
+
+  const rain1h = awsHourly ?? (personalized ? null : num(combined?.weather?.rainfall_1h));
   const rainfallShown = rainfall6h !== null ? rainfall6h : awsHourly;
   const rainfallDetail = rainfall6h !== null
-    ? `Last 6 hours · ${rainStation?.station_name || rainStation || "KMA Ulsan"}`
+    ? `Last 6 hours · ${englishStationName(rainStation?.station_name || rainStation) || "KMA Ulsan"}`
     : awsHourly !== null
-      ? `AWS 1-hour reading · station ${awsStationCode || "unknown"} · ${kst(weatherLatest?.aws_observed_at)} KST (6h total unavailable)`
+      ? `Last hour · ${kst(weatherLatest?.aws_observed_at)} KST`
       : "6h total unavailable; recent AWS 1h reading unavailable";
   const riverChangeText = threeHourChange === null ? "3-hour change unavailable" : `${threeHourChange >= 0 ? "+" : ""}${threeHourChange.toFixed(2)} m / 3h`;
 
   return <div className="design-overview">
-    <section className="card hero-card">
-      <div className="hero-copy"><p className="caps">CURRENT FLOOD RISK</p><h2 style={{color:riskColors[riskLevel]||'#6b7280'}}>{riskLevel}</h2><p>Threshold verification: {summary?.threshold_verification||'Not Verified'}</p>
-        <p className="muted">{verified ? "Experimental next-hour ML stage classification; not an official warning." : summary?.prediction?.reason || "No trained risk model or current station data."}</p>
-      </div>
-      <div className="score-box"><span>RISK SCORE</span><strong>{riskScore ?? "—"}</strong><small>{riskScore === null ? "Not calculated" : "ML stage score · 0–100"}</small></div>
-    </section>
-    <section className="card" style={{marginTop:16,marginBottom:16}}>
-      <p className="caps">EXPERIMENTAL RIVER-CONDITION ASSESSMENT · TAEHWA BRIDGE</p>
-      {errors.combined ? <p className="muted">Assessment unavailable: {errors.combined}</p> : (() => {
-        const assessment = combined?.assessment?.experimental_risk;
-        const classification = assessment?.condition_classification;
-        const label = classification?.level?.replaceAll('_',' ') || 'No data';
-        const status = classification?.status || 'UNAVAILABLE';
-        return <>
-          <h3 style={{margin:'8px 0'}}>{label}</h3>
-          <p className="muted">{classification?.message || 'Awaiting sufficient recent river and rainfall observations.'}</p>
-          <p className="muted">Status: {status} · Validation: {classification?.validation_status || 'NOT_VALIDATED'} · Latest river reading: {kst(assessment?.observed_at)} KST</p>
-          <p className="muted">Observed 3-hour change: {fmt(assessment?.indicators?.recent_river_changes_m?.['3h'], 'm', 2)} · Observed 3-hour rainfall: {fmt(assessment?.indicators?.observed_rainfall?.rainfall_3h_mm)}</p>
-          <p className="muted" style={{fontSize:12}}>Descriptive conditions only. Not a validated flood-risk level, official flood stage, or issued warning.</p>
-        </>;
-      })()}
+    <section className="card overview-hero">
+      <div className="overview-heading"><div><p className="caps">YOUR MONITORING OVERVIEW</p><h2>Environmental overview</h2><p className="muted">Water, weather and river conditions in one place.</p></div><span className="overview-location">{riverName}</span></div>
+      <div className="overview-network" aria-label="Monitoring network summary"><div><strong>{riskLoading?'—':unifiedRisk.length}</strong><span>Monitored gauges</span></div><div><strong>{riskLoading?'—':unifiedRisk.filter(s=>s.observation_freshness==='FRESH').length}</strong><span>Fresh readings</span></div><div><strong>{official?.status==='Current'?official.data?.length??0:'—'}</strong><span>National weather warnings</span></div></div>
+      <div className="overview-assessment"><div><span className="caps">WATER-LEVEL COMPARISON</span><div className="overview-risk"><strong style={{color:riskColors[riskLevel]||'#6b7280'}}>{riskLevel}</strong><RiskBadge assessment={assessment}/></div><p className="muted">Follow official emergency advice. This comparison is not an issued warning.</p></div>
+      <div className="overview-reference" title={riskMetric.explanation}><span>{riskMetric.title}</span><strong>{riskMetric.value}</strong><small>{riskMetric.detail}</small><small>{riskMetric.explanation}</small></div></div>
     </section>
     <div className="grid4">
-      <Kpi title="WATER LEVEL" value={fmt(riverLatest?.water_level, "m", 2)} detail={riverLatest ? `Taehwa Bridge · ${riverChangeText} · ${kst(riverLatest.observed_at)} KST` : errors.history || (RIVER_ID ? "Taehwa Bridge observation unavailable (no readings stored yet)" : "Taehwa Bridge gauge (code 2201670) not found in stations table")} />
+      <Kpi title="WATER LEVEL" value={fmt(riverLatest?.water_level, "m", 2)} detail={riverLatest ? `${riverName} · ${riverChangeText} · ${kst(riverLatest.observed_at)} KST` : errors.history || (RIVER_ID ? `${riverName} observation unavailable (no readings stored yet)` : "Monitoring gauge is not available")} />
       <Kpi title="RAINFALL" value={fmt(rainfallShown)} detail={rainfallDetail} />
-      <Kpi title="FORECAST" value={fmtBounded(next6h)} detail={next6h === null ? (errors.forecast ? "Forecast API unavailable" : "Next 6h: missing or unsupported KMA rainfall intervals") : "Next 6 hours · KMA forecast · range, not an exact total when bounded"} />
-      <Kpi title="ACTIVE ALERTS" value={errors.alerts ? "—" : alerts?.count ?? "—"} detail={errors.alerts || "Stored project alerts · automatic generation not enabled"} />
+      <Kpi title="FORECAST" value={<>{fmtBounded(next6h).replace(' (upper bound excluded)','')}{next6h?.upperExclusive&&next6h.min>0&&<small className="overview-bound-note">Upper bound excluded</small>}</>} detail={next6h === null ? (errors.forecast ? "Forecast API unavailable" : "Next 6h: missing or unsupported KMA rainfall intervals") : "Rain expected · next 6 hours"} />
+      <Kpi title="NATIONAL WARNINGS" value={official?.status==='Current'?official.data?.length??0:"—"} detail={official?.status==='Current'?"Official weather warnings · all types":"Warning feed reconnecting"} />
     </div>
     <div className="grid-main">
-      <section className="card trend-panel"><div className="panel-title"><h3>River level trend</h3><p className="muted">Observed Taehwa Bridge levels · original teal area-chart design</p></div>
+      <section className="card trend-panel"><div className="panel-title"><div><h3>River level trend</h3><p className="muted">{riverName} · measured water-level history</p></div><span className="overview-period">Last 24 hours</span></div>
         <RiverAreaChart readings={sortedHistory} />
         {errors.history && <p className="muted">River history: {errors.history}</p>}
-        <p className="muted" style={{fontSize:12}}>This chart displays measured water levels, not a calculated risk trend. Risk-history scores require a validated model.</p>
+        <p className="muted" style={{fontSize:12}}>Measured water levels · KST</p>
       </section>
       <div className="stack">
-        <section className="card changes-panel"><h3>What changed?</h3>
+        <section className="card changes-panel"><h3>Recent conditions</h3>
           <ul className="status-list">
             <li><i className="status-dot blue" />Rainfall ({awsHourly !== null ? "AWS 1-hour observation" : "latest available 1h"}): <b>{fmt(rain1h)}</b></li>
-            <li><i className="status-dot amber" />Taehwa Bridge water-level change: <b>{riverChangeText}</b></li>
-            <li><i className="status-dot teal" />Official alert status: <b>{official?.status||"No official feed data"} · {official?.status==='Current'?official.data?.length:'—'} national warnings</b></li>
+            <li><i className="status-dot amber" />{riverName} water-level change: <b>{riverChangeText}</b></li>
+            <li><i className="status-dot teal" />National warning status: <b>{official?.status||"Warning status unavailable"} · {official?.status==='Current'?official.data?.length:'—'} national warnings</b></li>
           </ul>
-          <div className="current-weather"><p className="caps">CURRENT WEATHER</p><div className="row"><strong className="big">{metric(weatherLatest?.temperature, "°C", 1)}</strong><span className="muted">{weatherLatest?.station_name || "KMA observation unavailable"}<br />Observed: {kst(weatherLatest?.observed_at)} KST</span></div></div>
+          <div className="current-weather"><p className="caps">CURRENT WEATHER</p><div className="row"><strong className="big">{metric(weatherLatest?.temperature, "°C", 1)}</strong><span className="muted">{englishStationName(weatherLatest?.station_name)||"Awaiting weather"}<br />Observed: {kst(weatherLatest?.observed_at)} KST</span></div></div>
         </section>
-        <section className="card changes-panel"><h3>Ulsan rainfall forecast</h3><p className="notice">KMA rainfall reference: {combined?.rainfall_reference?.status?.replaceAll("_", " ") || "No data"}. This comparison is not an issued warning.</p><p className="muted">KMA short-term forecast · next 3, 6, 12 and 24 hours</p>
+        <section className="card changes-panel"><h3>Ulsan rainfall forecast</h3><p className="muted">Expected rainfall · next 24 hours</p>
           <div className="overview-rain-grid">{[3,6,12,24].map(hours => <div className="overview-rain-item" key={hours}><span>Next {hours}h</span><strong>{fmtBounded(forecastPeriods[hours])}</strong></div>)}</div>
-          <p className="muted" style={{fontSize:12}}>Forecast bounds use official KMA hourly categories; exact amounts and bounded ranges are distinguished. Missing hours remain unavailable.</p>
+          <p className="muted" style={{fontSize:12}}>Forecasts may change as conditions develop.</p>
         </section>
       </div>
     </div>

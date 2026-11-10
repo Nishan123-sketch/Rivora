@@ -6,7 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const pool = require('./db');
 const { dateRange } = require('./monitoring-store');
-const { catalog } = require('./river-catalog');
+const catalog=require('./river-network-registry').getCatalog();
+const {englishStationName,englishRiverName}=require('./display-names');
 
 const MAX_STATIONS = 5;
 const HOUR_MS = 3600000;
@@ -16,7 +17,7 @@ function timeRequest(question, now = new Date()) {
   const explicit = String(question).match(/\b\d{4}-\d{2}-\d{2}\b/);
   const date = explicit?.[0] || (/\byesterday\b|어제/i.test(question)
     ? new Date(now.getTime() + 9 * HOUR_MS - 86400000).toISOString().slice(0, 10)
-    : today);
+    : /tomorrow|내일/i.test(question)?new Date(now.getTime()+9*HOUR_MS+86400000).toISOString().slice(0,10):today);
   dateRange({ start: date, end: date }); // Reject impossible dates.
   const ampm = String(question).match(/\b(1[0-2]|0?[1-9])(?::([0-5]\d))?\s*(am|pm)\b/i);
   const clock = String(question).match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
@@ -27,7 +28,7 @@ function timeRequest(question, now = new Date()) {
     date, hour,
     at: hour === null ? null : `${date} ${String(hour).padStart(2, '0')}:${minute}:00`,
     timezone: 'Asia/Seoul',
-    explicit: !!explicit || /today|yesterday|오늘|어제|\bam\b|\bpm\b/i.test(question) || !!clock
+    explicit: !!explicit || /today|tomorrow|yesterday|오늘|어제|\bam\b|\bpm\b/i.test(question) || !!clock
   };
 }
 
@@ -45,12 +46,16 @@ function pickStationIds(question, explicitId, previous, stations, riverLinks) {
   }
   const find = text => {
     const lower = text.toLocaleLowerCase();
-    const direct = stations.filter(s =>
+    const weatherOnly=/weather|temperature|rain|forecast/i.test(text)&&!/river|water level|flood/i.test(text);
+    const candidates=weatherOnly&&!/bridge|gauge|dam|river/i.test(text)?stations.filter(s=>s.data_source==='KMA'):stations;
+    const direct = candidates.filter(s =>
+      lower.includes(englishStationName(s.station_name,s.external_station_id).toLowerCase()) ||
       lower.includes(String(s.station_name).toLocaleLowerCase()) ||
       new RegExp(`\\bstation\\s*(?:id\\s*)?#?${s.station_id}\\b`, 'i').test(text) ||
       (s.external_station_id && new RegExp(`\\b${s.external_station_id}\\b`).test(text))
     );
-    const matchingRivers = catalog.filter(r => [r.name_ko, r.name_en, r.name_en?.replace(/\s+(river|stream)$/i, '')]
+    if(direct.length)return direct;
+    const matchingRivers = catalog.filter(r => [r.name_ko, englishRiverName(r.name_en,r.name_ko), r.name_en, r.name_en?.replace(/\s+(river|stream)$/i, '')]
       .filter(Boolean).some(name => name.length > 2 && lower.includes(name.toLocaleLowerCase())));
     const matches = new Set(direct.map(s => String(s.station_id)));
     for (const r of matchingRivers) {
@@ -59,6 +64,7 @@ function pickStationIds(question, explicitId, previous, stations, riverLinks) {
     if (/\bulsan\b|울산/i.test(text) && !matches.size) {
       for (const s of stations) if (s.data_source === 'KMA' && /ulsan|울산/i.test(s.station_name)) matches.add(String(s.station_id));
     }
+    if(!matches.size){const candidates=require('./place-resolver').resolvePlaces(text,stations);if(candidates[0]?.confidence>=0.75&&(!candidates[1]||candidates[0].confidence-candidates[1].confidence>0.05))matches.add(String(candidates[0].station_id));}
     return stations.filter(s => matches.has(String(s.station_id)));
   };
   for (const q of all) {
@@ -117,9 +123,10 @@ async function buildContext(question, stationId, previous = [], db = pool) {
     selection_note: '', official_alerts: null
   };
 
-  const stations = await optionalSelect(db,
-    'SELECT station_id, station_name, external_station_id, data_source FROM stations ORDER BY station_name LIMIT 1500',
+  let stations = await optionalSelect(db,
+    'SELECT station_id, station_name, external_station_id, data_source,latitude,longitude FROM stations ORDER BY station_name LIMIT 1500',
     [], context, 'station_catalog');
+  if(db===pool)stations=await require('./official-station-policy').publicStations(stations);
   const links = await optionalSelect(db,
     "SELECT river_id,station_id FROM river_gauge_links WHERE verification_status='VERIFIED'",
     [], context, 'verified_river_links');
@@ -144,7 +151,7 @@ async function buildContext(question, stationId, previous = [], db = pool) {
     const s = stations.find(s => String(s.station_id) === String(id));
     if (!s) continue;
     const entry = {
-      station_id: s.station_id, station_name: s.station_name,
+      station_id: s.station_id, station_name: englishStationName(s.station_name,s.external_station_id),
       external_station_id: s.external_station_id, source: s.data_source,
       latest_water: [], latest_weather: [], latest_rainfall: [],
       latest_prediction: [], weather_forecasts: [],
@@ -155,12 +162,14 @@ async function buildContext(question, stationId, previous = [], db = pool) {
     entry.latest_water = await optionalSelect(db,
       'SELECT observed_at,water_level,flow_rate FROM water_readings WHERE station_id=? ORDER BY observed_at DESC LIMIT 2',
       [id], context, `water_${id}`);
+    const nearby=s.data_source==='KMA'?null:require('./geo').nearest(s,stations.filter(x=>x.data_source==='KMA'));const weatherId=s.data_source==='KMA'?id:nearby?.station_id;
+    entry.nearby_weather_station=nearby?{station_name:englishStationName(nearby.station_name),distance_km:nearby.distance_km}:null;
     entry.latest_weather = await optionalSelect(db,
       'SELECT observed_at,temperature,humidity,wind_speed,hourly_rainfall,rainfall FROM weather_readings WHERE station_id=? ORDER BY observed_at DESC LIMIT 2',
-      [id], context, `weather_${id}`);
+      [weatherId||id], context, `weather_${id}`);
 
     const rainLink = await optionalSelect(db,
-      "SELECT aws_station_code FROM station_rainfall_links WHERE station_id=? AND verification_status='VERIFIED' LIMIT 1",
+      "SELECT aws_station_code FROM station_rainfall_links WHERE station_id=? AND verification_status IN ('VERIFIED','AUTO_NEAREST') LIMIT 1",
       [id], context, `rainfall_link_${id}`);
     const awsCode = rainLink[0]?.aws_station_code || (s.data_source === 'KMA' ? s.external_station_id : null);
     if (awsCode) {
@@ -173,12 +182,13 @@ async function buildContext(question, stationId, previous = [], db = pool) {
     entry.latest_prediction = await optionalSelect(db,
       'SELECT observed_at,valid_at,generated_at,model_version,predicted_water_level,risk_score,risk_level,status,reason FROM prediction_history WHERE station_id=? ORDER BY prediction_id DESC LIMIT 2',
       [id], context, `prediction_${id}`);
-    entry.weather_forecasts = s.data_source === 'KMA' ? await optionalSelect(db,
+    entry.weather_forecasts = weatherId ? await optionalSelect(db,
       'SELECT issued_at,valid_at,rainfall_forecast,temperature_forecast,precipitation_probability,source FROM weather_forecasts WHERE station_id=? AND issued_at=(SELECT MAX(issued_at) FROM weather_forecasts WHERE station_id=?) ORDER BY valid_at LIMIT 48',
-      [id, id], context, `forecast_${id}`) : [];
+      [weatherId, weatherId], context, `forecast_${id}`) : [];
 
+    if(weatherId&&/forecast|tomorrow|next|week|weather/i.test(question)){try{entry.weekly_forecast=await require('./weekly-weather').weekly(weatherId);}catch{context.unavailable_sources.push('weekly_forecast: UNAVAILABLE');}}
     const thresholds = await optionalSelect(db,
-      'SELECT interest_level_m,caution_level_m,alert_level_m,severe_level_m,verification_status,verified_at,source_url FROM flood_thresholds WHERE station_id=? LIMIT 1',
+      'SELECT interest_level_m,caution_level_m,alert_level_m,severe_level_m,advisory_level_m,warning_level_m,verification_status,verified_at,source_url FROM flood_thresholds WHERE station_id=? LIMIT 1',
       [id], context, `thresholds_${id}`);
     const threshold = thresholds[0];
     entry.validated_thresholds = threshold?.verification_status === 'VERIFIED' && threshold.source_url && threshold.verified_at ? threshold : null;
@@ -187,7 +197,7 @@ async function buildContext(question, stationId, previous = [], db = pool) {
     if (requestedExact) {
       const [waterAt, weatherAt, rainAt, forecastAt] = await Promise.all([
         optionalSelect(db, 'SELECT observed_at,water_level FROM water_readings WHERE station_id=? AND observed_at=? LIMIT 1', [id, requestedExact], context, `water_at_${id}`),
-        optionalSelect(db, 'SELECT observed_at,temperature,hourly_rainfall FROM weather_readings WHERE station_id=? AND observed_at=? LIMIT 1', [id, requestedExact], context, `weather_at_${id}`),
+        optionalSelect(db, 'SELECT observed_at,temperature,hourly_rainfall FROM weather_readings WHERE station_id=? AND observed_at=? LIMIT 1', [weatherId||id, requestedExact], context, `weather_at_${id}`),
         awsCode ? optionalSelect(db, 'SELECT observed_at,hourly_rainfall FROM aws_rainfall_readings WHERE aws_station_code=? AND observed_at=? LIMIT 1', [String(awsCode), requestedExact], context, `aws_at_${id}`) : Promise.resolve([]),
         s.data_source === 'KMA' ? optionalSelect(db, 'SELECT issued_at,valid_at,rainfall_forecast,temperature_forecast,source FROM weather_forecasts WHERE station_id=? AND valid_at=? ORDER BY issued_at DESC LIMIT 1', [id, requestedExact], context, `forecast_at_${id}`) : Promise.resolve([])
       ]);
@@ -202,13 +212,15 @@ async function buildContext(question, stationId, previous = [], db = pool) {
         'SELECT observed_at,temperature,hourly_rainfall FROM weather_readings WHERE station_id=? AND observed_at BETWEEN ? AND ? ORDER BY observed_at ASC LIMIT 25',
         [id, ...requestedBounds], context, `weather_date_${id}`);
     }
+    if((temporal.explicit||/history|historical/i.test(question))&&temporal.date<=new Date(Date.now()+9*HOUR_MS).toISOString().slice(0,10)){entry.historical_water=await optionalSelect(db,'SELECT COUNT(*) AS samples,MIN(water_level) AS minimum,MAX(water_level) AS maximum,AVG(water_level) AS average FROM water_readings WHERE station_id=? AND observed_at BETWEEN ? AND ?',[id,...requestedBounds],context,'historical_water');entry.historical_weather=await optionalSelect(db,'SELECT COUNT(*) AS samples,MIN(temperature) AS minimum,MAX(temperature) AS maximum,AVG(temperature) AS average FROM weather_readings WHERE station_id=? AND observed_at BETWEEN ? AND ?',[weatherId||id,...requestedBounds],context,'historical_weather');}
     // Preserve true zero as a valid observation; never replace missing data with zero.
     entry.latest_water = entry.latest_water.map(r => ({ ...r, water_level: bareNumber(r.water_level) }));
+    if(db===pool){try{entry.unified_risk=(await require('./risk-engine').getUnified()).find(r=>String(r.station_id)===String(id))||null;}catch{context.unavailable_sources.push('unified_risk: QUERY_FAILED');}}
     context.stations.push(entry);
   }
 
   try {
-    const official = await require('./official-alerts').latestOfficialAlerts();
+    const official = await require('./official-alerts').latestOfficialAlerts(db);
     context.official_alerts = { status: official.status, fetched_at: official.fetched_at || null,
       source: official.source, data: (official.data || []).slice(0, 15),
       truncated: (official.data || []).length > 15 };

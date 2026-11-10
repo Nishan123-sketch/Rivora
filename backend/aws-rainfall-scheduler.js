@@ -113,6 +113,7 @@ async function importOffsets(offsets, jobName) {
       await sleep(IMPORT_DELAY_MS);
     }
 
+    await require('./link-nearest-rainfall').run();
     console.log(`[AWS] ${jobName} completed:`, summary);
 
     return summary;

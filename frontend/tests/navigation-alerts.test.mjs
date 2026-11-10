@@ -1,0 +1,10 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {readLocation,pageUrl} from '../src/lib/navigation.js';
+import {alertArea,warningTitle} from '../src/lib/alertPresentation.js';
+import {chartAxis} from '../src/lib/chartAxis.js';
+test('real page URLs round trip with station details and deployment base',()=>{for(const page of ['Overview Dashboard','Weather Forecast','Live Map','Stations','Historical Data','Alerts','AI Assistant','ML Analysis']){const pathname=pageUrl(page,null,'/rivora/');assert.equal(readLocation({pathname},'/rivora/').page,page);}assert.deepEqual(readLocation({pathname:'/stations/207'}),{page:'Station Details',detailId:207});});
+test('auth callback and unknown routes resolve safely',()=>{assert.equal(readLocation({pathname:'/auth/callback'}).page,'Auth Callback');assert.equal(readLocation({pathname:'/missing'}).page,'Overview Dashboard');});
+test('marine warnings name the sea and retain offshore restrictions',()=>{const name=alertArea('동해남부먼바다(동해남부북쪽바깥먼바다)');assert.match(name,/East Sea/);assert.match(name,/outer/);assert.match(name,/offshore waters/);assert.doesNotMatch(name,/Donghaenambu/);});
+test('city alerts retain mountainous or lowland scope',()=>{const name=alertArea('강원도(속초시평지,고성군산지)');assert.match(name,/Sokcho City lowlands/);assert.match(name,/Goseong County mountain areas/);});
+test('hazard type is distinct from severity',()=>{assert.equal(warningTitle('V','2'),'High waves advisory');assert.equal(warningTitle('W','3'),'Strong wind warning');assert.equal(warningTitle('R','3'),'Heavy rain warning');});
+test('chart axes handle zero rain, constant water and negative temperatures',()=>{for(const [lo,hi,positive]of [[0,0,true],[4.81,4.81,false],[-9,12,false]]){const axis=chartAxis(lo,hi,positive);assert.ok(axis.max>axis.min);assert.ok(axis.ticks.every(Number.isFinite));assert.ok(axis.min<=lo&&axis.max>=hi);if(positive)assert.equal(axis.min,0);}});

@@ -62,6 +62,7 @@ function monitoringAnswer(question, context) {
       const ev = s.water_level_model_evaluation;
       lines.push(`- **Historical model backtest:** ${ev.status}; experimental Ridge MAE ${numberText(ev.ridge_mae_m, 'm')}, persistence MAE ${numberText(ev.persistence_mae_m, 'm')}; evaluated ${ev.evaluated_at || 'unknown date'}. Not validation of flood probabilities.`);
     }
+    if(s.unified_risk){const r=s.unified_risk;lines.push(`- **Unified assessment:** ${r.level||'Not assessable'} · ${r.basis} · ${r.reasons.join(', ')}${r.percentile!==null?' · '+r.percentile+'th percentile':''}. Not an official warning.`);}
     if (wantsRisk) lines.push(`- **Flood threshold:** ${s.threshold_status === 'DOCUMENTED_VERIFIED' ? 'Source-backed threshold record exists, but official warning issuance still requires a separate source.' : 'Unverified/unavailable. The measured level does not establish a flood-warning state.'}`);
   }
   if (wantsRisk) lines.push(`\n**Official warning feed:** ${context.official_alerts?.status || 'unavailable'}. Its status is not a statement that a warning has or has not been issued for this gauge. Experimental model output is not an official warning.`);
@@ -71,3 +72,10 @@ function monitoringAnswer(question, context) {
 }
 
 module.exports = { monitoringAnswer, fresh };
+
+function conversationFallback(question){
+ if(/why|unavailable|not working|reconnect/i.test(question))return 'The local conversation model is not responding. Rivora is checking its connection and will try to restart it automatically. You can still ask for recorded weather or river data while it reconnects.';
+ return 'Hi! I’m here to help. The local conversation model is reconnecting, so normal chat is temporarily limited. You can still ask me to look up recorded weather, river levels or history.';
+}
+
+module.exports.conversationFallback=conversationFallback;

@@ -67,4 +67,4 @@ async function processEmailQueue({ db, sendEmail, env = process.env, logger = co
   }
   return { status: 'COMPLETED', sent, failed };
 }
-module.exports = { processEmailQueue, canSendAlertEmail, MAX_ATTEMPTS, RETRY_MINUTES };
+module.exports = { processUnifiedEmailQueue:require('./unified-email-queue').processUnifiedEmailQueue, processEmailQueue, canSendAlertEmail, MAX_ATTEMPTS, RETRY_MINUTES };

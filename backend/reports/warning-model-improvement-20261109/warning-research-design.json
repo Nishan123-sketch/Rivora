@@ -1,0 +1,27 @@
+{
+  "created_at": "2026-11-08T17:29:25.719732+00:00",
+  "source_sha256": "af02a20d00cb0ea46be0ec01ddc87c88d96beaacf46d0a78b4b138b3752d8877",
+  "features_before": "2026-01-01",
+  "test_predictions_read": false,
+  "deploy": false,
+  "provenance": "Only official-URL water records plus independently reconciled history; original records retained",
+  "selection": "Saved 2025 selection only; AP ranking",
+  "calibration": "Saved disjoint 2025 block, sigmoid C=1",
+  "decision": "Saved disjoint threshold block; precision>=.2 and event recall>=.8; >=2 events",
+  "purge_hours": 72,
+  "features": [
+    "rain growth",
+    "recent rainfall intensity",
+    "positive-rise x observed rainfall",
+    "rise acceleration"
+  ],
+  "reference": "No current thresholds backfilled into historical data; no invented upstream gauge topology",
+  "target_scope": "Confirmed NONE at forecast origin only; exact match to live new-issuance eligibility",
+  "station_context": "Training-only same-gauge median, p05/p95 range and p90; no current flood thresholds backfilled into history. Unknown gauges keep NaN context and an explicit missing flag for HGB.",
+  "candidate_selection": "Saved 2025 selection AP only; numerical Brier and threshold checks unchanged",
+  "additional_candidates": [
+    "Station-context HGB",
+    "Constrained station-context HGB",
+    "Balanced station-context HGB"
+  ]
+}

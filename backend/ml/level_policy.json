@@ -1,0 +1,59 @@
+{
+  "version": "level-research-v4-20261108",
+  "horizons": [
+    1,
+    3,
+    6
+  ],
+  "history_days": 366,
+  "minimums": {
+    "train": 720,
+    "selection": 168,
+    "calibration": 168,
+    "test": 168
+  },
+  "split_fractions": [
+    0.6,
+    0.72,
+    0.84
+  ],
+  "maximum_feature_lag_hours": 72,
+  "purge_hours": 78,
+  "minimum_recent_hour_coverage": 0.8,
+  "maximum_rain_distance_km": 25,
+  "max_input_age_hours": 3,
+  "candidates": [
+    "PERSISTENCE",
+    "BOUNDED_TREND",
+    "RIDGE",
+    "ELASTIC_NET",
+    "HIST_GRADIENT_BOOSTING"
+  ],
+  "acceptance": {
+    "selection_mae_relative_improvement": 0.05,
+    "selection_rmse_ratio_max": 1.0,
+    "rolling_origin_required_folds": 2,
+    "test_mae_relative_improvement": 0.05,
+    "test_rmse_ratio_max": 1.0,
+    "regime_mae_ratio_max": 1.1,
+    "minimum_regime_samples": 40,
+    "minimum_bootstrap_blocks": 8,
+    "bootstrap_block_hours": 72,
+    "bootstrap_resamples": 500,
+    "improvement_ci_lower_m_min": 0,
+    "numerical_convergence_required": true
+  },
+  "intervals": {
+    "nominal_coverage": 0.9,
+    "minimum_calibration_blocks": 8,
+    "minimum_test_blocks": 8,
+    "acceptable_test_coverage_min": 0.85,
+    "acceptable_test_coverage_max": 0.97
+  },
+  "high_water_definition": "Training-level 90th percentile, not an official flood threshold",
+  "rise_definition": "Training positive 1h change 75th percentile with minimum 0.02 m/h",
+  "heavy_rain_definition": "Observed prior-6h point rainfall at least 30 mm; not catchment rainfall",
+  "rainfall_forecasts": "Excluded: historical issuance/availability archive not verified",
+  "status": "Retrospective research evaluation; no operational certification; final test never used to select hyperparameters",
+  "pooled_models": "Evaluate common chronological periods and scale-free deltas only; no held-out-station transfer claim without separate testing"
+}

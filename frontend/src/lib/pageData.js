@@ -1,0 +1,1 @@
+export function appDataIndices(page){if(['AI Assistant','Historical Data'].includes(page))return [0];if(['Stations','Alerts','Live Map','River Monitoring','ML Analysis','About','Login','Register','Onboarding','Auth Callback','Admin','Admin Login','Profile','Account Action'].includes(page))return [];if(page==='Weather Forecast')return [0,1];return [0,1,2];}

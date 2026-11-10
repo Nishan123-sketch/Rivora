@@ -1,0 +1,1 @@
+export function conditionName(code){if(code==null)return 'Temperature';if(code===0)return 'Clear';if(code<=3)return 'Cloudy';if(code<=48)return 'Fog';if(code<=67)return 'Rain';if(code<=77)return 'Snow';if(code<=82)return 'Rain showers';if(code<=86)return 'Snow showers';return 'Thunderstorm';}

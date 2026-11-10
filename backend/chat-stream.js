@@ -1,8 +1,25 @@
 // True upstream token streaming for the three supported providers.
 // Yields text fragments as the provider produces them.
-function providerRequest(system, messages, env) {
+function providerRequest(system, messages, env, options = {}) {
   const provider = (env.LLM_PROVIDER || 'ollama').toLowerCase();
   const headers = { 'Content-Type': 'application/json' };
+  if (provider === 'llamacpp') {
+    const context = Math.max(1024, Number(env.LLM_LOCAL_CONTEXT || 2048));
+    const maxTokens = Math.min(Number.isInteger(options.maxTokens)&&options.maxTokens>=16?options.maxTokens:384,384, Math.floor(context / 5));
+    // Conservative UTF-8 estimate; retain the current question intact, discard oldest turns first.
+    const cost = m => Math.ceil(Buffer.byteLength(m.content, 'utf8') / 3) + 12;
+    const systemMessage = {role:'system',content:system+'\n/no_think'};
+    let budget = context - maxTokens - 96 - cost(systemMessage);
+    const current = messages.at(-1);
+    if (!current || cost(current) > budget) throw Error('CONTEXT_LIMIT: shorten the current message');
+    const selected = [current]; budget -= cost(current);
+    for (let i=messages.length-2; i>=0; i--) {
+      if (cost(messages[i]) > budget) break;
+      selected.unshift(messages[i]); budget -= cost(messages[i]);
+    }
+    while(selected.length>1 && selected[0].role!=='user') selected.shift();
+    return {provider:'openai',headers,url:require('./local-assistant').localAddress(env)+'/v1/chat/completions',body:{model:'local',stream:true,temperature:typeof options.temperature==='number'?Math.max(0,Math.min(1,options.temperature)):0.7,top_p:0.8,max_tokens:maxTokens,chat_template_kwargs:{enable_thinking:false},...(options.responseSchema?{response_format:{type:'json_schema',json_schema:{name:'rivora_plan',strict:true,schema:options.responseSchema}}}:{}),messages:[systemMessage,...selected]}};
+  }
   if (provider === 'ollama') {
     return { provider, headers, url: (env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\/$/, '') + '/api/chat',
       body: { model: env.LLM_MODEL || 'llama3.2', stream: true, messages: [{ role: 'system', content: system }, ...messages] } };
@@ -28,6 +45,7 @@ function providerRequest(system, messages, env) {
 function parseLine(provider, line) {
   line = line.trim();
   if (!line) return '';
+  if(provider==='llamacpp')provider='openai';
   if (provider === 'ollama') {
     try { return JSON.parse(line).message?.content || ''; } catch { return ''; }
   }
@@ -41,8 +59,9 @@ function parseLine(provider, line) {
   } catch { return ''; }
 }
 
-async function* streamProvider(system, messages, signal, fetcher = fetch, env = process.env) {
-  const { provider, headers, url, body } = providerRequest(system, messages, env);
+async function* streamProvider(system, messages, signal, fetcher = fetch, env = process.env, options = {}) {
+  if ((env.LLM_PROVIDER||'').toLowerCase()==='anthropic') {yield* require('./anthropic-provider').streamAnthropic(system,messages,signal,{env,fetcher});return;}
+  const { provider, headers, url, body } = providerRequest(system, messages, env, options);
   const response = await fetcher(url, { method: 'POST', headers, body: JSON.stringify(body), signal });
   if (!response.ok) throw Error(`LLM provider returned HTTP ${response.status}; check configuration or quota.`);
   const decoder = new TextDecoder();

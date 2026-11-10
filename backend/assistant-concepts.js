@@ -1,0 +1,10 @@
+function explain(question){
+ if(/failed|validation|independent.*test/i.test(question))return 'Failed warning-model validation means the shared model did not meet the required independent evaluation checks. Its precision was about 1.9%, below the required 20%, and its Brier score was worse than the baseline. Warning probabilities stay disabled. This is separate from accepted experimental water-level forecasts and evaluated persistence baselines.';
+ if(/rmse/i.test(question))return 'RMSE is the root mean squared water-level prediction error, measured in metres. Larger mistakes have more influence on RMSE. It is an error measure, not an accuracy percentage or flood probability.';
+ if(/mae/i.test(question))return 'MAE is the average absolute difference between predicted and observed water levels, measured in metres. Smaller MAE means smaller errors on the evaluated data. It does not measure the chance of a flood.';
+ if(/\bridge\b/i.test(question))return 'Ridge regression predicts a numerical water level from recent recorded inputs while penalizing large coefficients. Rivora compares it against a persistence baseline using chronological holdouts. A level prediction is not an issued flood warning.';
+ if(/probability/i.test(question))return 'A flood or warning probability requires a separately validated event model and reliable event labels. A water-level-to-threshold percentage is not that probability. Rivora withholds warning probabilities when validation evidence is insufficient.';
+ if(/threshold/i.test(question))return 'A threshold is a published, station-specific reference water level. Rivora compares fresh readings with verified thresholds. Crossing a reference level in this app is distinct from an official authority issuing a warning.';
+ return 'An advisory is an earlier official flood alert stage; a warning indicates a more serious stage. The criteria and reference levels depend on the station. Rivora’s stage comparison does not itself issue an official warning. Ask for a named station to check its recorded evidence.';
+}
+module.exports={explain};

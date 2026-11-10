@@ -1,0 +1,4 @@
+const test=require('node:test'),assert=require('node:assert/strict');const {normalizeHorizon}=require('../level-artifact-service');
+const now=Date.parse('2026-11-08T05:30:00Z'),base={forecast_status:'AVAILABLE',predicted_level_m:0,observed_at:'2026-11-08 14:00:00',valid_at:'2026-11-08 15:00:00'};
+test('saved level forecasts preserve real zero and expire by actual valid time',()=>{assert.equal(normalizeHorizon(base,now).predicted_level_m,0);const expired=normalizeHorizon(base,now+3600000);assert.equal(expired.forecast_status,'UNAVAILABLE');assert.equal(expired.predicted_level_m,null);assert.equal(expired.reason,'FORECAST_EXPIRED');});
+test('stale future and non-finite artifact outputs are not ready',()=>{for(const change of [{observed_at:'2026-11-08 10:00:00'},{observed_at:'2026-11-08 16:00:00'},{predicted_level_m:NaN}]){const out=normalizeHorizon({...base,...change},now);assert.equal(out.forecast_status,'UNAVAILABLE');assert.equal(out.predicted_level_m,null);}});

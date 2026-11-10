@@ -25,7 +25,7 @@ async function getWamis(path, params = {}, timeoutMs = 18000) {
   } finally { release(); }
 }
 
-async function getWamisSerial(path, params, timeoutMs) {
+async function getWamisSerial(path, params, timeoutMs, maxAttempts = 3) {
   if (Date.now() < circuitOpenUntil) {
     throw new Error('WAMIS temporarily unavailable; requests paused after repeated network failures');
   }
@@ -38,8 +38,6 @@ async function getWamisSerial(path, params, timeoutMs) {
     url.searchParams.set(key, String(value));
   }
 
-  const maxAttempts = 3;
-
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       await waitForRateSlot();
@@ -47,7 +45,8 @@ async function getWamisSerial(path, params, timeoutMs) {
       const response = await fetch(url, {
         signal: AbortSignal.timeout(timeoutMs),
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
+          Connection: 'close'
         }
       });
 
@@ -133,7 +132,8 @@ function parseCoord(raw, axis) {
   let result;
   if (/^\d{2,3}-\d{1,2}-\d+(?:\.\d+)?$/.test(str)) {
     const [deg,min,sec] = str.split('-').map(Number);
-    if (min >= 60 || sec >= 60) return null;
+    // Some official coordinates round seconds to exactly 60; arithmetic carries that into the next minute.
+    if (min >= 60 || sec > 60) return null;
     result = deg + min/60 + sec/3600;
   } else if (/^-?\d+(?:\.\d+)?$/.test(str)) result = Number(str);
   else return null;
@@ -172,4 +172,7 @@ function mapReadings(items) {
   return items.map(x=>({observedAt:wamisHour(x.ymdh),waterLevel:levelOrNull(x.wl)}))
     .filter(x=>x.observedAt && x.waterLevel !== null);
 }
-module.exports = { getWamis, parseCoord, wamisHour, levelOrNull, koreanDate, normalizeStationInfo, mapReadings, BASE_URL };
+// Only the bounded two-worker historical collector uses this entry point.
+// Both workers still reserve the shared ~1-request/second rate slots.
+module.exports = { getWamis, getWamisForHistory:(path,params,timeoutMs)=>getWamisSerial(path,params,timeoutMs,1), parseCoord, wamisHour, levelOrNull, koreanDate, normalizeStationInfo, mapReadings, BASE_URL };
+

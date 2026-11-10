@@ -118,6 +118,8 @@ test('fake API import sends the selected city ID and requires success', async ()
     request = {url,opts}; return {ok:true,json:async()=>({success:true,station_id:31})};
   },31);
   assert.equal(request.url,'/api/weather/forecast/import');
+  assert.equal(request.opts.credentials,'include');
+  assert.equal(request.opts.headers['X-Rivora-Request'],'1');
   assert.equal(JSON.parse(request.opts.body).station_id,31);
   await assert.rejects(()=>requestStationForecastImport(async()=>({ok:true,json:async()=>({success:false,message:'No data'})}),31),/No data/);
 });

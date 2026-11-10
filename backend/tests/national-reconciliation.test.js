@@ -1,0 +1,11 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const {normalize}=require('../reconcile-official-network');
+const row={wlobscd:'1013655',obsnm:'Example bridge',fstnyn:'Y',attwl:2.8,wrnwl:4,almwl:5,srswl:6.2,wl:0,gdt:50};
+test('designated warning status requires the authority designation, independently of sourced thresholds',()=>{assert.equal(normalize(row,'Han').designation,'DESIGNATED_WARNING');assert.equal(normalize({...row,fstnyn:'N'},'Han').designation,'PUBLISHED_THRESHOLD');assert.equal(normalize({...row,fstnyn:null},'Han').designation,'UNCONFIRMED');assert.equal(normalize(row,'Unknown').designation,'UNCONFIRMED');});
+test('two-stage sources do not acquire invented interest or severe thresholds',()=>{const r=normalize({WLOBSCD:'3001605',OBSNM:'Bridge',WRNWL:'2.5',ALMWL:'3.5',TM:'0.45'},'Geum');assert.equal(r.valid,true);assert.equal(r.four,false);assert.equal(r.designation,'DESIGNATED_WARNING');assert.deepEqual(r.levels,[null,2.5,3.5,null]);});
+test('empty, invalid or unordered stage thresholds cannot enable a verified import',()=>{for(const bad of [{wrnwl:''},{almwl:null},{almwl:4},{wrnwl:'NaN'},{wlobscd:'invalid'}])assert.equal(normalize({...row,...bad},'Han').valid,false);});
+test('genuine zero and negative gauge stages survive, missing values and sentinel readings do not',()=>{assert.equal(normalize(row,'Han').water,0);assert.equal(normalize({...row,wl:-0.25},'Han').water,-0.25);for(const wl of [null,'',-999,'NaN'])assert.equal(normalize({...row,wl},'Han').water,null);});
+
+test('Yeongsan map legacy field names follow the public UI labels and station chart, not English-looking key names',()=>{const r=normalize({wl_code:'5301635',wl_name:'Bridge',fstnyn:'N',wl_wrn:'1.6',wl_alm:'2.6',wl_att:'3.3',wl_srs:'4',wl:'.62'},'Yeongsan');assert.deepEqual(r.levels,[1.6,2.6,3.3,4]);assert.equal(r.four,true);assert.equal(r.advisory,2.6);assert.equal(r.warning,3.3);assert.equal(r.designation,'PUBLISHED_THRESHOLD');});
+
+test('official rounded DMS seconds carry into the next minute without accepting out-of-range seconds',()=>{const {parseCoord}=require('../wamis-client');assert.equal(parseCoord('127-08-60','lon'),127.15);assert.ok(Math.abs(parseCoord('35-03-60','lat')-(35+4/60))<1e-10);assert.equal(parseCoord('127-08-61','lon'),null);assert.equal(parseCoord('127-60-00','lon'),null);});
